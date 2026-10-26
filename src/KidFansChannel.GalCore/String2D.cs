@@ -442,11 +442,11 @@ namespace KidFansChannel.GalCore
 		{
 			foreach (char c in value)
 			{
-				bool flag = false;
+				bool sawLink = false;
 				StringChar item;
 				if (c == '\n')
 				{
-					flag = true;
+					sawLink = true;
 					item = new StringChar('\n', 0);
 				}
 				else
@@ -454,10 +454,10 @@ namespace KidFansChannel.GalCore
 					item = new StringChar(c);
 					if (_currentWidth + item.GetSize(_font).Width > _lineSize.Width)
 					{
-						flag = true;
+						sawLink = true;
 					}
 				}
-				if (flag)
+				if (sawLink)
 				{
 					if (!item.IsSpecial())
 					{
@@ -470,7 +470,7 @@ namespace KidFansChannel.GalCore
 					FinishString(align);
 					NewLine();
 				}
-				if (!flag || !item.IsSpecial())
+				if (!sawLink || !item.IsSpecial())
 				{
 					_stringChars.Add(item);
 				}
@@ -748,25 +748,25 @@ namespace KidFansChannel.GalCore
 			Color color = _defaultColor;
 			currentLinkValue = -1;
 			_linkList.Clear();
-			int num = 0;
+			int penX = 0;
 			foreach (StringChar stringChar in _stringChars)
 			{
-				float num2;
-				if ((float)num <= length)
+				float alpha;
+				if ((float)penX <= length)
 				{
-					num2 = 1f;
+					alpha = 1f;
 				}
 				else
 				{
-					if ((float)num >= length + (float)_alphaWidth)
+					if ((float)penX >= length + (float)_alphaWidth)
 					{
 						break;
 					}
-					num2 = (length + (float)_alphaWidth - (float)num) / (float)_alphaWidth;
+					alpha = (length + (float)_alphaWidth - (float)penX) / (float)_alphaWidth;
 				}
 				if (stringChar.IsSpecial())
 				{
-					if (!DrawSpecial(stringChar.Special, stringChar.SpecialArg, ref location, num2, ref color, ref click))
+					if (!DrawSpecial(stringChar.Special, stringChar.SpecialArg, ref location, alpha, ref color, ref click))
 					{
 						break;
 					}
@@ -774,7 +774,7 @@ namespace KidFansChannel.GalCore
 				}
 				if (currentLinkValue == -1)
 				{
-					DrawChar(location, stringChar.Char, num2, color);
+					DrawChar(location, stringChar.Char, alpha, color);
 				}
 				else
 				{
@@ -784,18 +784,18 @@ namespace KidFansChannel.GalCore
 						CheckLinkRead(this, linkArgs);
 						if (linkArgs.Read)
 						{
-							DrawChar(location, stringChar.Char, num2, _linkColorRead);
+							DrawChar(location, stringChar.Char, alpha, _linkColorRead);
 						}
 						else
 						{
-							DrawChar(location, stringChar.Char, num2, _linkColor);
+							DrawChar(location, stringChar.Char, alpha, _linkColor);
 						}
 					}
 					else
 					{
-						DrawChar(location, stringChar.Char, num2, _linkColor);
+						DrawChar(location, stringChar.Char, alpha, _linkColor);
 					}
-					if (num2 == 1f)
+					if (alpha == 1f)
 					{
 						Rectangle rect = default(Rectangle);
 						rect.Width = stringChar.GetSize(_font).Width;
@@ -807,7 +807,7 @@ namespace KidFansChannel.GalCore
 				}
 				int width = stringChar.GetSize(_font).Width;
 				location.X += width;
-				num += width;
+				penX += width;
 			}
 			if (click == _location)
 			{
@@ -988,26 +988,26 @@ namespace KidFansChannel.GalCore
 
 		public void CutLine(int from, int to)
 		{
-			int num = 0;
-			while (num < from && _stringChars.Count > 0)
+			int lineNo = 0;
+			while (lineNo < from && _stringChars.Count > 0)
 			{
-				bool flag = _stringChars[0].Special == '\n';
+				bool isNewline = _stringChars[0].Special == '\n';
 				_stringChars.RemoveAt(0);
-				if (flag)
+				if (isNewline)
 				{
-					num++;
+					lineNo++;
 				}
 			}
-			int num2 = 0;
-			while (num <= to && num2 < _stringChars.Count)
+			int index = 0;
+			while (lineNo <= to && index < _stringChars.Count)
 			{
-				if (_stringChars[num2].Special == '\n')
+				if (_stringChars[index].Special == '\n')
 				{
-					num++;
+					lineNo++;
 				}
-				num2++;
+				index++;
 			}
-			_stringChars.RemoveRange(num2, _stringChars.Count - num2);
+			_stringChars.RemoveRange(index, _stringChars.Count - index);
 			startPos = _stringChars.Count;
 		}
 
