@@ -158,7 +158,7 @@ namespace KidFansChannel.DataCore
 				{
 					fileStream.WriteByte((byte)((_fileNumber >> 8 * n) & 0xFF));
 				}
-				for (int num4 = 0; num4 < 4; num4++)
+				for (int reservedField = 0; reservedField < 4; reservedField++)
 				{
 					fileStream.WriteByte(0);
 				}
@@ -168,22 +168,22 @@ namespace KidFansChannel.DataCore
 					{
 						using (BinaryWriter binaryWriter = new BinaryWriter(output))
 						{
-							for (int num5 = 0; num5 < _fileNumber; num5++)
+							for (int entryIndex = 0; entryIndex < _fileNumber; entryIndex++)
 							{
-								binaryWriter.Write(fileOffsets[num5]);
-								if (fileCryptos[num5])
+								binaryWriter.Write(fileOffsets[entryIndex]);
+								if (fileCryptos[entryIndex])
 								{
-									binaryWriter.Write(-fileLengths[num5]);
+									binaryWriter.Write(-fileLengths[entryIndex]);
 								}
 								else
 								{
-									binaryWriter.Write(fileLengths[num5]);
+									binaryWriter.Write(fileLengths[entryIndex]);
 								}
-								for (int num6 = 0; num6 < 48; num6++)
+								for (int nameByte = 0; nameByte < 48; nameByte++)
 								{
-									if (num6 < fileNames[num5].Length)
+									if (nameByte < fileNames[entryIndex].Length)
 									{
-										binaryWriter.Write((byte)fileNames[num5][num6]);
+										binaryWriter.Write((byte)fileNames[entryIndex][nameByte]);
 									}
 									else
 									{

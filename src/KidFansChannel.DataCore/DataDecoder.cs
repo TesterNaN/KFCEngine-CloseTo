@@ -154,15 +154,15 @@ namespace KidFansChannel.DataCore
 									fileCryptos.Add(true);
 								}
 								StringBuilder stringBuilder = new StringBuilder();
-								bool flag = false;
+								bool entryFound = false;
 								for (int l = 0; l < 48; l++)
 								{
 									byte b = binaryReader.ReadByte();
-									if (!flag)
+									if (!entryFound)
 									{
 										if (b == 0)
 										{
-											flag = true;
+											entryFound = true;
 										}
 										else
 										{
