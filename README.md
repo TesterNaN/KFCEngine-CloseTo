@@ -84,11 +84,11 @@ msbuild CloseTo.csproj /t:Build
 
 游戏本体（含光盘镜像）在这里：
 
-| 来源 | 链接 |
-|---|---|
-| TouchGAL 网盘 | <https://pan.touchgal.net/s/AVm8tP> |
+| 来源 | 链接 | 文件 |
+|---|---|---|
+| TouchGAL 网盘 | <https://pan.touchgal.net/s/AVm8tP> | `思念的碎片【无密码】.7z`（1.4 GB，无提取码） |
 
-下载下来是一个压缩包，**解压后得到光盘镜像**（`CLOSETO.mdf` 与 `CLOSETO.mds`，约 1.43 GB）。然后拿镜像去取数据：
+下载下来是 `思念的碎片【无密码】.7z`，**解压后得到光盘镜像** `CLOSETO.mdf` + `CLOSETO.mds`（约 1.43 GB）。然后拿镜像去取数据：
 
 ```
 .\tools\prepare-data.ps1 -Source "D:\Downloads\思念的碎片\CLOSETO.mdf"
