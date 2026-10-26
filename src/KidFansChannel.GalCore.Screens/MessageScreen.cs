@@ -255,71 +255,71 @@ namespace KidFansChannel.GalCore.Screens
 		{
 			if (Messages.Count != 0)
 			{
-				int num = Messages.Last.Value.LinePos + Messages.Last.Value.To - Messages.Last.Value.From + 1;
-				int num2 = AddLast(line);
-				Move(-num2);
-				RemoveFirst(num2 - (PageLineNum - num));
+				int shortfall = Messages.Last.Value.LinePos + Messages.Last.Value.To - Messages.Last.Value.From + 1;
+				int filled = AddLast(line);
+				Move(-filled);
+				RemoveFirst(filled - (PageLineNum - shortfall));
 			}
 		}
 
 		private int AddLast(int line)
 		{
-			int num = Messages.Last.Value.LineNum - Messages.Last.Value.To - 1;
-			int num2 = 0;
-			if (num > 0)
+			int shortfall = Messages.Last.Value.LineNum - Messages.Last.Value.To - 1;
+			int filled = 0;
+			if (shortfall > 0)
 			{
-				if (num > line)
+				if (shortfall > line)
 				{
-					Messages.Last.Value.To = Messages.Last.Value.LineNum - (num - line) - 1;
-					return num2 = line;
+					Messages.Last.Value.To = Messages.Last.Value.LineNum - (shortfall - line) - 1;
+					return filled = line;
 				}
-				num2 += num;
-				line -= num2;
+				filled += shortfall;
+				line -= filled;
 				Messages.Last.Value.To = Messages.Last.Value.LineNum - 1;
 			}
-			int num3 = Messages.Last.Value.Index + 1;
-			while (line > 0 && num3 < GameManager.GameState.CurrentGameState.Records.Count)
+			int historyIndex = Messages.Last.Value.Index + 1;
+			while (line > 0 && historyIndex < GameManager.GameState.CurrentGameState.Records.Count)
 			{
-				MessageDisplay messageDisplay = new MessageDisplay(GameManager.GameState.CurrentGameState.Records[num3]);
-				messageDisplay.Index = num3;
+				MessageDisplay messageDisplay = new MessageDisplay(GameManager.GameState.CurrentGameState.Records[historyIndex]);
+				messageDisplay.Index = historyIndex;
 				if (messageDisplay.LineNum <= line)
 				{
-					messageDisplay.LinePos = PageLineNum + num2;
+					messageDisplay.LinePos = PageLineNum + filled;
 					line -= messageDisplay.LineNum;
-					num2 += messageDisplay.LineNum;
+					filled += messageDisplay.LineNum;
 					Messages.AddLast(messageDisplay);
-					num3++;
+					historyIndex++;
 					continue;
 				}
 				messageDisplay.To = line - 1;
-				messageDisplay.LinePos = PageLineNum + num2;
-				num2 += line;
+				messageDisplay.LinePos = PageLineNum + filled;
+				filled += line;
 				line = 0;
 				Messages.AddLast(messageDisplay);
 				break;
 			}
-			return num2;
+			return filled;
 		}
 
 		private int RemoveFirst(int line)
 		{
-			int num = 0;
+			int total = 0;
 			while (line > 0)
 			{
 				if (Messages.First.Value.LineNum - Messages.First.Value.From - 1 >= line)
 				{
 					Messages.First.Value.From += line;
 					Messages.First.Value.LinePos += line;
-					num += line;
+					total += line;
 					line = 0;
 					break;
 				}
-				int num2 = Messages.First.Value.To - Messages.First.Value.From + 1;
-				num += num2;
-				line -= num2;
+				int tailLines = Messages.First.Value.To - Messages.First.Value.From + 1;
+				total += tailLines;
+				line -= tailLines;
 				Messages.RemoveFirst();
 			}
-			return num;
+			return total;
 		}
 
 		protected void PageUp()
