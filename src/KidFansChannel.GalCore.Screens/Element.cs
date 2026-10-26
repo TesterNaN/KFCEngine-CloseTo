@@ -381,12 +381,12 @@ namespace KidFansChannel.GalCore.Screens
 		{
 			get
 			{
-				int num = names.IndexOf(name);
-				if (num == -1)
+				int index = names.IndexOf(name);
+				if (index == -1)
 				{
 					throw new ArgumentException();
 				}
-				return childs[num];
+				return childs[index];
 			}
 		}
 
@@ -451,12 +451,12 @@ namespace KidFansChannel.GalCore.Screens
 
 		public void SetVisible(string name, bool value)
 		{
-			int num = names.IndexOf(name);
-			if (num == -1)
+			int index = names.IndexOf(name);
+			if (index == -1)
 			{
 				throw new ArgumentException();
 			}
-			SetVisible(num, value);
+			SetVisible(index, value);
 		}
 
 		public bool GetVisible(int index)
@@ -470,12 +470,12 @@ namespace KidFansChannel.GalCore.Screens
 
 		public bool GetVisible(string name)
 		{
-			int num = names.IndexOf(name);
-			if (num == -1)
+			int index = names.IndexOf(name);
+			if (index == -1)
 			{
 				throw new ArgumentException();
 			}
-			return GetVisible(num);
+			return GetVisible(index);
 		}
 
 		public void ClearSelected()
@@ -549,22 +549,22 @@ namespace KidFansChannel.GalCore.Screens
 
 		public void Remove(Element item)
 		{
-			int num = childs.IndexOf(item);
-			if (num == -1)
+			int index = childs.IndexOf(item);
+			if (index == -1)
 			{
 				throw new ArgumentException();
 			}
-			Remove(num);
+			Remove(index);
 		}
 
 		public void Remove(string name)
 		{
-			int num = names.IndexOf(name);
-			if (num == -1)
+			int index = names.IndexOf(name);
+			if (index == -1)
 			{
 				throw new ArgumentException();
 			}
-			Remove(num);
+			Remove(index);
 		}
 
 		public void Remove(int index)
@@ -587,12 +587,12 @@ namespace KidFansChannel.GalCore.Screens
 
 		public string NameOf(Element item)
 		{
-			int num = childs.IndexOf(item);
-			if (num == -1)
+			int index = childs.IndexOf(item);
+			if (index == -1)
 			{
 				return null;
 			}
-			return names[num];
+			return names[index];
 		}
 
 		public string NameOf(int index)

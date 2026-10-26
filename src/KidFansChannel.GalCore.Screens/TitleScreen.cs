@@ -145,15 +145,15 @@ namespace KidFansChannel.GalCore.Screens
 			ItemStack.Push(RootItem);
 			if (menuToShow != null)
 			{
-				for (int num2 = menuToShow.Length - 2; num2 >= 0; num2--)
+				for (int scanIndex = menuToShow.Length - 2; scanIndex >= 0; scanIndex--)
 				{
 					for (int i = 0; i < menuItem.Count; i++)
 					{
-						if (menuItem[i] is MenuItem && (string)menuItem[i].Value == menuToShow[num2])
+						if (menuItem[i] is MenuItem && (string)menuItem[i].Value == menuToShow[scanIndex])
 						{
 							menuItem = (MenuItem)menuItem[i];
 							ItemStack.Push(menuItem);
-							menuIndex++;
+							scanIndex++;
 						}
 					}
 				}
@@ -213,14 +213,14 @@ namespace KidFansChannel.GalCore.Screens
 				ItemElement.Remove(menuIndex);
 			}
 			int i = 0;
-			int num2 = 0;
+			int itemIndex = 0;
 			for (; i < CurrentItem.Count; i++)
 			{
 				if (!(CurrentItem[i] is MenuItem))
 				{
 					continue;
 				}
-				CurrentItem[i].Position = GetItemPosition(num2, CurrentLevel);
+				CurrentItem[i].Position = GetItemPosition(itemIndex, CurrentLevel);
 				((MenuItem)CurrentItem[i]).Index = i;
 				CurrentItem[i].MouseClick -= Item_MouseClick;
 				CurrentItem[i].MouseClick += Item_MouseClick;
@@ -232,7 +232,7 @@ namespace KidFansChannel.GalCore.Screens
 						CurrentItem[i].SetVisible(j, false);
 					}
 				}
-				num2++;
+				itemIndex++;
 				((MenuItem)CurrentItem[i]).Initialize();
 			}
 			for (int k = 0; k < ItemElement.Count - 1; k++)
@@ -252,15 +252,15 @@ namespace KidFansChannel.GalCore.Screens
 			{
 				return;
 			}
-			bool flag = false;
+			bool found = false;
 			for (int i = 0; i < menuItem.Count; i++)
 			{
 				if (menuItem[i] is MenuItem)
 				{
-					flag = true;
+					found = true;
 				}
 			}
-			if (flag)
+			if (found)
 			{
 				if (ItemToEnter == null)
 				{
