@@ -416,7 +416,7 @@ namespace KidFansChannel.GameCore
 		private DeviceSettings FindValidDeviceSettings(DeviceSettings settings, MatchOptions match)
 		{
 			DeviceSettings settings2 = BuildOptimalDeviceSettings(settings, match);
-			float num = -1f;
+			float bestScore = -1f;
 			EnumDeviceSettingsCombo deviceCombo = new EnumDeviceSettingsCombo();
 			for (int i = 0; i < Enumeration.AdapterInformationList.Count; i++)
 			{
@@ -430,17 +430,17 @@ namespace KidFansChannel.GameCore
 						EnumDeviceSettingsCombo enumDeviceSettingsCombo = enumDeviceInformation.deviceSettingsList[k];
 						if ((!enumDeviceSettingsCombo.IsWindowed || enumDeviceSettingsCombo.AdapterFormat == currentDisplayMode.Format) && DoesDeviceComboMatchPreserveOptions(enumDeviceSettingsCombo, settings, match))
 						{
-							float num2 = RankDeviceCombo(enumDeviceSettingsCombo, settings2, currentDisplayMode);
-							if (num2 > num)
+							float bestCandidate = RankDeviceCombo(enumDeviceSettingsCombo, settings2, currentDisplayMode);
+							if (bestCandidate > bestScore)
 							{
 								deviceCombo = enumDeviceSettingsCombo;
-								num = num2;
+								bestScore = bestCandidate;
 							}
 						}
 					}
 				}
 			}
-			if (num == -1f)
+			if (bestScore == -1f)
 			{
 				throw new NoCompatibleDevicesException();
 			}
@@ -646,25 +646,25 @@ namespace KidFansChannel.GameCore
 				}
 				displayMode = FindValidResolution(deviceCombo, displayMode2);
 			}
-			uint num;
+			uint backBufferCount;
 			if (match.BackBufferCount == MatchType.PreserveInput)
 			{
-				num = (uint)settings.PresentParameters.BackBufferCount;
+				backBufferCount = (uint)settings.PresentParameters.BackBufferCount;
 			}
 			else if (match.BackBufferCount == MatchType.IgnoreInput)
 			{
-				num = 2u;
+				backBufferCount = 2u;
 			}
 			else
 			{
-				num = (uint)settings.PresentParameters.BackBufferCount;
-				if (num > 3)
+				backBufferCount = (uint)settings.PresentParameters.BackBufferCount;
+				if (backBufferCount > 3)
 				{
-					num = 3u;
+					backBufferCount = 3u;
 				}
-				if (num < 1)
+				if (backBufferCount < 1)
 				{
-					num = 1u;
+					backBufferCount = 1u;
 				}
 			}
 			MultiSampleType multiSampleType;
@@ -691,11 +691,11 @@ namespace KidFansChannel.GameCore
 				for (int i = 0; i < deviceCombo.multiSampleTypeList.Count; i++)
 				{
 					MultiSampleType multiSampleType2 = deviceCombo.multiSampleTypeList[i];
-					uint num2 = (uint)deviceCombo.multiSampleQualityList[i];
+					uint qualityLevels = (uint)deviceCombo.multiSampleQualityList[i];
 					if (Math.Abs(multiSampleType2 - settings.PresentParameters.MultiSample) < Math.Abs(multiSampleType - settings.PresentParameters.MultiSample))
 					{
 						multiSampleType = multiSampleType2;
-						multiSampleQuality = (uint)Math.Min(num2 - 1, settings.PresentParameters.MultiSampleQuality);
+						multiSampleQuality = (uint)Math.Min(qualityLevels - 1, settings.PresentParameters.MultiSampleQuality);
 					}
 				}
 			}
@@ -721,61 +721,61 @@ namespace KidFansChannel.GameCore
 					swapEffect = SwapEffect.Discard;
 				}
 			}
-			int[] array = new int[deviceCombo.depthStencilFormatList.Count];
+			int[] scores = new int[deviceCombo.depthStencilFormatList.Count];
 			uint colorChannelBits = ManagedUtility.GetColorChannelBits(deviceCombo.BackBufferFormat);
 			uint depthBits = ManagedUtility.GetDepthBits(settings.PresentParameters.AutoDepthStencilFormat);
 			for (int j = 0; j < deviceCombo.depthStencilFormatList.Count; j++)
 			{
 				DepthFormat format = deviceCombo.depthStencilFormatList[j];
 				uint depthBits2 = ManagedUtility.GetDepthBits(format);
-				int num3;
+				int depthScore;
 				if (match.DepthFormat != MatchType.PreserveInput)
 				{
-					num3 = ((match.DepthFormat != MatchType.IgnoreInput) ? Math.Abs((int)(depthBits2 - depthBits)) : Math.Abs((int)(depthBits2 - colorChannelBits * 4)));
+					depthScore = ((match.DepthFormat != MatchType.IgnoreInput) ? Math.Abs((int)(depthBits2 - depthBits)) : Math.Abs((int)(depthBits2 - colorChannelBits * 4)));
 				}
 				else
 				{
-					num3 = ((depthBits2 != depthBits) ? 10000 : 0);
+					depthScore = ((depthBits2 != depthBits) ? 10000 : 0);
 				}
-				array[j] = num3;
+				scores[j] = depthScore;
 			}
 			uint stencilBits = ManagedUtility.GetStencilBits(settings.PresentParameters.AutoDepthStencilFormat);
 			for (int k = 0; k < deviceCombo.depthStencilFormatList.Count; k++)
 			{
 				DepthFormat format2 = deviceCombo.depthStencilFormatList[k];
-				int num4 = array[k];
+				int stencilScore = scores[k];
 				uint stencilBits2 = ManagedUtility.GetStencilBits(format2);
 				if (match.StencilFormat != MatchType.PreserveInput)
 				{
-					num4 = ((match.StencilFormat != MatchType.IgnoreInput) ? (num4 + Math.Abs((int)(stencilBits2 - stencilBits))) : (num4 + (int)stencilBits2));
+					stencilScore = ((match.StencilFormat != MatchType.IgnoreInput) ? (stencilScore + Math.Abs((int)(stencilBits2 - stencilBits))) : (stencilScore + (int)stencilBits2));
 				}
 				else
 				{
-					num4 = ((stencilBits2 != stencilBits) ? (num4 + 10000) : num4);
+					stencilScore = ((stencilBits2 != stencilBits) ? (stencilScore + 10000) : stencilScore);
 				}
-				array[k] = num4;
+				scores[k] = stencilScore;
 			}
-			int num5 = 100000;
-			int num6 = -1;
-			for (int l = 0; l < array.Length; l++)
+			int bestScore = 100000;
+			int bestIndex = -1;
+			for (int l = 0; l < scores.Length; l++)
 			{
-				if (array[l] < num5)
+				if (scores[l] < bestScore)
 				{
-					num5 = array[l];
-					num6 = l;
+					bestScore = scores[l];
+					bestIndex = l;
 				}
 			}
 			DepthFormat autoDepthStencilFormat;
-			bool flag;
-			if (num6 >= 0)
+			bool depthFound;
+			if (bestIndex >= 0)
 			{
-				autoDepthStencilFormat = deviceCombo.depthStencilFormatList[num6];
-				flag = true;
+				autoDepthStencilFormat = deviceCombo.depthStencilFormatList[bestIndex];
+				depthFound = true;
 			}
 			else
 			{
 				autoDepthStencilFormat = DepthFormat.Unknown;
-				flag = false;
+				depthFound = false;
 			}
 			PresentFlag presentFlag;
 			if (match.PresentFlags == MatchType.PreserveInput)
@@ -785,7 +785,7 @@ namespace KidFansChannel.GameCore
 			else if (match.PresentFlags == MatchType.IgnoreInput)
 			{
 				presentFlag = PresentFlag.None;
-				if (flag)
+				if (depthFound)
 				{
 					presentFlag = PresentFlag.DiscardDepthStencil;
 				}
@@ -793,7 +793,7 @@ namespace KidFansChannel.GameCore
 			else
 			{
 				presentFlag = settings.PresentParameters.PresentFlag;
-				if (flag)
+				if (depthFound)
 				{
 					presentFlag |= PresentFlag.DiscardDepthStencil;
 				}
@@ -808,24 +808,24 @@ namespace KidFansChannel.GameCore
 			}
 			else
 			{
-				uint num7 = (uint)((match.RefreshRate != MatchType.ClosestToInput) ? currentDisplayMode.RefreshRate : settings.PresentParameters.FullScreenRefreshRateInHz);
+				uint wantedRefresh = (uint)((match.RefreshRate != MatchType.ClosestToInput) ? currentDisplayMode.RefreshRate : settings.PresentParameters.FullScreenRefreshRateInHz);
 				displayMode.RefreshRate = 0;
-				if (num7 != 0)
+				if (wantedRefresh != 0)
 				{
-					int num8 = 100000;
+					int closestDiff = 100000;
 					for (int m = 0; m < deviceCombo.adapterInformation.displayModeList.Count; m++)
 					{
-						DisplayMode displayMode3 = deviceCombo.adapterInformation.displayModeList[m];
-						if (displayMode3.Format != deviceCombo.AdapterFormat || displayMode3.Height != displayMode.Height || displayMode3.Width != displayMode.Width)
+						DisplayMode candidateMode = deviceCombo.adapterInformation.displayModeList[m];
+						if (candidateMode.Format != deviceCombo.AdapterFormat || candidateMode.Height != displayMode.Height || candidateMode.Width != displayMode.Width)
 						{
 							continue;
 						}
-						int num9 = Math.Abs(displayMode3.RefreshRate - (int)num7);
-						if (num9 < num8)
+						int refreshDiff = Math.Abs(candidateMode.RefreshRate - (int)wantedRefresh);
+						if (refreshDiff < closestDiff)
 						{
-							displayMode.RefreshRate = displayMode3.RefreshRate;
-							num8 = num9;
-							if (num8 == 0)
+							displayMode.RefreshRate = candidateMode.RefreshRate;
+							closestDiff = refreshDiff;
+							if (closestDiff == 0)
 							{
 								break;
 							}
@@ -854,13 +854,13 @@ namespace KidFansChannel.GameCore
 			deviceSettings.PresentParameters.BackBufferWidth = displayMode.Width;
 			deviceSettings.PresentParameters.BackBufferHeight = displayMode.Height;
 			deviceSettings.PresentParameters.BackBufferFormat = deviceCombo.BackBufferFormat;
-			deviceSettings.PresentParameters.BackBufferCount = (int)num;
+			deviceSettings.PresentParameters.BackBufferCount = (int)backBufferCount;
 			deviceSettings.PresentParameters.MultiSample = multiSampleType;
 			deviceSettings.PresentParameters.MultiSampleQuality = (int)multiSampleQuality;
 			deviceSettings.PresentParameters.SwapEffect = swapEffect;
 			deviceSettings.PresentParameters.DeviceWindow = State.Window;
 			deviceSettings.PresentParameters.Windowed = deviceCombo.IsWindowed;
-			deviceSettings.PresentParameters.EnableAutoDepthStencil = flag;
+			deviceSettings.PresentParameters.EnableAutoDepthStencil = depthFound;
 			deviceSettings.PresentParameters.AutoDepthStencilFormat = autoDepthStencilFormat;
 			deviceSettings.PresentParameters.PresentFlag = presentFlag;
 			deviceSettings.PresentParameters.FullScreenRefreshRateInHz = displayMode.RefreshRate;
@@ -893,17 +893,17 @@ namespace KidFansChannel.GameCore
 			}
 			if (match.Resolution == MatchType.PreserveInput && !deviceCombo.IsWindowed)
 			{
-				bool flag = false;
+				bool formatSupported = false;
 				for (int i = 0; i < deviceCombo.adapterInformation.displayModeList.Count; i++)
 				{
 					DisplayMode displayMode = deviceCombo.adapterInformation.displayModeList[i];
 					if (displayMode.Format == deviceCombo.AdapterFormat && displayMode.Width == settings.PresentParameters.BackBufferWidth && displayMode.Height == settings.PresentParameters.BackBufferHeight)
 					{
-						flag = true;
+						formatSupported = true;
 						break;
 					}
 				}
-				if (!flag)
+				if (!formatSupported)
 				{
 					return false;
 				}
@@ -914,18 +914,18 @@ namespace KidFansChannel.GameCore
 			}
 			if (match.MultiSample == MatchType.PreserveInput)
 			{
-				bool flag2 = false;
+				bool sampleSupported = false;
 				for (int j = 0; j < deviceCombo.multiSampleTypeList.Count; j++)
 				{
 					MultiSampleType multiSampleType = deviceCombo.multiSampleTypeList[j];
-					uint num = (uint)deviceCombo.multiSampleQualityList[j];
-					if (multiSampleType == settings.PresentParameters.MultiSample && num >= settings.PresentParameters.MultiSampleQuality)
+					uint quality = (uint)deviceCombo.multiSampleQualityList[j];
+					if (multiSampleType == settings.PresentParameters.MultiSample && quality >= settings.PresentParameters.MultiSampleQuality)
 					{
-						flag2 = true;
+						sampleSupported = true;
 						break;
 					}
 				}
-				if (!flag2)
+				if (!sampleSupported)
 				{
 					return false;
 				}
@@ -936,7 +936,7 @@ namespace KidFansChannel.GameCore
 			}
 			if (match.DepthFormat == MatchType.PreserveInput && settings.PresentParameters.AutoDepthStencilFormat != DepthFormat.Unknown)
 			{
-				bool flag3 = false;
+				bool depthSupported = false;
 				uint depthBits = ManagedUtility.GetDepthBits(settings.PresentParameters.AutoDepthStencilFormat);
 				for (int k = 0; k < deviceCombo.depthStencilFormatList.Count; k++)
 				{
@@ -944,17 +944,17 @@ namespace KidFansChannel.GameCore
 					uint depthBits2 = ManagedUtility.GetDepthBits(format);
 					if (depthBits2 - depthBits == 0)
 					{
-						flag3 = true;
+						depthSupported = true;
 					}
 				}
-				if (!flag3)
+				if (!depthSupported)
 				{
 					return false;
 				}
 			}
 			if (match.StencilFormat == MatchType.PreserveInput && settings.PresentParameters.AutoDepthStencilFormat != DepthFormat.Unknown)
 			{
-				bool flag4 = false;
+				bool stencilSupported = false;
 				uint stencilBits = ManagedUtility.GetStencilBits(settings.PresentParameters.AutoDepthStencilFormat);
 				for (int l = 0; l < deviceCombo.depthStencilFormatList.Count; l++)
 				{
@@ -962,27 +962,27 @@ namespace KidFansChannel.GameCore
 					uint stencilBits2 = ManagedUtility.GetStencilBits(format2);
 					if (stencilBits2 - stencilBits == 0)
 					{
-						flag4 = true;
+						stencilSupported = true;
 					}
 				}
-				if (!flag4)
+				if (!stencilSupported)
 				{
 					return false;
 				}
 			}
 			if (match.RefreshRate == MatchType.PreserveInput)
 			{
-				bool flag5 = false;
+				bool refreshSupported = false;
 				for (int m = 0; m < deviceCombo.adapterInformation.displayModeList.Count; m++)
 				{
 					DisplayMode displayMode2 = deviceCombo.adapterInformation.displayModeList[m];
 					if (displayMode2.Format == deviceCombo.AdapterFormat && displayMode2.RefreshRate == settings.PresentParameters.FullScreenRefreshRateInHz)
 					{
-						flag5 = true;
+						refreshSupported = true;
 						break;
 					}
 				}
-				if (!flag5)
+				if (!refreshSupported)
 				{
 					return false;
 				}
@@ -996,71 +996,71 @@ namespace KidFansChannel.GameCore
 
 		private float RankDeviceCombo(EnumDeviceSettingsCombo deviceCombo, DeviceSettings settings, DisplayMode adapterMode)
 		{
-			float num = 0f;
+			float score = 0f;
 			if (deviceCombo.AdapterOrdinal == settings.AdapterOrdinal)
 			{
-				num += 1000f;
+				score += 1000f;
 			}
 			if (deviceCombo.DeviceType == settings.DeviceType)
 			{
-				num += 100f;
+				score += 100f;
 			}
 			if (deviceCombo.DeviceType == DeviceType.Hardware)
 			{
-				num += 0.1f;
+				score += 0.1f;
 			}
 			if (deviceCombo.IsWindowed == settings.PresentParameters.Windowed)
 			{
-				num += 10f;
+				score += 10f;
 			}
 			if (deviceCombo.AdapterFormat == settings.AdapterFormat)
 			{
-				num++;
+				score++;
 			}
 			else
 			{
-				int num2 = Math.Abs((int)(ManagedUtility.GetColorChannelBits(deviceCombo.AdapterFormat) - ManagedUtility.GetColorChannelBits(settings.AdapterFormat)));
-				float num3 = Math.Max(0.9f - (float)num2 * 0.2f, 0f);
-				num += num3 * 1f;
+				int colorDiff = Math.Abs((int)(ManagedUtility.GetColorChannelBits(deviceCombo.AdapterFormat) - ManagedUtility.GetColorChannelBits(settings.AdapterFormat)));
+				float colorBonus = Math.Max(0.9f - (float)colorDiff * 0.2f, 0f);
+				score += colorBonus * 1f;
 			}
 			if (!deviceCombo.IsWindowed && ((ManagedUtility.GetColorChannelBits(adapterMode.Format) < 8) ? (deviceCombo.AdapterFormat == Format.X8R8G8B8) : (deviceCombo.AdapterFormat == adapterMode.Format)))
 			{
-				num += 0.1f;
+				score += 0.1f;
 			}
 			if (((settings.BehaviorFlags & CreateFlags.HardwareVertexProcessing) != 0 || (settings.BehaviorFlags & CreateFlags.MixedVertexProcessing) != 0) && deviceCombo.deviceInformation.Caps.DeviceCaps.SupportsHardwareTransformAndLight)
 			{
-				num++;
+				score++;
 			}
 			if (deviceCombo.deviceInformation.Caps.DeviceCaps.SupportsHardwareTransformAndLight)
 			{
-				num += 0.1f;
+				score += 0.1f;
 			}
-			bool flag = false;
+			bool resolutionMatched = false;
 			for (int i = 0; i < deviceCombo.adapterInformation.displayModeList.Count; i++)
 			{
 				DisplayMode displayMode = deviceCombo.adapterInformation.displayModeList[i];
 				if (displayMode.Format == deviceCombo.AdapterFormat && displayMode.Width == settings.PresentParameters.BackBufferWidth && displayMode.Height == settings.PresentParameters.BackBufferHeight)
 				{
-					flag = true;
+					resolutionMatched = true;
 				}
 			}
-			if (flag)
+			if (resolutionMatched)
 			{
-				num++;
+				score++;
 			}
 			if (deviceCombo.BackBufferFormat == settings.PresentParameters.BackBufferFormat)
 			{
-				num++;
+				score++;
 			}
 			else
 			{
-				int num4 = Math.Abs((int)(ManagedUtility.GetColorChannelBits(deviceCombo.BackBufferFormat) - ManagedUtility.GetColorChannelBits(settings.PresentParameters.BackBufferFormat)));
-				float num5 = Math.Max(0.9f - (float)num4 * 0.2f, 0f);
-				num += num5 * 1f;
+				int bufferColorDiff = Math.Abs((int)(ManagedUtility.GetColorChannelBits(deviceCombo.BackBufferFormat) - ManagedUtility.GetColorChannelBits(settings.PresentParameters.BackBufferFormat)));
+				float bufferColorBonus = Math.Max(0.9f - (float)bufferColorDiff * 0.2f, 0f);
+				score += bufferColorBonus * 1f;
 			}
 			if (deviceCombo.BackBufferFormat == deviceCombo.AdapterFormat)
 			{
-				num += 0.1f;
+				score += 0.1f;
 			}
 			bool flag2 = false;
 			for (int j = 0; j < deviceCombo.multiSampleTypeList.Count; j++)
@@ -1075,11 +1075,11 @@ namespace KidFansChannel.GameCore
 			}
 			if (flag2)
 			{
-				num++;
+				score++;
 			}
 			if (deviceCombo.depthStencilFormatList.Contains(settings.PresentParameters.AutoDepthStencilFormat))
 			{
-				num++;
+				score++;
 			}
 			bool flag3 = false;
 			for (int k = 0; k < deviceCombo.adapterInformation.displayModeList.Count; k++)
@@ -1092,13 +1092,13 @@ namespace KidFansChannel.GameCore
 			}
 			if (flag3)
 			{
-				num++;
+				score++;
 			}
 			if (deviceCombo.presentIntervalList.Contains(settings.PresentParameters.PresentationInterval))
 			{
-				num++;
+				score++;
 			}
-			return num;
+			return score;
 		}
 
 		private DisplayMode FindValidResolution(EnumDeviceSettingsCombo deviceCombo, DisplayMode displayMode)
