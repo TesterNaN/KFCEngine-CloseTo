@@ -347,21 +347,21 @@ namespace KidFansChannel.DataCore
 			return nowData;
 		}
 
-		private void RemovePackage(int index, int searchIndex)
+		private void RemovePackage(int index, int removeIndex)
 		{
-			dataDecoders[index].RemoveAt(searchIndex);
-			dataDecoderWithLanguages[index].RemoveAt(searchIndex);
-			int searchIndex = 0;
+			dataDecoders[index].RemoveAt(removeIndex);
+			dataDecoderWithLanguages[index].RemoveAt(removeIndex);
+			int packageIndex = 0;
 			for (int i = 0; i < dataIsPackages[index].Count; i++)
 			{
 				if (dataIsPackages[index][i])
 				{
-					if (searchIndex == searchIndex)
+					if (packageIndex == packageIndex)
 					{
 						dataIsPackages[index].RemoveAt(i);
 						break;
 					}
-					searchIndex++;
+					packageIndex++;
 				}
 			}
 		}
