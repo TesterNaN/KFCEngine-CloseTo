@@ -181,15 +181,15 @@ namespace KidFansChannel.GalCore.Commands
 		public override void InitCommand()
 		{
 			base.InitCommand();
-			bool flag = true;
+			bool shouldJump = true;
 			for (int i = 0; i < _conditions.Length; i++)
 			{
 				if (_conditions[i] == "RANDOM")
 				{
-					float num;
+					float probability;
 					try
 					{
-						num = float.Parse(_values[i].Substring(1));
+						probability = float.Parse(_values[i].Substring(1));
 					}
 					catch (Exception innerException)
 					{
@@ -198,18 +198,18 @@ namespace KidFansChannel.GalCore.Commands
 					switch (_values[i][0])
 					{
 					case '>':
-						if (!(random.NextDouble() <= (double)num))
+						if (!(random.NextDouble() <= (double)probability))
 						{
 							continue;
 						}
-						flag = false;
+						shouldJump = false;
 						break;
 					case '<':
-						if (!(random.NextDouble() >= (double)num))
+						if (!(random.NextDouble() >= (double)probability))
 						{
 							continue;
 						}
-						flag = false;
+						shouldJump = false;
 						break;
 					default:
 						throw new RuntimeException(Node, Info, "Value is not valid.");
@@ -223,7 +223,7 @@ namespace KidFansChannel.GalCore.Commands
 					{
 						if (selectDefine.Value >= 0)
 						{
-							flag = false;
+							shouldJump = false;
 							break;
 						}
 						continue;
@@ -232,7 +232,7 @@ namespace KidFansChannel.GalCore.Commands
 					{
 						if (selectDefine.Value == -1)
 						{
-							flag = false;
+							shouldJump = false;
 							break;
 						}
 						continue;
@@ -241,7 +241,7 @@ namespace KidFansChannel.GalCore.Commands
 					{
 						if (selectDefine.Value == -1 || selectDefine.Case[selectDefine.Value] != _values[i])
 						{
-							flag = false;
+							shouldJump = false;
 							break;
 						}
 						continue;
@@ -284,28 +284,28 @@ namespace KidFansChannel.GalCore.Commands
 					{
 						continue;
 					}
-					flag = false;
+					shouldJump = false;
 					break;
 				case '>':
 					if (varDefine.Value > result)
 					{
 						continue;
 					}
-					flag = false;
+					shouldJump = false;
 					break;
 				case '<':
 					if (varDefine.Value < result)
 					{
 						continue;
 					}
-					flag = false;
+					shouldJump = false;
 					break;
 				default:
 					throw new RuntimeException(Node, Info, "Value is not valid.");
 				}
 				break;
 			}
-			if (flag)
+			if (shouldJump)
 			{
 				if (_click != -1)
 				{

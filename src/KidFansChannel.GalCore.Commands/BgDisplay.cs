@@ -266,14 +266,14 @@ namespace KidFansChannel.GalCore.Commands
 		{
 			base.ConvertXml(node, info);
 			_bgStr = ScriptHelper.GetArgumentString(node, info, "file");
-			double num = ScriptHelper.GetArgumentFloat(node, info, "top", 0f);
-			double num2 = ScriptHelper.GetArgumentFloat(node, info, "bottom", 1f);
-			double num3 = ScriptHelper.GetArgumentFloat(node, info, "left", 0f);
-			double num4 = ScriptHelper.GetArgumentFloat(node, info, "right", 1f);
-			_bounds.Width = (int)(1.0 / (num4 - num3) * (double)ScreenSize.Width + 0.5);
-			_bounds.Height = (int)(1.0 / (num2 - num) * (double)ScreenSize.Height + 0.5);
-			_bounds.X = -(int)(num3 * (double)_bounds.Width + 0.5);
-			_bounds.Y = -(int)(num * (double)_bounds.Height + 0.5);
+			double top = ScriptHelper.GetArgumentFloat(node, info, "top", 0f);
+			double bottom = ScriptHelper.GetArgumentFloat(node, info, "bottom", 1f);
+			double left = ScriptHelper.GetArgumentFloat(node, info, "left", 0f);
+			double right = ScriptHelper.GetArgumentFloat(node, info, "right", 1f);
+			_bounds.Width = (int)(1.0 / (right - left) * (double)ScreenSize.Width + 0.5);
+			_bounds.Height = (int)(1.0 / (bottom - top) * (double)ScreenSize.Height + 0.5);
+			_bounds.X = -(int)(left * (double)_bounds.Width + 0.5);
+			_bounds.Y = -(int)(top * (double)_bounds.Height + 0.5);
 			_speed = ScriptHelper.GetArgumentFloat(node, info, "speed", DefaultSpeed);
 			if (_speed < 0f)
 			{

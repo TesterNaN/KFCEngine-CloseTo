@@ -120,14 +120,14 @@ namespace KidFansChannel.GalCore.Commands
 				FinishCommand();
 				return;
 			}
-			bool flag = false;
+			bool queued = false;
 			for (int i = 0; i < ScriptCommand.GalCore.PreparingCommandList.Count; i++)
 			{
 				if (ScriptCommand.GalCore.PreparingCommandList[i] == this)
 				{
-					flag = true;
+					queued = true;
 				}
-				else if (flag && (ScriptCommand.GalCore.PreparingCommandList[i] is BgDisplay || ScriptCommand.GalCore.PreparingCommandList[i] is BgClear))
+				else if (queued && (ScriptCommand.GalCore.PreparingCommandList[i] is BgDisplay || ScriptCommand.GalCore.PreparingCommandList[i] is BgClear))
 				{
 					Bg = ScriptCommand.GalCore.PreparingCommandList[i];
 				}

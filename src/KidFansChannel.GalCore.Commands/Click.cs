@@ -202,14 +202,14 @@ namespace KidFansChannel.GalCore.Commands
 					throw new RuntimeException(Node, Info, "No timer is running.");
 				}
 			}
-			for (int num = ScriptCommand.CommandList.Count - 1; num >= 0; num--)
+			for (int commandIndex = ScriptCommand.CommandList.Count - 1; commandIndex >= 0; commandIndex--)
 			{
-				if (ScriptCommand.GalCore.CurrentCommandList[num] is Dialogue)
+				if (ScriptCommand.GalCore.CurrentCommandList[commandIndex] is Dialogue)
 				{
 					_clickPosition = Dialogue.String.Click;
 					break;
 				}
-				if (ScriptCommand.GalCore.CurrentCommandList[num] is Paragraph)
+				if (ScriptCommand.GalCore.CurrentCommandList[commandIndex] is Paragraph)
 				{
 					_clickPosition = Paragraph.ShownString.Click;
 					break;
@@ -239,16 +239,16 @@ namespace KidFansChannel.GalCore.Commands
 				}
 			}
 			FinishCommand();
-			bool flag = true;
+			bool shouldAdvance = true;
 			foreach (ScriptCommand currentCommand2 in ScriptCommand.GalCore.CurrentCommandList)
 			{
 				if (currentCommand2 is IClickable && currentCommand2 != this && ((IClickable)currentCommand2).ToClickState)
 				{
-					flag = false;
+					shouldAdvance = false;
 					break;
 				}
 			}
-			if (flag)
+			if (shouldAdvance)
 			{
 				ScriptCommand.GalCore.CurrentPlayState = PlayState.Running;
 			}
@@ -298,14 +298,14 @@ namespace KidFansChannel.GalCore.Commands
 			{
 				OnItemClick();
 			}
-			for (int num = ScriptCommand.CommandList.Count - 1; num >= 0; num--)
+			for (int commandIndex = ScriptCommand.CommandList.Count - 1; commandIndex >= 0; commandIndex--)
 			{
-				if (ScriptCommand.GalCore.CurrentCommandList[num] is Dialogue)
+				if (ScriptCommand.GalCore.CurrentCommandList[commandIndex] is Dialogue)
 				{
 					_clickPosition = Dialogue.String.Click;
 					break;
 				}
-				if (ScriptCommand.GalCore.CurrentCommandList[num] is Paragraph)
+				if (ScriptCommand.GalCore.CurrentCommandList[commandIndex] is Paragraph)
 				{
 					_clickPosition = Paragraph.ShownString.Click;
 					break;
