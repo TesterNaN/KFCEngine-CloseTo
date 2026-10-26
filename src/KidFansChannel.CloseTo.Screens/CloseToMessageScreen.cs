@@ -79,25 +79,25 @@ namespace KidFansChannel.CloseTo.Screens
 			base.InitData();
 			picVoiceBase = GameManager.Data.LoadPicture("system", "voice.png");
 			picMains[0] = GameManager.Data.LoadPicture("system", "message0.png");
-			int num;
+			int paletteIndex;
 			switch (GameManager.GalCore.GameOptions.DialogueColor)
 			{
 			case "Blue":
-				num = 1;
+				paletteIndex = 1;
 				break;
 			case "Green":
-				num = 2;
+				paletteIndex = 2;
 				break;
 			case "Pink":
-				num = 3;
+				paletteIndex = 3;
 				break;
 			case "Gray":
-				num = 4;
+				paletteIndex = 4;
 				break;
 			default:
 				throw new Exception("Unbelievable!");
 			}
-			picMains[1] = GameManager.Data.LoadPicture("system", "message" + num + ".png");
+			picMains[1] = GameManager.Data.LoadPicture("system", "message" + paletteIndex + ".png");
 			picBack = GameManager.Graphics.CreatePicture(Color.FromArgb(128, Color.Black));
 			Font2D font = GameManager.GalCore.GameFont.GetFont(24);
 			for (int i = 0; i < MessageScreen.PageLineNum; i++)
@@ -172,18 +172,18 @@ namespace KidFansChannel.CloseTo.Screens
 				eleScreen.Add(element3, "voice" + i.ToString("00"));
 			}
 			element.Dispose();
-			Element[] array = new Element[MessageScreen.PageLineNum];
-			Element[] array2 = new Element[MessageScreen.PageLineNum];
-			Element[] array3 = new Element[MessageScreen.PageLineNum];
+			Element[] textWithoutElements = new Element[MessageScreen.PageLineNum];
+			Element[] textWithElements = new Element[MessageScreen.PageLineNum];
+			Element[] speakerElements = new Element[MessageScreen.PageLineNum];
 			Element element4 = new Element();
 			for (int j = 0; j < MessageScreen.PageLineNum; j++)
 			{
-				array[j] = new Element(strTextWithouts[j]);
-				array2[j] = new Element(strTextWiths[j]);
-				array3[j] = new Element(strSpeakers[j]);
-				element4.Add(array[j], "textwithout" + j.ToString("00"));
-				element4.Add(array2[j], "textwith" + j.ToString("00"));
-				element4.Add(array3[j], "speaker" + j.ToString("00"));
+				textWithoutElements[j] = new Element(strTextWithouts[j]);
+				textWithElements[j] = new Element(strTextWiths[j]);
+				speakerElements[j] = new Element(strSpeakers[j]);
+				element4.Add(textWithoutElements[j], "textwithout" + j.ToString("00"));
+				element4.Add(textWithElements[j], "textwith" + j.ToString("00"));
+				element4.Add(speakerElements[j], "speaker" + j.ToString("00"));
 			}
 			element4.Region = new Rectangle(0, 0, 600, 440);
 			element4.Position = new Point(100, 100);
