@@ -17,7 +17,7 @@ namespace KidFansChannel.CloseTo.Commands
 		public override void InitCommand()
 		{
 			base.InitCommand();
-			bool flag = true;
+			bool finished = true;
 			switch (EndingIndex)
 			{
 			case 0:
@@ -40,7 +40,7 @@ namespace KidFansChannel.CloseTo.Commands
 					MessageBoxScreen.MessageBoxCallback callBack2 = Finish;
 					object[] callBackArgs2 = new object[1];
 					galCore2.ShowMessageBox(new CloseToMessageBoxScreen(text2, MessageBoxButtons.OK, true, callBack2, callBackArgs2));
-					flag = false;
+					finished = false;
 				}
 				ScriptCommand.GalCore.GameState.UpdateMusic(31);
 				if (ScriptCommand.GalCore.GameState.CheckEnding(1))
@@ -66,7 +66,7 @@ namespace KidFansChannel.CloseTo.Commands
 					MessageBoxScreen.MessageBoxCallback callBack5 = Finish;
 					object[] callBackArgs5 = new object[1];
 					galCore5.ShowMessageBox(new CloseToMessageBoxScreen(text5, MessageBoxButtons.OK, true, callBack5, callBackArgs5));
-					flag = false;
+					finished = false;
 				}
 				if (ScriptCommand.GalCore.GameState.CheckEnding(0))
 				{
@@ -81,7 +81,7 @@ namespace KidFansChannel.CloseTo.Commands
 					MessageBoxScreen.MessageBoxCallback callBack3 = Finish;
 					object[] callBackArgs3 = new object[1];
 					galCore3.ShowMessageBox(new CloseToMessageBoxScreen(text3, MessageBoxButtons.OK, true, callBack3, callBackArgs3));
-					flag = false;
+					finished = false;
 				}
 				break;
 			case 3:
@@ -100,7 +100,7 @@ namespace KidFansChannel.CloseTo.Commands
 					MessageBoxScreen.MessageBoxCallback callBack4 = Finish;
 					object[] callBackArgs4 = new object[1];
 					galCore4.ShowMessageBox(new CloseToMessageBoxScreen(text4, MessageBoxButtons.OK, true, callBack4, callBackArgs4));
-					flag = false;
+					finished = false;
 				}
 				break;
 			case 5:
@@ -118,7 +118,7 @@ namespace KidFansChannel.CloseTo.Commands
 					MessageBoxScreen.MessageBoxCallback callBack = Finish;
 					object[] callBackArgs = new object[1];
 					galCore.ShowMessageBox(new CloseToMessageBoxScreen(text, MessageBoxButtons.OK, true, callBack, callBackArgs));
-					flag = false;
+					finished = false;
 				}
 				ScriptCommand.GalCore.GameState.UpdateMusic(29);
 				break;
@@ -147,7 +147,7 @@ namespace KidFansChannel.CloseTo.Commands
 			}
 			ScriptCommand.GalCore.GameState.UpdateMusic(28);
 			UpdateEnding();
-			if (flag)
+			if (finished)
 			{
 				FinishCommand();
 			}

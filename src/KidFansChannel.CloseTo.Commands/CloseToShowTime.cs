@@ -74,24 +74,24 @@ namespace KidFansChannel.CloseTo.Commands
 				GetColorIndex();
 			}
 			ScriptCommand.Canvas.DrawPicture(timeBacks[currentColorIndex]);
-			int num = int.Parse(Time.Substring(0, 2));
-			if (num <= 12)
+			int hour = int.Parse(Time.Substring(0, 2));
+			if (hour <= 12)
 			{
 				ScriptCommand.Canvas.DrawPicture(timeAMPM[0]);
 			}
 			else
 			{
 				ScriptCommand.Canvas.DrawPicture(timeAMPM[1]);
-				num -= 12;
+				hour -= 12;
 			}
-			if (num >= 10)
+			if (hour >= 10)
 			{
 				timeNums[1].X = 630;
 				ScriptCommand.Canvas.DrawPicture(timeNums[1]);
-				num -= 10;
+				hour -= 10;
 			}
-			timeNums[num].X = 650;
-			ScriptCommand.Canvas.DrawPicture(timeNums[num]);
+			timeNums[hour].X = 650;
+			ScriptCommand.Canvas.DrawPicture(timeNums[hour]);
 			if (colonTime >= 0.5f)
 			{
 				ScriptCommand.Canvas.DrawPicture(timeColon);

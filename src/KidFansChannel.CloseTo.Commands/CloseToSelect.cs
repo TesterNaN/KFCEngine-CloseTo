@@ -228,19 +228,19 @@ namespace KidFansChannel.CloseTo.Commands
 				_room.Show();
 				return;
 			}
-			int num = ItemStrings.Count * 40 + 50;
-			int num2 = 80;
+			int boxHeight = ItemStrings.Count * 40 + 50;
+			int boxWidth = 80;
 			for (int i = 0; i < ItemStrings.Count; i++)
 			{
-				if (ItemStrings[i].Width + 80 > num2)
+				if (ItemStrings[i].Width + 80 > boxWidth)
 				{
-					num2 = ItemStrings[i].Width + 80;
+					boxWidth = ItemStrings[i].Width + 80;
 				}
 			}
 			if (hintChara != null && ScriptCommand.Options.HintShow)
 			{
 				selectBar.X = 350;
-				num2 += 100;
+				boxWidth += 100;
 				for (int j = 0; j < ItemStrings.Count; j++)
 				{
 					ItemStrings[j].Location = new Point(ItemStrings[j].Location.X - 50, ItemStrings[j].Location.Y);
@@ -258,15 +258,15 @@ namespace KidFansChannel.CloseTo.Commands
 			}
 			for (int l = 0; l < 5; l++)
 			{
-				Label.PicBacks[l, 0].Center = new Point(num2 / 2, num / 2);
-				Label.PicBacks[l, 1].Center = new Point(10, num / 2);
-				Label.PicBacks[l, 2].Center = new Point(30 - num2 / 2, num / 2);
-				Label.PicBacks[l, 3].Center = new Point(num2 / 2, 5);
+				Label.PicBacks[l, 0].Center = new Point(boxWidth / 2, boxHeight / 2);
+				Label.PicBacks[l, 1].Center = new Point(10, boxHeight / 2);
+				Label.PicBacks[l, 2].Center = new Point(30 - boxWidth / 2, boxHeight / 2);
+				Label.PicBacks[l, 3].Center = new Point(boxWidth / 2, 5);
 				Label.PicBacks[l, 4].Center = new Point(10, 5);
-				Label.PicBacks[l, 5].Center = new Point(30 - num2 / 2, 5);
-				Label.PicBacks[l, 6].Center = new Point(num2 / 2, 25 - num / 2);
-				Label.PicBacks[l, 7].Center = new Point(10, 25 - num / 2);
-				Label.PicBacks[l, 8].Center = new Point(30 - num2 / 2, 25 - num / 2);
+				Label.PicBacks[l, 5].Center = new Point(30 - boxWidth / 2, 5);
+				Label.PicBacks[l, 6].Center = new Point(boxWidth / 2, 25 - boxHeight / 2);
+				Label.PicBacks[l, 7].Center = new Point(10, 25 - boxHeight / 2);
+				Label.PicBacks[l, 8].Center = new Point(30 - boxWidth / 2, 25 - boxHeight / 2);
 				for (int m = 0; m < 9; m++)
 				{
 					Label.PicBacks[l, m].Position = new Point(400, Select.SelectCenterY);
@@ -277,13 +277,13 @@ namespace KidFansChannel.CloseTo.Commands
 					Label.PicBacks[l, n].BeginTransform(0.1f);
 				}
 				Label.PicBacks[l, 0].ScaleTo(new SizeF(1f, 1f));
-				Label.PicBacks[l, 1].ScaleTo(new SizeF((float)(num2 - 60) / 20f, 1f));
+				Label.PicBacks[l, 1].ScaleTo(new SizeF((float)(boxWidth - 60) / 20f, 1f));
 				Label.PicBacks[l, 2].ScaleTo(new SizeF(1f, 1f));
-				Label.PicBacks[l, 3].ScaleTo(new SizeF(1f, (float)(num - 50) / 10f));
-				Label.PicBacks[l, 4].ScaleTo(new SizeF((float)(num2 - 60) / 20f, (float)(num - 50) / 10f));
-				Label.PicBacks[l, 5].ScaleTo(new SizeF(1f, (float)(num - 50) / 10f));
+				Label.PicBacks[l, 3].ScaleTo(new SizeF(1f, (float)(boxHeight - 50) / 10f));
+				Label.PicBacks[l, 4].ScaleTo(new SizeF((float)(boxWidth - 60) / 20f, (float)(boxHeight - 50) / 10f));
+				Label.PicBacks[l, 5].ScaleTo(new SizeF(1f, (float)(boxHeight - 50) / 10f));
 				Label.PicBacks[l, 6].ScaleTo(new SizeF(1f, 1f));
-				Label.PicBacks[l, 7].ScaleTo(new SizeF((float)(num2 - 60) / 20f, 1f));
+				Label.PicBacks[l, 7].ScaleTo(new SizeF((float)(boxWidth - 60) / 20f, 1f));
 				Label.PicBacks[l, 8].ScaleTo(new SizeF(1f, 1f));
 				for (int num3 = 0; num3 < 9; num3++)
 				{
@@ -352,18 +352,18 @@ namespace KidFansChannel.CloseTo.Commands
 			{
 				lastShowHint = ScriptCommand.Options.HintShow;
 				int height = ItemStrings.Count * 40 + 50;
-				int num = 80;
+				int boxHeight = 80;
 				for (int i = 0; i < ItemStrings.Count; i++)
 				{
-					if (ItemStrings[i].Width + 80 > num)
+					if (ItemStrings[i].Width + 80 > boxHeight)
 					{
-						num = ItemStrings[i].Width + 80;
+						boxHeight = ItemStrings[i].Width + 80;
 					}
 				}
 				if (lastShowHint)
 				{
 					selectBar.X = 350;
-					num += 100;
+					boxHeight += 100;
 					for (int j = 0; j < ItemStrings.Count; j++)
 					{
 						ItemStrings[j].Location = new Point(ItemStrings[j].Location.X - 50, ItemStrings[j].Location.Y);
@@ -378,7 +378,7 @@ namespace KidFansChannel.CloseTo.Commands
 					}
 				}
 				Label.CurrentId = labelId;
-				Label.SetBackSize(num, height);
+				Label.SetBackSize(boxHeight, height);
 			}
 			if (lastSelected != CurrentSelected)
 			{
@@ -432,19 +432,19 @@ namespace KidFansChannel.CloseTo.Commands
 				}
 				if (CurrentSelected != -1)
 				{
-					int num2 = 80;
+					int boxWidth = 80;
 					for (int l = 0; l < ItemStrings.Count; l++)
 					{
-						if (ItemStrings[l].Width + 80 > num2)
+						if (ItemStrings[l].Width + 80 > boxWidth)
 						{
-							num2 = ItemStrings[l].Width + 80;
+							boxWidth = ItemStrings[l].Width + 80;
 						}
 					}
 					if (hintChara != null)
 					{
 						for (int m = 0; m < 2; m++)
 						{
-							hintAnimes[m].Position = new Point(BgDisplay.ScreenSize.Width / 2 + num2 / 2 - 30, Select.SelectCenterY);
+							hintAnimes[m].Position = new Point(BgDisplay.ScreenSize.Width / 2 + boxWidth / 2 - 30, Select.SelectCenterY);
 						}
 					}
 				}

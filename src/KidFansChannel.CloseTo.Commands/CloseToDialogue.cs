@@ -52,8 +52,8 @@ namespace KidFansChannel.CloseTo.Commands
 		protected override void HideBack()
 		{
 			base.HideBack();
-			Picture[] array = dialogueBacks;
-			foreach (Picture picture in array)
+			Picture[] backPicBuffer = dialogueBacks;
+			foreach (Picture picture in backPicBuffer)
 			{
 				picture.BeginTransform(0.1f);
 				picture.ScaleTo(SizeF.Empty);
@@ -78,8 +78,8 @@ namespace KidFansChannel.CloseTo.Commands
 			{
 				dialogueSpeakerBacks[i].Alpha = 255;
 			}
-			Picture[] array = dialogueSpeakerBacks;
-			foreach (Picture picture in array)
+			Picture[] backPicBuffer = dialogueSpeakerBacks;
+			foreach (Picture picture in backPicBuffer)
 			{
 				picture.ScaleX = scaleX;
 			}
@@ -96,8 +96,8 @@ namespace KidFansChannel.CloseTo.Commands
 			{
 				scaleX = ((Dialogue.SpeakerString.Width > 250) ? 2f : 1.5f);
 			}
-			Picture[] array = dialogueSpeakerBacks;
-			foreach (Picture picture in array)
+			Picture[] backPicBuffer = dialogueSpeakerBacks;
+			foreach (Picture picture in backPicBuffer)
 			{
 				picture.ScaleX = scaleX;
 			}
@@ -106,8 +106,8 @@ namespace KidFansChannel.CloseTo.Commands
 		protected override void HideSpeakerBack()
 		{
 			base.HideSpeakerBack();
-			Picture[] array = dialogueSpeakerBacks;
-			foreach (Picture picture in array)
+			Picture[] backPicBuffer = dialogueSpeakerBacks;
+			foreach (Picture picture in backPicBuffer)
 			{
 				picture.Alpha = 0;
 			}
@@ -122,8 +122,8 @@ namespace KidFansChannel.CloseTo.Commands
 				dialogueBacks[0].Alpha = currentAlphaInt;
 				alphaChanged = true;
 			}
-			Picture[] array = dialogueBacks;
-			foreach (Picture picture in array)
+			Picture[] backPicBuffer = dialogueBacks;
+			foreach (Picture picture in backPicBuffer)
 			{
 				picture.Update(elaspedTime);
 			}
@@ -136,8 +136,8 @@ namespace KidFansChannel.CloseTo.Commands
 				dialogueSpeakerBacks[0].Alpha = currentAlphaInt;
 				alphaChanged = false;
 			}
-			Picture[] array = dialogueSpeakerBacks;
-			foreach (Picture picture in array)
+			Picture[] backPicBuffer = dialogueSpeakerBacks;
+			foreach (Picture picture in backPicBuffer)
 			{
 				picture.Update(elaspedTime);
 			}
