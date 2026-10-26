@@ -279,10 +279,10 @@ namespace KidFansChannel.CloseTo.Screens
 			if (iconPasses >= 0 && iconTime > 0f)
 			{
 				iconTime -= elaspedTime;
-				bool flag = false;
+				bool answered = false;
 				while (iconTime < 0f)
 				{
-					flag = true;
+					answered = true;
 					iconTime += 0.5f;
 					iconPasses--;
 					iconDirection = !iconDirection;
@@ -293,7 +293,7 @@ namespace KidFansChannel.CloseTo.Screens
 					iconPasses = 0;
 					iconX = (iconDirection ? (widths[currentSelected] / 2 + 15) : (-(widths[currentSelected] / 2 + 15)));
 				}
-				else if (flag)
+				else if (answered)
 				{
 					iconX = (float)(widths[currentSelected] + 30) * (0.5f - iconTime) / 0.5f;
 					if (iconDirection)
