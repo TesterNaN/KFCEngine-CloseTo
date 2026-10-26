@@ -240,7 +240,7 @@ namespace KidFansChannel.InputCore
 
 		public Direction GetDirection()
 		{
-			Direction[,] array = new Direction[3, 3]
+			Direction[,] directionTable = new Direction[3, 3]
 			{
 				{
 					Direction.UpLeft,
@@ -258,9 +258,9 @@ namespace KidFansChannel.InputCore
 					Direction.DownRight
 				}
 			};
-			int num = 0;
-			int num2 = 0;
-			bool[] array2 = ((!UseXInput) ? new bool[4]
+			int horizontal = 0;
+			int vertical = 0;
+			bool[] rawDirs = ((!UseXInput) ? new bool[4]
 			{
 				keyBoard.GetKeyState(KeyBoardInput.Key.Left) || gamePad.GetButtonState(12),
 				keyBoard.GetKeyState(KeyBoardInput.Key.Right) || gamePad.GetButtonState(13),
@@ -273,50 +273,50 @@ namespace KidFansChannel.InputCore
 				keyBoard.GetKeyState(KeyBoardInput.Key.Up) || xInput.GetButtonState(14),
 				keyBoard.GetKeyState(KeyBoardInput.Key.Down) || xInput.GetButtonState(15)
 			});
-			bool[] array3 = (bool[])array2.Clone();
-			if (array3[0] == array3[1])
+			bool[] newState = (bool[])rawDirs.Clone();
+			if (newState[0] == newState[1])
 			{
-				array3[0] = false;
-				array3[1] = false;
+				newState[0] = false;
+				newState[1] = false;
 			}
-			if (array3[2] == array3[3])
+			if (newState[2] == newState[3])
 			{
-				array3[2] = false;
-				array3[3] = false;
+				newState[2] = false;
+				newState[3] = false;
 			}
 			for (int i = 0; i < 4; i++)
 			{
-				if (directionDown[i] != array3[i])
+				if (directionDown[i] != newState[i])
 				{
-					directionPress[i] = array3[i];
-					directionDown[i] = array3[i];
+					directionPress[i] = newState[i];
+					directionDown[i] = newState[i];
 				}
 			}
-			if (array2[0] == array2[1])
+			if (rawDirs[0] == rawDirs[1])
 			{
-				num = 0;
+				horizontal = 0;
 			}
-			else if (array2[0])
+			else if (rawDirs[0])
 			{
-				num = -1;
+				horizontal = -1;
 			}
-			else if (array2[1])
+			else if (rawDirs[1])
 			{
-				num = 1;
+				horizontal = 1;
 			}
-			if (array2[2] == array2[3])
+			if (rawDirs[2] == rawDirs[3])
 			{
-				num2 = 0;
+				vertical = 0;
 			}
-			else if (array2[2])
+			else if (rawDirs[2])
 			{
-				num2 = -1;
+				vertical = -1;
 			}
-			else if (array2[3])
+			else if (rawDirs[3])
 			{
-				num2 = 1;
+				vertical = 1;
 			}
-			return array[num + 1, num2 + 1];
+			return directionTable[horizontal + 1, vertical + 1];
 		}
 
 		public bool CheckDirectionPress(int direction)
