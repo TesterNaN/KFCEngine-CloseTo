@@ -172,19 +172,19 @@ namespace KidFansChannel.CloseTo.Screens
 				RootItem[1].Add(menuItem2, (string)menuItem2.Value);
 				MenuList.Add(menuItem2);
 			}
-			bool flag = false;
+			bool menuDone = false;
 			for (int k = 0; k < 7; k++)
 			{
 				if (GameManager.GameState.CheckEnding(k))
 				{
-					flag = true;
+					menuDone = true;
 					break;
 				}
 			}
 			for (int l = 0; l < 3; l++)
 			{
 				MenuItem menuItem3 = new MenuItem();
-				if (flag)
+				if (menuDone)
 				{
 					menuItem3.Add(new Element(picMenuOffs[l + 9]), "off", true);
 					menuItem3.Add(new Element(picMenuOns[l + 9]), "on", false);
@@ -194,7 +194,7 @@ namespace KidFansChannel.CloseTo.Screens
 					menuItem3.Add(new Element(picMenuOffs[0]), "off", true);
 					menuItem3.Add(new Element(picMenuOns[0]), "on", false);
 				}
-				if (flag)
+				if (menuDone)
 				{
 					menuItem3.Value = values[l + 9];
 				}
@@ -243,15 +243,15 @@ namespace KidFansChannel.CloseTo.Screens
 				menu.MenuEvent += MenuItem_MenuEvent;
 				menu.Initial += MenuItem_Initial;
 			}
-			bool flag2 = InitMenu();
+			bool menuReady = InitMenu();
 			for (int n = 0; n < 3; n++)
 			{
 				picLogos[n].Alpha = 0;
 			}
-			for (int num = 0; num < values.Length; num++)
+			for (int menuIndex = 0; menuIndex < values.Length; menuIndex++)
 			{
-				picMenuOns[num].Alpha = 0;
-				picMenuOffs[num].Alpha = 0;
+				picMenuOns[menuIndex].Alpha = 0;
+				picMenuOffs[menuIndex].Alpha = 0;
 			}
 			picTop.BeginTransform(0.2f);
 			picTop.AlphaTo(0);
@@ -260,7 +260,7 @@ namespace KidFansChannel.CloseTo.Screens
 			{
 				picChara.Alpha = 0;
 			}
-			if (!flag2)
+			if (!menuReady)
 			{
 				switch (GameManager.Data.CheckData("bgm", "bgm07.ogg", KidFansChannel.DataCore.DataCore.DataType.File))
 				{
@@ -339,12 +339,12 @@ namespace KidFansChannel.CloseTo.Screens
 				picTop.EndTransform();
 				break;
 			}
-			int num = 0;
+			int itemCount = 0;
 			for (int i = 0; i < ItemElement.Count; i++)
 			{
 				if (((string)ItemElement[i].Value).StartsWith(values[0]))
 				{
-					num++;
+					itemCount++;
 				}
 			}
 			for (int j = 0; j < ItemElement.Count; j++)
@@ -365,13 +365,13 @@ namespace KidFansChannel.CloseTo.Screens
 				}
 				else
 				{
-					bool flag = ((string)ItemElement[j].Value).StartsWith(values[0]);
-					ItemElement[j]["on"].ElementPicture.BeginTransform(flag ? (0.25f * (float)num) : 0.25f);
+					bool highlighted = ((string)ItemElement[j].Value).StartsWith(values[0]);
+					ItemElement[j]["on"].ElementPicture.BeginTransform(highlighted ? (0.25f * (float)itemCount) : 0.25f);
 					ItemElement[j]["on"].ElementPicture.AlphaTo(0);
 					ItemElement[j]["on"].ElementPicture.PositionTo(new Point(0, -40));
 					ItemElement[j]["on"].ElementPicture.ScaleTo(new SizeF(0.5f, 0.5f));
 					ItemElement[j]["on"].ElementPicture.EndTransform();
-					ItemElement[j]["off"].ElementPicture.BeginTransform(flag ? (0.25f * (float)num) : 0.25f);
+					ItemElement[j]["off"].ElementPicture.BeginTransform(highlighted ? (0.25f * (float)itemCount) : 0.25f);
 					ItemElement[j]["off"].ElementPicture.AlphaTo(0);
 					ItemElement[j]["off"].ElementPicture.PositionTo(new Point(0, -40));
 					ItemElement[j]["off"].ElementPicture.ScaleTo(new SizeF(0.5f, 0.5f));
@@ -430,14 +430,14 @@ namespace KidFansChannel.CloseTo.Screens
 			{
 				mainTime -= 30f;
 			}
-			int num = (int)(mainTime * 2f);
-			float num2 = mainTime * 2f - (float)num;
-			eleScreen["main"]["old"].ElementPicture = picMainFrames[num];
-			eleScreen["main"]["new"].ElementPicture = picMainFrames[(num + 1) % 60];
-			picMainFrames[num].Alpha = 255;
-			picMainFrames[num].X = (int)((0f - num2) * 16f + 0.5f) - 16;
-			picMainFrames[(num + 1) % 60].Alpha = (int)(num2 * 255f + 0.5f);
-			picMainFrames[(num + 1) % 60].X = (int)(16f - num2 * 16f + 0.5f) - 16;
+			int frameIndex = (int)(mainTime * 2f);
+			float framePhase = mainTime * 2f - (float)frameIndex;
+			eleScreen["main"]["old"].ElementPicture = picMainFrames[frameIndex];
+			eleScreen["main"]["new"].ElementPicture = picMainFrames[(frameIndex + 1) % 60];
+			picMainFrames[frameIndex].Alpha = 255;
+			picMainFrames[frameIndex].X = (int)((0f - framePhase) * 16f + 0.5f) - 16;
+			picMainFrames[(frameIndex + 1) % 60].Alpha = (int)(framePhase * 255f + 0.5f);
+			picMainFrames[(frameIndex + 1) % 60].X = (int)(16f - framePhase * 16f + 0.5f) - 16;
 			for (int i = 0; i < 3; i++)
 			{
 				if (picLogos[i].Time == 0f && picLogos[i].Alpha == 0)
@@ -537,23 +537,23 @@ namespace KidFansChannel.CloseTo.Screens
 			if (ItemElement.Count > 0 && ItemElement[0]["on"].ElementPicture.Time == 0f && ItemElement[0]["on"].ElementPicture.Alpha == 0)
 			{
 				ChangeItem();
-				int num3 = 0;
+				int itemCount = 0;
 				for (int l = 0; l < ItemElement.Count; l++)
 				{
 					if (((string)ItemElement[l].Value).StartsWith(values[0]))
 					{
-						num3++;
+						itemCount++;
 					}
 				}
-				if (num3 > 0)
+				if (itemCount > 0)
 				{
 					nullTime = 0.35f;
 				}
 				for (int m = 0; m < ItemElement.Count; m++)
 				{
-					bool flag = ((string)ItemElement[m].Value).StartsWith(values[0]);
+					bool highlighted = ((string)ItemElement[m].Value).StartsWith(values[0]);
 					ItemElement[m]["on"].ElementPicture.Alpha = 1;
-					if (flag)
+					if (highlighted)
 					{
 						ItemElement[m]["on"].Position = new Point(0, -ItemElement[m].Position.Y - 40);
 						ItemElement[m]["on"].ElementPicture.Y = 0;
@@ -563,15 +563,15 @@ namespace KidFansChannel.CloseTo.Screens
 						ItemElement[m]["on"].ElementPicture.Y = -ItemElement[m].Position.Y - 40;
 					}
 					ItemElement[m]["on"].ElementPicture.Scale = new SizeF(1f, 1f);
-					ItemElement[m]["on"].ElementPicture.BeginTransform(flag ? (0.35f * (float)num3) : 0.35f);
+					ItemElement[m]["on"].ElementPicture.BeginTransform(highlighted ? (0.35f * (float)itemCount) : 0.35f);
 					ItemElement[m]["on"].ElementPicture.AlphaTo(255);
-					if (!flag)
+					if (!highlighted)
 					{
 						ItemElement[m]["on"].ElementPicture.PositionTo(Point.Empty);
 					}
 					ItemElement[m]["on"].ElementPicture.EndTransform();
 					ItemElement[m]["off"].ElementPicture.Alpha = 1;
-					if (flag)
+					if (highlighted)
 					{
 						ItemElement[m]["off"].Position = new Point(0, -ItemElement[m].Position.Y - 40);
 						ItemElement[m]["off"].ElementPicture.Y = 0;
@@ -581,9 +581,9 @@ namespace KidFansChannel.CloseTo.Screens
 						ItemElement[m]["off"].ElementPicture.Y = -ItemElement[m].Position.Y - 40;
 					}
 					ItemElement[m]["off"].ElementPicture.Scale = new SizeF(1f, 1f);
-					ItemElement[m]["off"].ElementPicture.BeginTransform(flag ? (0.35f * (float)num3) : 0.35f);
+					ItemElement[m]["off"].ElementPicture.BeginTransform(highlighted ? (0.35f * (float)itemCount) : 0.35f);
 					ItemElement[m]["off"].ElementPicture.AlphaTo(255);
-					if (!flag)
+					if (!highlighted)
 					{
 						ItemElement[m]["off"].ElementPicture.PositionTo(Point.Empty);
 					}
@@ -658,23 +658,23 @@ namespace KidFansChannel.CloseTo.Screens
 			{
 				return;
 			}
-			int num = 0;
+			int itemCount = 0;
 			for (int i = 0; i < ItemElement.Count; i++)
 			{
 				if (((string)ItemElement[i].Value).StartsWith(values[0]))
 				{
-					num++;
+					itemCount++;
 				}
 			}
 			for (int j = 0; j < ItemElement.Count; j++)
 			{
-				bool flag = ((string)ItemElement[j].Value).StartsWith(values[0]);
-				ItemElement[j]["on"].ElementPicture.BeginTransform(flag ? (0.25f * (float)num) : 0.25f);
+				bool highlighted = ((string)ItemElement[j].Value).StartsWith(values[0]);
+				ItemElement[j]["on"].ElementPicture.BeginTransform(highlighted ? (0.25f * (float)itemCount) : 0.25f);
 				ItemElement[j]["on"].ElementPicture.AlphaTo(0);
 				ItemElement[j]["on"].ElementPicture.PositionTo(new Point(0, -40));
 				ItemElement[j]["on"].ElementPicture.ScaleTo(new SizeF(0.5f, 0.5f));
 				ItemElement[j]["on"].ElementPicture.EndTransform();
-				ItemElement[j]["off"].ElementPicture.BeginTransform(flag ? (0.25f * (float)num) : 0.25f);
+				ItemElement[j]["off"].ElementPicture.BeginTransform(highlighted ? (0.25f * (float)itemCount) : 0.25f);
 				ItemElement[j]["off"].ElementPicture.AlphaTo(0);
 				ItemElement[j]["off"].ElementPicture.PositionTo(new Point(0, -40));
 				ItemElement[j]["off"].ElementPicture.ScaleTo(new SizeF(0.5f, 0.5f));
