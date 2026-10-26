@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  KFCEngine v3 —— 《思念的碎片 -Close to-》设置程序
+
+  这是原版 CloseToSetting.exe（.NET 2.0 WinForms）的还原版。
+  它自带一份引擎子集（GameOptions / Enumeration / InputCore），
+  因此可以独立编译，不依赖 CloseTo.exe。
+
+  用法：
+      msbuild CloseToSetting.csproj /t:Build
+  产物：
+      bin\Release\CloseToSetting.exe
+-->
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <ProjectGuid>{3F5A2D19-8C64-4B7E-A0D9-5E2C7B4F1A83}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>KidFansChannel.CloseToSetting</RootNamespace>
+    <AssemblyName>CloseToSetting</AssemblyName>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <CscToolPath Condition=" '$(CscToolPath)' == '' ">C:\Windows\Microsoft.NET\Framework\v2.0.50727</CscToolPath>
+    <WinPS Condition=" '$(WinPS)' == '' ">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</WinPS>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SrcFiles Include="src\**\*.cs" />
+    <ResxFiles Include="src\**\*.resx" />
+  </ItemGroup>
+
+  <Target Name="Build">
+    <MakeDir Directories="$(OutputPath);$(IntermediateOutputPath)" />
+
+    <!-- 每个 resx 转成 .resources -->
+    <Exec Command="&quot;$(WinPS)&quot; -NoProfile -ExecutionPolicy Bypass -File &quot;tools\make-resources.ps1&quot; -In &quot;%(ResxFiles.FullPath)&quot; -Out &quot;$(IntermediateOutputPath)%(ResxFiles.Filename).resources&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)" />
+
+    <!-- 静态参数 -->
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Overwrite="true" Lines="/nologo" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/utf8output" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/target:winexe" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/platform:x86" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/main:KidFansChannel.CloseToSetting.Program" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/nowarn:162,168,169,219,414,618,1607" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/win32icon:&quot;src\app.ico&quot;" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/out:&quot;$(OutputPath)$(AssemblyName).exe&quot;" />
+
+    <!-- 嵌入 resources：名字必须与 resx 文件名一致 -->
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/resource:&quot;$(IntermediateOutputPath)KidFansChannel.CloseToSetting.CloseToSetting.resources&quot;,KidFansChannel.CloseToSetting.CloseToSetting.resources" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/resource:&quot;$(IntermediateOutputPath)KidFansChannel.GameSetting.CustomGamePadDialog.resources&quot;,KidFansChannel.GameSetting.CustomGamePadDialog.resources" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/resource:&quot;$(IntermediateOutputPath)KidFansChannel.GameSetting.CustomResolutionDialog.resources&quot;,KidFansChannel.GameSetting.CustomResolutionDialog.resources" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/resource:&quot;$(IntermediateOutputPath)KidFansChannel.GameSetting.Setting.resources&quot;,KidFansChannel.GameSetting.Setting.resources" />
+
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/r:&quot;$(CscToolPath)\System.dll&quot;" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/r:&quot;$(CscToolPath)\System.Windows.Forms.dll&quot;" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/r:&quot;$(CscToolPath)\System.Drawing.dll&quot;" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/r:&quot;$(CscToolPath)\System.Xml.dll&quot;" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/r:&quot;..\deps\Microsoft.DirectX.dll&quot;" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/r:&quot;..\deps\Microsoft.DirectX.Direct3D.dll&quot;" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/r:&quot;..\deps\Microsoft.DirectX.DirectInput.dll&quot;" />
+    <WriteLinesToFile File="$(IntermediateOutputPath)opts.rsp" Lines="/r:&quot;..\deps\Microsoft.DirectX.DirectSound.dll&quot;" />
+
+    <WriteLinesToFile File="$(IntermediateOutputPath)files.rsp" Overwrite="true"
+                      Lines="@(SrcFiles->'&quot;%(FullPath)&quot;')" />
+
+    <Exec Command="&quot;$(CscToolPath)\csc.exe&quot; @&quot;$(IntermediateOutputPath)opts.rsp&quot; @&quot;$(IntermediateOutputPath)files.rsp&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)" />
+
+    <Message Importance="high" Text="BUILD OK -> $(OutputPath)$(AssemblyName).exe" />
+  </Target>
+
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+
+  <Target Name="Clean">
+    <RemoveDir Directories="bin" />
+    <RemoveDir Directories="obj" />
+  </Target>
+
+</Project>

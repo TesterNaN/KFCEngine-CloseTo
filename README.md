@@ -128,9 +128,32 @@ zh-CHS\  界面语言资源
 > 里判断的是「配置文件不存在 **且** 设置程序存在」才调它，两个条件缺一就跳过，
 > 用默认值继续。实测删掉它、连 `Options.xml` 也删掉，游戏照样正常启动。
 >
-> 想改画面设置的话，从原版镜像里把 `CloseToSetting.exe` 取出来放到 `bin\Release`
-> 旁边，下次启动就会自动弹出。也可以直接手写
-> `%LOCALAPPDATA%\KID\CloseTo\Options.xml`。
+> 要改画面设置的话，本仓库 `setting/` 下有它**还原版**的源码，编译出来即可（见下节）。
+> 也可以直接手写 `%LOCALAPPDATA%\KID\CloseTo\Options.xml`。
+
+---
+
+## 设置程序
+
+`setting/` 是原版 `CloseToSetting.exe` 的还原版——它也是 .NET 2.0 WinForms
+（304 KB vs 原版 302 KB），自带一份引擎子集（`GameOptions` / `Enumeration` /
+`InputCore`），所以能独立编译，不依赖主程序。
+
+```
+cd setting
+msbuild CloseToSetting.csproj /t:Build
+```
+
+产物 `setting\bin\Release\CloseToSetting.exe`。
+
+把它复制到主程序的 `bin\Release\` 旁边，下次启动时就会自动弹出
+（前提是 `%LOCALAPPDATA%\KID\CloseTo\Options.xml` 还不存在）。
+
+它依赖 `language.xml` 和 `zh-CHS\` 才能显示中文界面，`prepare-data.ps1` /
+`restore-data.ps1` 已经把这些一并放好了。
+
+> 编译时用 `/main:KidFansChannel.CloseToSetting.Program` 指定入口——
+> 程序集里有两套 `Program`，另一套 `KidFansChannel.GameSetting.Program` 是通用设置窗体的。
 
 ### 数据里有什么
 

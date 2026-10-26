@@ -1,6 +1,8 @@
 # 编译产物
 bin/
 obj/
+setting/bin/
+setting/obj/
 
 # 游戏数据（约 900 MB，由 tools/prepare-data.ps1 从原版镜像生成）
 *.dat
