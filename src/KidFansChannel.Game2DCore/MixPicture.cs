@@ -123,13 +123,13 @@ namespace KidFansChannel.Game2DCore
 					}
 					else if (srcAlpha == 0)
 					{
-						uint num4 = (uint)((float)dstAlpha * _mixAlpha + 0.5f);
-						*ptr = (*ptr3 & 0xFFFFFF) | (num4 << 24);
+						uint dstOutAlpha = (uint)((float)dstAlpha * _mixAlpha + 0.5f);
+						*ptr = (*ptr3 & 0xFFFFFF) | (dstOutAlpha << 24);
 					}
 					else if (dstAlpha == 0)
 					{
-						uint num5 = (uint)((float)srcAlpha * invMixAlpha + 0.5f);
-						*ptr = (*ptr2 & 0xFFFFFF) | (num5 << 24);
+						uint srcOutAlpha = (uint)((float)srcAlpha * invMixAlpha + 0.5f);
+						*ptr = (*ptr2 & 0xFFFFFF) | (srcOutAlpha << 24);
 					}
 					else if (*ptr2 == *ptr3)
 					{
@@ -137,11 +137,11 @@ namespace KidFansChannel.Game2DCore
 					}
 					else
 					{
-						uint num6 = (uint)((float)srcAlpha * invMixAlpha + (float)dstAlpha * _mixAlpha + 0.5f);
-						uint num7 = (uint)((float)(*ptr2 & 0xFF) * invMixAlpha + (float)(*ptr3 & 0xFF) * _mixAlpha + 0.5f);
-						uint num8 = (uint)((float)((*ptr2 >> 8) & 0xFF) * invMixAlpha + (float)((*ptr3 >> 8) & 0xFF) * _mixAlpha + 0.5f);
-						uint num9 = (uint)((float)((*ptr2 >> 16) & 0xFF) * invMixAlpha + (float)((*ptr3 >> 16) & 0xFF) * _mixAlpha + 0.5f);
-						*ptr = num7 | (num8 << 8) | (num9 << 16) | (num6 << 24);
+						uint outAlpha = (uint)((float)srcAlpha * invMixAlpha + (float)dstAlpha * _mixAlpha + 0.5f);
+						uint red = (uint)((float)(*ptr2 & 0xFF) * invMixAlpha + (float)(*ptr3 & 0xFF) * _mixAlpha + 0.5f);
+						uint green = (uint)((float)((*ptr2 >> 8) & 0xFF) * invMixAlpha + (float)((*ptr3 >> 8) & 0xFF) * _mixAlpha + 0.5f);
+						uint blue = (uint)((float)((*ptr2 >> 16) & 0xFF) * invMixAlpha + (float)((*ptr3 >> 16) & 0xFF) * _mixAlpha + 0.5f);
+						*ptr = red | (green << 8) | (blue << 16) | (outAlpha << 24);
 					}
 					ptr++;
 					ptr2++;
