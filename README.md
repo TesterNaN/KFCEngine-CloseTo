@@ -80,13 +80,25 @@ msbuild CloseTo.csproj /t:Build
 
 数据不在仓库里（约 910 MB，GitHub 放不下）。两条路，任选一条。
 
-### 方式一：从原版镜像取数据
+### 方式一：下载游戏本体，从镜像里取数据
 
-手上有 `CLOSETO.mdf`（1.43 GB 光盘镜像）就用这个。
+游戏本体（含光盘镜像）在这里：
+
+| 来源 | 链接 |
+|---|---|
+| TouchGAL 网盘 | <https://pan.touchgal.net/s/AVm8tP> |
+
+下载下来是一个压缩包，**解压后得到光盘镜像**（`CLOSETO.mdf` 与 `CLOSETO.mds`，约 1.43 GB）。然后拿镜像去取数据：
 
 ```
-.\tools\prepare-data.ps1 -Source "D:\Download\思念的碎片\CLOSETO.mdf"
+.\tools\prepare-data.ps1 -Source "D:\Downloads\思念的碎片\CLOSETO.mdf"
 ```
+
+脚本会自己从镜像里抽出 `Setup.exe`，再解出全部数据包和运行期 DLL，最后把 `deps\*.dll` 也一并放好。完事直接 `.\bin\Release\CloseTo.exe`。
+
+> 镜像本身是 2008 年的正版光盘转制，SecuROM 7.38 保护。**不要运行里面的
+> `Setup.exe` 安装**——不需要，我们只是拿它当数据容器。装的话会往内核塞
+> StarForce/SecuROM 驱动，那是这台机器上唯一会真出事的操作。
 
 ### 方式二：直接下载数据包
 
