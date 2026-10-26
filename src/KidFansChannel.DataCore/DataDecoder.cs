@@ -72,18 +72,18 @@ namespace KidFansChannel.DataCore
 		{
 			_packageName = packageName;
 			_currentDirectory = Path.GetDirectoryName(".");
-			byte[] array = new byte[24];
-			byte[] array2 = new byte[8];
+			byte[] keyBytes = new byte[24];
+			byte[] ivBytes = new byte[8];
 			for (int i = 0; i < 24; i++)
 			{
-				array[i] = (byte)key[i];
+				keyBytes[i] = (byte)key[i];
 			}
 			for (int j = 0; j < 8; j++)
 			{
-				array2[j] = (byte)iv[j];
+				ivBytes[j] = (byte)iv[j];
 			}
 			TripleDESCryptoServiceProvider tripleDESCryptoServiceProvider = new TripleDESCryptoServiceProvider();
-			ct = tripleDESCryptoServiceProvider.CreateDecryptor(array, array2);
+			ct = tripleDESCryptoServiceProvider.CreateDecryptor(keyBytes, ivBytes);
 			fs = new FileStream(_packageName, FileMode.Open, FileAccess.Read);
 			DecodeHeader();
 		}
@@ -92,18 +92,18 @@ namespace KidFansChannel.DataCore
 		{
 			_packageName = packageName;
 			_currentDirectory = Path.GetDirectoryName(".");
-			byte[] array = new byte[24];
-			byte[] array2 = new byte[8];
+			byte[] keyBytes = new byte[24];
+			byte[] ivBytes = new byte[8];
 			for (int i = 0; i < 24; i++)
 			{
-				array[i] = (byte)key[i];
+				keyBytes[i] = (byte)key[i];
 			}
 			for (int j = 0; j < 8; j++)
 			{
-				array2[j] = (byte)iv[j];
+				ivBytes[j] = (byte)iv[j];
 			}
 			TripleDESCryptoServiceProvider tripleDESCryptoServiceProvider = new TripleDESCryptoServiceProvider();
-			ct = tripleDESCryptoServiceProvider.CreateDecryptor(array, array2);
+			ct = tripleDESCryptoServiceProvider.CreateDecryptor(keyBytes, ivBytes);
 			fs = packageStream;
 			DecodeHeader();
 		}
@@ -142,15 +142,15 @@ namespace KidFansChannel.DataCore
 							for (int k = 0; k < _fileNumber; k++)
 							{
 								fileOffsets.Add(binaryReader.ReadInt64());
-								long num = binaryReader.ReadInt64();
-								if (num >= 0)
+								long offset = binaryReader.ReadInt64();
+								if (offset >= 0)
 								{
-									fileLengths.Add(num);
+									fileLengths.Add(offset);
 									fileCryptos.Add(false);
 								}
 								else
 								{
-									fileLengths.Add(-num);
+									fileLengths.Add(-offset);
 									fileCryptos.Add(true);
 								}
 								StringBuilder stringBuilder = new StringBuilder();
@@ -187,56 +187,56 @@ namespace KidFansChannel.DataCore
 
 		public Stream DecodeStream(string fileName)
 		{
-			int num = fileNames.IndexOf(fileName);
-			if (num < 0)
+			int offset = fileNames.IndexOf(fileName);
+			if (offset < 0)
 			{
 				return null;
 			}
-			if (fileCryptos[num])
+			if (fileCryptos[offset])
 			{
-				using (DataStream dataStream = new DataStream(fs, fileOffsets[num], (fileLengths[num] + 8) & 0xFFFFFFF8u))
+				using (DataStream dataStream = new DataStream(fs, fileOffsets[offset], (fileLengths[offset] + 8) & 0xFFFFFFF8u))
 				{
 					dataStream.Seek(0L, SeekOrigin.Begin);
 					using (CryptoStream cryptoStream = new CryptoStream(dataStream, ct, CryptoStreamMode.Read))
 					{
-						byte[] array = new byte[fileLengths[num]];
-						cryptoStream.Read(array, 0, array.Length);
-						MemoryStream memoryStream = new MemoryStream(array, 0, (int)fileLengths[num]);
+						byte[] keyBytes = new byte[fileLengths[offset]];
+						cryptoStream.Read(keyBytes, 0, keyBytes.Length);
+						MemoryStream memoryStream = new MemoryStream(keyBytes, 0, (int)fileLengths[offset]);
 						memoryStream.Seek(0L, SeekOrigin.Begin);
 						return memoryStream;
 					}
 				}
 			}
-			DataStream dataStream2 = new DataStream(fs, fileOffsets[num], fileLengths[num]);
+			DataStream dataStream2 = new DataStream(fs, fileOffsets[offset], fileLengths[offset]);
 			dataStream2.Seek(0L, SeekOrigin.Begin);
 			return dataStream2;
 		}
 
 		public void DecodeFile(string fileName)
 		{
-			int num = fileNames.IndexOf(fileName);
-			if (num < 0)
+			int offset = fileNames.IndexOf(fileName);
+			if (offset < 0)
 			{
 				return;
 			}
-			byte[] array = new byte[fileLengths[num]];
-			if (fileCryptos[num])
+			byte[] keyBytes = new byte[fileLengths[offset]];
+			if (fileCryptos[offset])
 			{
-				using (DataStream dataStream = new DataStream(fs, fileOffsets[num], (fileLengths[num] + 8) & 0xFFFFFFF8u))
+				using (DataStream dataStream = new DataStream(fs, fileOffsets[offset], (fileLengths[offset] + 8) & 0xFFFFFFF8u))
 				{
 					dataStream.Seek(0L, SeekOrigin.Begin);
 					using (CryptoStream cryptoStream = new CryptoStream(dataStream, ct, CryptoStreamMode.Read))
 					{
-						cryptoStream.Read(array, 0, array.Length);
+						cryptoStream.Read(keyBytes, 0, keyBytes.Length);
 					}
 				}
 			}
 			else
 			{
-				using (DataStream dataStream2 = new DataStream(fs, fileOffsets[num], fileLengths[num]))
+				using (DataStream dataStream2 = new DataStream(fs, fileOffsets[offset], fileLengths[offset]))
 				{
 					dataStream2.Seek(0L, SeekOrigin.Begin);
-					dataStream2.Read(array, 0, array.Length);
+					dataStream2.Read(keyBytes, 0, keyBytes.Length);
 				}
 			}
 			string path = Path.Combine(_currentDirectory, fileName);
@@ -244,7 +244,7 @@ namespace KidFansChannel.DataCore
 			{
 				Directory.CreateDirectory(Path.GetDirectoryName(path));
 			}
-			File.WriteAllBytes(path, array);
+			File.WriteAllBytes(path, keyBytes);
 		}
 
 		public void Decode()

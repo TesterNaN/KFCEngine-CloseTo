@@ -98,52 +98,52 @@ namespace KidFansChannel.DataCore
 
 		public void Encode()
 		{
-			byte[] array = new byte[24];
-			byte[] array2 = new byte[8];
+			byte[] keyBytes = new byte[24];
+			byte[] ivBytes = new byte[8];
 			for (int i = 0; i < 24; i++)
 			{
-				array[i] = (byte)key[i];
+				keyBytes[i] = (byte)key[i];
 			}
 			for (int j = 0; j < 8; j++)
 			{
-				array2[j] = (byte)iv[j];
+				ivBytes[j] = (byte)iv[j];
 			}
 			TripleDESCryptoServiceProvider tripleDESCryptoServiceProvider = new TripleDESCryptoServiceProvider();
 			using (FileStream fileStream = new FileStream(_packageName, FileMode.Create))
 			{
-				long num = 32 + 64 * _fileNumber;
-				fileStream.SetLength(num);
-				fileStream.Seek(num, SeekOrigin.Begin);
+				long offset = 32 + 64 * _fileNumber;
+				fileStream.SetLength(offset);
+				fileStream.Seek(offset, SeekOrigin.Begin);
 				for (int k = 0; k < _fileNumber; k++)
 				{
-					byte[] array3 = File.ReadAllBytes(Path.Combine(_currentDirectory, fileNames[k]));
-					fileOffsets.Add(num);
-					fileLengths.Add(array3.Length);
-					int num2 = (array3.Length + 24) & -16;
-					using (DataStream dataStream = new DataStream(fileStream, num, num2))
+					byte[] fileBytes = File.ReadAllBytes(Path.Combine(_currentDirectory, fileNames[k]));
+					fileOffsets.Add(offset);
+					fileLengths.Add(fileBytes.Length);
+					int encryptedLength = (fileBytes.Length + 24) & -16;
+					using (DataStream dataStream = new DataStream(fileStream, offset, encryptedLength))
 					{
 						if (fileCryptos[k])
 						{
-							using (CryptoStream cryptoStream = new CryptoStream(dataStream, tripleDESCryptoServiceProvider.CreateEncryptor(array, array2), CryptoStreamMode.Write))
+							using (CryptoStream cryptoStream = new CryptoStream(dataStream, tripleDESCryptoServiceProvider.CreateEncryptor(keyBytes, ivBytes), CryptoStreamMode.Write))
 							{
-								cryptoStream.Write(array3, 0, array3.Length);
+								cryptoStream.Write(fileBytes, 0, fileBytes.Length);
 								cryptoStream.Flush();
 								cryptoStream.FlushFinalBlock();
 							}
 						}
 						else
 						{
-							dataStream.Write(array3, 0, array3.Length);
+							dataStream.Write(fileBytes, 0, fileBytes.Length);
 							dataStream.Flush();
 						}
-						int num3 = (int)(num2 - dataStream.Position);
-						for (int l = 0; l < num3; l++)
+						int entryIndex = (int)(encryptedLength - dataStream.Position);
+						for (int l = 0; l < entryIndex; l++)
 						{
 							dataStream.WriteByte(0);
 						}
 						dataStream.Flush();
 					}
-					num += num2;
+					offset += encryptedLength;
 				}
 				fileStream.Seek(0L, SeekOrigin.Begin);
 				fileStream.WriteByte(75);
@@ -164,7 +164,7 @@ namespace KidFansChannel.DataCore
 				}
 				using (DataStream stream = new DataStream(fileStream, 16L, 16 + 64 * _fileNumber))
 				{
-					using (CryptoStream output = new CryptoStream(stream, tripleDESCryptoServiceProvider.CreateEncryptor(array, array2), CryptoStreamMode.Write))
+					using (CryptoStream output = new CryptoStream(stream, tripleDESCryptoServiceProvider.CreateEncryptor(keyBytes, ivBytes), CryptoStreamMode.Write))
 					{
 						using (BinaryWriter binaryWriter = new BinaryWriter(output))
 						{
