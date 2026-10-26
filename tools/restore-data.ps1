@@ -24,7 +24,7 @@ if (-not (Test-Path $OutDir)) { New-Item -ItemType Directory -Force -Path $OutDi
 if (-not (Test-Path $Archive)) { throw "找不到数据包: $Archive" }
 
 # --- 期望的校验和（与仓库里 SHA256SUMS.md 保持一致）---
-$expected = '9B11EAC363536909F845A0C9551B39EA2CDCB907B988AD0A7F0288678E244D67'
+$expected = 'B508033D29A2B6729724B54BDE47A89734EEDD63AF3B3C3F1567DBD88FB6472C'
 
 if (-not $SkipHash) {
     Write-Host "校验 SHA256 ..."

@@ -90,25 +90,47 @@ msbuild CloseTo.csproj /t:Build
 
 ### 方式二：直接下载数据包
 
-不想折腾镜像的话，数据包已经打好了（1.09 GB，含全部素材）：
+不想折腾镜像的话，数据包已经打好了（1.09 GB，**只含资源**，不含任何 exe / dll）：
 
 | 网盘 | 链接 |
 |---|---|
 | Google Drive | *(待填)* |
 | 百度网盘 | *(待填，提取码：*) |
 
-下载 `CloseTo-data.7z.001` 后：
+下载 `CloseTo-data.7z` 后：
 
 ```
-.\tools\restore-data.ps1 -Archive "D:\Downloads\CloseTo-data.7z.001"
+.\tools\restore-data.ps1 -Archive "D:\Downloads\CloseTo-data.7z"
 ```
 
 脚本会先核对 SHA256 再解包，文件对不上就停下：
 
 ```
-SHA256  9B11EAC363536909F845A0C9551B39EA2CDCB907B988AD0A7F0288678E244D67
-大小    1,140,073,389 字节
+SHA256  B508033D29A2B6729724B54BDE47A89734EEDD63AF3B3C3F1567DBD88FB6472C
+大小    1,137,430,750 字节
 ```
+
+包里是 76 个文件：
+
+```
+bg.dat  bg.zh-CHS.dat  bgm.dat  bgm.zh-CHS.dat
+chara.dat  font.dat  font.zh-CHS.dat
+movie.dat  script.dat  script.zh-CHS.dat
+se.dat  system.dat  system.zh-CHS.dat  voice.dat
+language.xml
+Bgm\     60 首 ogg
+zh-CHS\  界面语言资源
+```
+
+> **为什么不带 `CloseToSetting.exe`**
+>
+> 那是原版的设置程序（改分辨率/选设备用），不是运行必需品。`CloseTo.InitializeCloseTo`
+> 里判断的是「配置文件不存在 **且** 设置程序存在」才调它，两个条件缺一就跳过，
+> 用默认值继续。实测删掉它、连 `Options.xml` 也删掉，游戏照样正常启动。
+>
+> 想改画面设置的话，从原版镜像里把 `CloseToSetting.exe` 取出来放到 `bin\Release`
+> 旁边，下次启动就会自动弹出。也可以直接手写
+> `%LOCALAPPDATA%\KID\CloseTo\Options.xml`。
 
 ### 数据里有什么
 
