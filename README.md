@@ -94,8 +94,8 @@ msbuild CloseTo.csproj /t:Build
 
 | 网盘 | 链接 |
 |---|---|
+| 百度网盘 | [CloseTo-data.7z](https://pan.baidu.com/s/1Poo4Tg6OTiXM6vf_Gh-row?pwd=6rpy)　提取码 `6rpy` |
 | Google Drive | *(待填)* |
-| 百度网盘 | *(待填，提取码：*) |
 
 下载 `CloseTo-data.7z` 后：
 
