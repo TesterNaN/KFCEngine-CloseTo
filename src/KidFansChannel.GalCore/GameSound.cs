@@ -643,15 +643,15 @@ namespace KidFansChannel.GalCore
 
 		protected void UpdateSound(float elaspedTime)
 		{
-			List<int> list = new List<int>();
+			List<int> released = new List<int>();
 			foreach (KeyValuePair<int, SoundPlayer> soundPlayer in soundPlayers)
 			{
 				if (soundPlayer.Value.Disposed)
 				{
-					list.Add(soundPlayer.Key);
+					released.Add(soundPlayer.Key);
 				}
 			}
-			foreach (int item in list)
+			foreach (int item in released)
 			{
 				soundPlayers.Remove(item);
 				volumeSounds.Remove(item);
@@ -685,7 +685,7 @@ namespace KidFansChannel.GalCore
 				}
 				soundPlayer2.Value.SetVolume(1, volume);
 			}
-			list.Clear();
+			released.Clear();
 		}
 
 		public void OpenSystem(string filename, bool instant)

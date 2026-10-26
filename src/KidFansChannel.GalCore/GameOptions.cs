@@ -622,12 +622,12 @@ namespace KidFansChannel.GalCore
 			{
 				throw new InvalidDataException();
 			}
-			string[] array = name.Split('/');
+			string[] pathSegments = name.Split('/');
 			XmlNode xmlNode = doc.DocumentElement;
-			for (int i = 0; i < array.Length; i++)
+			for (int i = 0; i < pathSegments.Length; i++)
 			{
-				XmlNode xmlNode2 = xmlNode.SelectSingleNode(array[i]);
-				xmlNode = ((xmlNode2 != null) ? xmlNode2 : xmlNode.AppendChild(doc.CreateElement(array[i])));
+				XmlNode xmlNode2 = xmlNode.SelectSingleNode(pathSegments[i]);
+				xmlNode = ((xmlNode2 != null) ? xmlNode2 : xmlNode.AppendChild(doc.CreateElement(pathSegments[i])));
 			}
 			xmlNode.InnerText = value.ToString();
 		}

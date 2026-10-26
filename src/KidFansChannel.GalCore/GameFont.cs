@@ -105,13 +105,13 @@ namespace KidFansChannel.GalCore
 				if (dataType == KidFansChannel.DataCore.DataCore.DataType.Package)
 				{
 					Stream stream = galCore.GameData.GetStream();
-					byte[] array = new byte[stream.Length];
-					stream.Read(array, 0, (int)stream.Length);
-					fixed (byte* ptr = &array[0])
+					byte[] fontBytes = new byte[stream.Length];
+					stream.Read(fontBytes, 0, (int)stream.Length);
+					fixed (byte* ptr = &fontBytes[0])
 					{
 						uint pcFonts = 1u;
-						pfc.AddMemoryFont((IntPtr)ptr, array.Length);
-						AddFontMemResourceEx((IntPtr)ptr, (uint)array.Length, IntPtr.Zero, ref pcFonts);
+						pfc.AddMemoryFont((IntPtr)ptr, fontBytes.Length);
+						AddFontMemResourceEx((IntPtr)ptr, (uint)fontBytes.Length, IntPtr.Zero, ref pcFonts);
 					}
 					DefaultFontFamilys.Add(galCore.GameLanguage.CurrentLanguage, pfc.Families[0]);
 				}
