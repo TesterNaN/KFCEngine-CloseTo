@@ -108,13 +108,13 @@ namespace KidFansChannel.GalCore.Screens
 
 		public string[] GetMenuStack()
 		{
-			MenuItem[] array = ItemStack.ToArray();
-			string[] array2 = new string[array.Length];
-			for (int i = 0; i < array.Length; i++)
+			MenuItem[] items = ItemStack.ToArray();
+			string[] values = new string[items.Length];
+			for (int i = 0; i < items.Length; i++)
 			{
-				array2[i] = (string)array[i].Value;
+				values[i] = (string)items[i].Value;
 			}
-			return array2;
+			return values;
 		}
 
 		public void SetMenuStack(string[] value)
@@ -140,7 +140,7 @@ namespace KidFansChannel.GalCore.Screens
 		protected bool InitMenu()
 		{
 			MenuItem menuItem = RootItem;
-			int num = 0;
+			int menuIndex = 0;
 			ItemStack.Clear();
 			ItemStack.Push(RootItem);
 			if (menuToShow != null)
@@ -153,12 +153,12 @@ namespace KidFansChannel.GalCore.Screens
 						{
 							menuItem = (MenuItem)menuItem[i];
 							ItemStack.Push(menuItem);
-							num++;
+							menuIndex++;
 						}
 					}
 				}
 			}
-			UpdateItem(menuItem, num);
+			UpdateItem(menuItem, menuIndex);
 			return menuToShow != null;
 		}
 
@@ -208,9 +208,9 @@ namespace KidFansChannel.GalCore.Screens
 		{
 			CurrentItem = item;
 			CurrentLevel = level;
-			for (int num = ItemElement.Count - 1; num >= 0; num--)
+			for (int menuIndex = ItemElement.Count - 1; menuIndex >= 0; menuIndex--)
 			{
-				ItemElement.Remove(num);
+				ItemElement.Remove(menuIndex);
 			}
 			int i = 0;
 			int num2 = 0;

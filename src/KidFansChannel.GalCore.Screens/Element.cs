@@ -13,7 +13,7 @@ namespace KidFansChannel.GalCore.Screens
 		{
 			public Element _current;
 
-			public Element list;
+			public Element children;
 
 			public int index;
 
@@ -29,7 +29,7 @@ namespace KidFansChannel.GalCore.Screens
 			{
 				get
 				{
-					if (index == 0 || index == list.Count + 1)
+					if (index == 0 || index == children.Count + 1)
 					{
 						throw new Exception();
 					}
@@ -39,7 +39,7 @@ namespace KidFansChannel.GalCore.Screens
 
 			internal Enumerator(Element element)
 			{
-				list = element;
+				children = element;
 				index = 0;
 				_current = null;
 			}
@@ -50,13 +50,13 @@ namespace KidFansChannel.GalCore.Screens
 
 			public bool MoveNext()
 			{
-				if (index < list.Count)
+				if (index < children.Count)
 				{
-					_current = list[index];
+					_current = children[index];
 					index++;
 					return true;
 				}
-				index = list.Count + 1;
+				index = children.Count + 1;
 				_current = null;
 				return false;
 			}

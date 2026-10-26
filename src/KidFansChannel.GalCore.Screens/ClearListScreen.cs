@@ -30,7 +30,7 @@ namespace KidFansChannel.GalCore.Screens
 			{
 				return;
 			}
-			int argumentInteger = ScriptHelper.GetArgumentInteger(xmlDocument.DocumentElement, new NodeInfo(), "num", 0);
+			int argumentInteger = ScriptHelper.GetArgumentInteger(xmlDocument.DocumentElement, new NodeInfo(), "endingId", 0);
 			SceneOpens = new bool[argumentInteger];
 			SceneTitles = new string[argumentInteger];
 			Percentages = new float[argumentInteger];
@@ -64,16 +64,16 @@ namespace KidFansChannel.GalCore.Screens
 			{
 				return;
 			}
-			argumentInteger = ScriptHelper.GetArgumentInteger(xmlDocument.DocumentElement, new NodeInfo(), "num", 0);
+			argumentInteger = ScriptHelper.GetArgumentInteger(xmlDocument.DocumentElement, new NodeInfo(), "endingId", 0);
 			EndingOpens = new bool[argumentInteger];
 			EndingTitles = new string[argumentInteger];
 			for (int j = 0; j < argumentInteger; j++)
 			{
-				int num = -1;
+				int endingId = -1;
 				XmlNode xmlNode3 = xmlDocument.DocumentElement.SelectSingleNode("item[@id=\"" + j + "\"]");
 				if (xmlNode3 != null)
 				{
-					num = ScriptHelper.GetArgumentInteger(xmlNode3, new NodeInfo(), "value");
+					endingId = ScriptHelper.GetArgumentInteger(xmlNode3, new NodeInfo(), "value");
 					XmlNode xmlNode4;
 					if ((xmlNode4 = xmlNode3.SelectSingleNode("name")) != null && xmlNode4.HasChildNodes && xmlNode4.ChildNodes.Count == 1 && xmlNode4.FirstChild.NodeType == XmlNodeType.Text)
 					{
@@ -84,9 +84,9 @@ namespace KidFansChannel.GalCore.Screens
 				{
 					EndingTitles[j] = string.Empty;
 				}
-				if (num >= 0)
+				if (endingId >= 0)
 				{
-					EndingOpens[j] = GameManager.GameState.CheckEnding(num);
+					EndingOpens[j] = GameManager.GameState.CheckEnding(endingId);
 				}
 			}
 		}

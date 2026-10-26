@@ -43,8 +43,8 @@ namespace KidFansChannel.GalCore.Screens
 					xmlNode = xmlNode.NextSibling;
 					continue;
 				}
-				List<string> list = new List<string>();
-				List<string> list2 = new List<string>();
+				List<string> itemValues = new List<string>();
+				List<string> optionValues = new List<string>();
 				string argumentString;
 				try
 				{
@@ -95,8 +95,8 @@ namespace KidFansChannel.GalCore.Screens
 								if (xmlNode2.HasChildNodes && xmlNode2.ChildNodes.Count == 1 && xmlNode2.FirstChild.NodeType == XmlNodeType.Text)
 								{
 									string value2 = xmlNode2.FirstChild.Value;
-									list.Add(value2);
-									list2.Add(argumentString2);
+									itemValues.Add(value2);
+									optionValues.Add(argumentString2);
 									xmlNode2 = xmlNode2.NextSibling;
 								}
 								else
@@ -106,9 +106,9 @@ namespace KidFansChannel.GalCore.Screens
 							}
 							OptionsTitles.Add(argumentString);
 							ItemTitles.Add(value);
-							OptionsValues.Add(list2);
+							OptionsValues.Add(optionValues);
 							ItemIcon.Add(argumentInteger);
-							ItemValues.Add(list);
+							ItemValues.Add(itemValues);
 							ItemIntros.Add(childNodes);
 							xmlNode = xmlNode.NextSibling;
 						}
