@@ -109,11 +109,6 @@ msbuild CloseTo.csproj /t:Build
 | 百度网盘 | [CloseTo-data.7z](https://pan.baidu.com/s/1Poo4Tg6OTiXM6vf_Gh-row?pwd=6rpy)　提取码 `6rpy` |
 | OneDrive | [CloseTo-data.7z](https://1drv.ms/u/c/d48d7cc20d2177d6/IQCvt4kyfbbjS49P43SZVZt-AR0uSnolNa49t3zec4JFkAY?e=xnuJN5) |
 
-> OneDrive 打开会提示 **"检测到恶意软件/Malware detected"**。这是误报，原因是压缩包里有
-> `zh-CHS\CloseTo.resources.dll` 和 `CloseToSetting.resources.dll`——两个界面语言资源
-> （.NET 卫星程序集，共 28 KB）。云端扫描器见到包内有 DLL 就标红。文件仍可正常下载和
-> 解压，`restore-data.ps1` 会核对 SHA256 确保没被动过。
-
 下载 `CloseTo-data.7z` 后：
 
 ```
