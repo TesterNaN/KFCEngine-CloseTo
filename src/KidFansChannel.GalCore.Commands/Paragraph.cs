@@ -612,17 +612,17 @@ namespace KidFansChannel.GalCore.Commands
 						backwardLinks.Add(_shownString.LinkList[j].Value);
 					}
 				}
-				int num2 = backwardLinks.IndexOf(_shownString.CurrentPointedLinkValue);
-				if (num2 != -1)
+				int linkIndex = backwardLinks.IndexOf(_shownString.CurrentPointedLinkValue);
+				if (linkIndex != -1)
 				{
-					num2++;
-					if (num2 == backwardLinks.Count)
+					linkIndex++;
+					if (linkIndex == backwardLinks.Count)
 					{
 						_shownString.CurrentPointedLinkValue = -1;
 					}
 					else
 					{
-						_shownString.CurrentPointedLinkValue = backwardLinks[num2];
+						_shownString.CurrentPointedLinkValue = backwardLinks[linkIndex];
 					}
 				}
 			}
