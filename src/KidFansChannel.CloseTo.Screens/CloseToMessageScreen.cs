@@ -215,20 +215,20 @@ namespace KidFansChannel.CloseTo.Screens
 
 		private void ScrollBar_ValueChanged(object sender, EventArgs e)
 		{
-			int num = (int)(((ScrollBarElement)sender).Start * (float)TotalRecordLineNum + 0.5f);
-			if (num < 0)
+			int scrollLine = (int)(((ScrollBarElement)sender).Start * (float)TotalRecordLineNum + 0.5f);
+			if (scrollLine < 0)
 			{
-				num = 0;
+				scrollLine = 0;
 			}
-			if (num > TotalRecordLineNum - MessageScreen.PageLineNum)
+			if (scrollLine > TotalRecordLineNum - MessageScreen.PageLineNum)
 			{
-				num = TotalRecordLineNum - MessageScreen.PageLineNum;
-				if (num < 0)
+				scrollLine = TotalRecordLineNum - MessageScreen.PageLineNum;
+				if (scrollLine < 0)
 				{
-					num = 0;
+					scrollLine = 0;
 				}
 			}
-			MoveTo(num);
+			MoveTo(scrollLine);
 			UpdateMessage();
 		}
 
@@ -259,11 +259,11 @@ namespace KidFansChannel.CloseTo.Screens
 				eleScreen["voice" + (Messages.Count - 1).ToString("00")].Selected = true;
 				return;
 			}
-			for (int num = MessageScreen.PageLineNum - 1; num >= 0; num--)
+			for (int lineIndex = MessageScreen.PageLineNum - 1; lineIndex >= 0; lineIndex--)
 			{
-				if (eleScreen.GetVisible("voice" + num.ToString("00")))
+				if (eleScreen.GetVisible("voice" + lineIndex.ToString("00")))
 				{
-					eleScreen["voice" + num.ToString("00")].Selected = true;
+					eleScreen["voice" + lineIndex.ToString("00")].Selected = true;
 					break;
 				}
 			}
@@ -302,9 +302,9 @@ namespace KidFansChannel.CloseTo.Screens
 			element.SetVisible("normal", false);
 			element.SetVisible("select", false);
 			((AnimePicture)element["play"].ElementPicture).ResetFrame();
-			int num = (int)element.Value;
+			int voiceCount = (int)element.Value;
 			linkedListNode = Messages.First;
-			for (int k = 0; k < num; k++)
+			for (int k = 0; k < voiceCount; k++)
 			{
 				linkedListNode = linkedListNode.Next;
 			}
@@ -373,96 +373,96 @@ namespace KidFansChannel.CloseTo.Screens
 
 		private void UpdateMessage()
 		{
-			int num = 0;
-			int num2 = -1;
+			int lineIndex = 0;
+			int prevLine = -1;
 			foreach (MessageDisplay message in Messages)
 			{
 				if (message.Voice != null && message.From == 0)
 				{
-					eleScreen.SetVisible("voice" + num.ToString("00"), true);
+					eleScreen.SetVisible("voice" + lineIndex.ToString("00"), true);
 					if (message.Index == lastVoiceIndex)
 					{
-						eleScreen["voice" + num.ToString("00")].SetVisible("normal", false);
-						eleScreen["voice" + num.ToString("00")].SetVisible("select", false);
-						eleScreen["voice" + num.ToString("00")].SetVisible("play", true);
+						eleScreen["voice" + lineIndex.ToString("00")].SetVisible("normal", false);
+						eleScreen["voice" + lineIndex.ToString("00")].SetVisible("select", false);
+						eleScreen["voice" + lineIndex.ToString("00")].SetVisible("play", true);
 					}
 					else
 					{
-						if (eleScreen["voice" + num.ToString("00")].Selected)
+						if (eleScreen["voice" + lineIndex.ToString("00")].Selected)
 						{
-							eleScreen["voice" + num.ToString("00")].SetVisible("select", true);
-							eleScreen["voice" + num.ToString("00")].SetVisible("normal", false);
+							eleScreen["voice" + lineIndex.ToString("00")].SetVisible("select", true);
+							eleScreen["voice" + lineIndex.ToString("00")].SetVisible("normal", false);
 						}
 						else
 						{
-							eleScreen["voice" + num.ToString("00")].SetVisible("normal", true);
-							eleScreen["voice" + num.ToString("00")].SetVisible("select", false);
+							eleScreen["voice" + lineIndex.ToString("00")].SetVisible("normal", true);
+							eleScreen["voice" + lineIndex.ToString("00")].SetVisible("select", false);
 						}
-						eleScreen["voice" + num.ToString("00")].SetVisible("play", false);
+						eleScreen["voice" + lineIndex.ToString("00")].SetVisible("play", false);
 					}
-					if (num2 >= 0)
+					if (prevLine >= 0)
 					{
-						eleScreen["voice" + num.ToString("00")].Up = eleScreen["voice" + num2.ToString("00")];
-						eleScreen["voice" + num2.ToString("00")].Down = eleScreen["voice" + num.ToString("00")];
+						eleScreen["voice" + lineIndex.ToString("00")].Up = eleScreen["voice" + prevLine.ToString("00")];
+						eleScreen["voice" + prevLine.ToString("00")].Down = eleScreen["voice" + lineIndex.ToString("00")];
 					}
 					else
 					{
-						eleScreen["voice" + num.ToString("00")].Up = eleScreen["voiceup"];
-						eleScreen["text"].Left = eleScreen["voice" + num.ToString("00")];
+						eleScreen["voice" + lineIndex.ToString("00")].Up = eleScreen["voiceup"];
+						eleScreen["text"].Left = eleScreen["voice" + lineIndex.ToString("00")];
 					}
-					num2 = num;
-					eleScreen["voice" + num.ToString("00")].Position = new Point(60, 100 + message.LinePos * 40);
+					prevLine = lineIndex;
+					eleScreen["voice" + lineIndex.ToString("00")].Position = new Point(60, 100 + message.LinePos * 40);
 				}
 				else
 				{
-					eleScreen.SetVisible("voice" + num.ToString("00"), false);
+					eleScreen.SetVisible("voice" + lineIndex.ToString("00"), false);
 				}
 				if (message.Speaker == null)
 				{
-					eleScreen["text"].SetVisible("textwithout" + num.ToString("00"), true);
-					eleScreen["text"].SetVisible("textwith" + num.ToString("00"), false);
-					eleScreen["text"].SetVisible("speaker" + num.ToString("00"), false);
-					eleScreen["text"]["textwithout" + num.ToString("00")].Position = new Point(0, message.LinePos * 40);
-					strTextWithouts[num].ClearString();
-					strTextWithouts[num].AddString(message.Text, message.Align);
-					strTextWithouts[num].LineNum = message.To - message.From + 1;
-					strTextWithouts[num].CutLine(message.From, message.To);
-					strTextWithouts[num].DefaultColor = ((message.Color == Color.Empty) ? Color.White : message.Color);
+					eleScreen["text"].SetVisible("textwithout" + lineIndex.ToString("00"), true);
+					eleScreen["text"].SetVisible("textwith" + lineIndex.ToString("00"), false);
+					eleScreen["text"].SetVisible("speaker" + lineIndex.ToString("00"), false);
+					eleScreen["text"]["textwithout" + lineIndex.ToString("00")].Position = new Point(0, message.LinePos * 40);
+					strTextWithouts[lineIndex].ClearString();
+					strTextWithouts[lineIndex].AddString(message.Text, message.Align);
+					strTextWithouts[lineIndex].LineNum = message.To - message.From + 1;
+					strTextWithouts[lineIndex].CutLine(message.From, message.To);
+					strTextWithouts[lineIndex].DefaultColor = ((message.Color == Color.Empty) ? Color.White : message.Color);
 				}
 				else
 				{
-					eleScreen["text"].SetVisible("textwith" + num.ToString("00"), true);
-					eleScreen["text"].SetVisible("speaker" + num.ToString("00"), true);
-					eleScreen["text"].SetVisible("textwithout" + num.ToString("00"), false);
-					eleScreen["text"]["textwith" + num.ToString("00")].Position = new Point(120, message.LinePos * 40);
-					eleScreen["text"]["speaker" + num.ToString("00")].Position = new Point(0, message.LinePos * 40);
-					strTextWiths[num].ClearString();
-					strTextWiths[num].AddString(message.Text);
-					strTextWiths[num].LineNum = message.To - message.From + 1;
-					strTextWiths[num].CutLine(message.From, message.To);
-					strTextWiths[num].DefaultColor = ((message.Color == Color.Empty) ? Color.White : message.Color);
-					strSpeakers[num].ClearString();
-					strSpeakers[num].AddString(message.Speaker);
-					strSpeakers[num].LineNum = message.To - message.From + 1;
-					strSpeakers[num].CutLine(message.From, message.To);
-					strSpeakers[num].DefaultColor = ((message.Color == Color.Empty) ? Color.White : message.Color);
+					eleScreen["text"].SetVisible("textwith" + lineIndex.ToString("00"), true);
+					eleScreen["text"].SetVisible("speaker" + lineIndex.ToString("00"), true);
+					eleScreen["text"].SetVisible("textwithout" + lineIndex.ToString("00"), false);
+					eleScreen["text"]["textwith" + lineIndex.ToString("00")].Position = new Point(120, message.LinePos * 40);
+					eleScreen["text"]["speaker" + lineIndex.ToString("00")].Position = new Point(0, message.LinePos * 40);
+					strTextWiths[lineIndex].ClearString();
+					strTextWiths[lineIndex].AddString(message.Text);
+					strTextWiths[lineIndex].LineNum = message.To - message.From + 1;
+					strTextWiths[lineIndex].CutLine(message.From, message.To);
+					strTextWiths[lineIndex].DefaultColor = ((message.Color == Color.Empty) ? Color.White : message.Color);
+					strSpeakers[lineIndex].ClearString();
+					strSpeakers[lineIndex].AddString(message.Speaker);
+					strSpeakers[lineIndex].LineNum = message.To - message.From + 1;
+					strSpeakers[lineIndex].CutLine(message.From, message.To);
+					strSpeakers[lineIndex].DefaultColor = ((message.Color == Color.Empty) ? Color.White : message.Color);
 				}
-				num++;
+				lineIndex++;
 			}
-			for (int i = num; i < MessageScreen.PageLineNum; i++)
+			for (int i = lineIndex; i < MessageScreen.PageLineNum; i++)
 			{
 				eleScreen.SetVisible("voice" + i.ToString("00"), false);
 				eleScreen["text"].SetVisible("textwithout" + i.ToString("00"), false);
 				eleScreen["text"].SetVisible("textwith" + i.ToString("00"), false);
 				eleScreen["text"].SetVisible("speaker" + i.ToString("00"), false);
 			}
-			if (num2 == -1)
+			if (prevLine == -1)
 			{
 				eleScreen["text"].Left = null;
 			}
 			else
 			{
-				eleScreen["voice" + num2.ToString("00")].Down = eleScreen["voicedown"];
+				eleScreen["voice" + prevLine.ToString("00")].Down = eleScreen["voicedown"];
 			}
 			eleScreen["text"].Selected = true;
 			scrollBar.Start = ScrollBarStart;
