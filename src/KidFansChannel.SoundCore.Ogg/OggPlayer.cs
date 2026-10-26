@@ -66,12 +66,12 @@ namespace KidFansChannel.SoundCore.Ogg
 			}
 			set
 			{
-				int num;
-				if (value == 0f || (num = (int)(2000.0 * Math.Log10(value))) < -10000)
+				int channels;
+				if (value == 0f || (channels = (int)(2000.0 * Math.Log10(value))) < -10000)
 				{
-					num = -10000;
+					channels = -10000;
 				}
-				bufferVolume = num;
+				bufferVolume = channels;
 				if (SecBuf != null)
 				{
 					SecBuf.Volume = bufferVolume;
@@ -91,13 +91,13 @@ namespace KidFansChannel.SoundCore.Ogg
 		{
 			get
 			{
-				float num = _position;
+				float channels = _position;
 				if (SecBuf != null)
 				{
 					int playPosition = SecBuf.PlayPosition;
-					num = ((playPosition < bufferPosition) ? (num - (float)(bufferPosition - playPosition) / (float)bufferRate) : (num - (SecBufHoldThisManySeconds - (float)(playPosition - bufferPosition) / (float)bufferRate)));
+					channels = ((playPosition < bufferPosition) ? (channels - (float)(bufferPosition - playPosition) / (float)bufferRate) : (channels - (SecBufHoldThisManySeconds - (float)(playPosition - bufferPosition) / (float)bufferRate)));
 				}
-				return num;
+				return channels;
 			}
 			protected set
 			{
@@ -175,13 +175,13 @@ namespace KidFansChannel.SoundCore.Ogg
 
 		public OggPlayer(Stream stream)
 		{
-			byte[] array = new byte[stream.Length];
+			byte[] decodeBuffer = new byte[stream.Length];
 			using (BinaryReader binaryReader = new BinaryReader(stream))
 			{
-				binaryReader.Read(array, 0, (int)stream.Length);
+				binaryReader.Read(decodeBuffer, 0, (int)stream.Length);
 			}
-			Open(array);
-			array = null;
+			Open(decodeBuffer);
+			decodeBuffer = null;
 		}
 
 		protected unsafe void Open(string fileName)
@@ -193,7 +193,7 @@ namespace KidFansChannel.SoundCore.Ogg
 			lock (thislock)
 			{
 				void* ptr = null;
-				int num = 0;
+				int channels = 0;
 				try
 				{
 					if (NativeMethods.OpenFile(fileName, &ptr) != 0)
@@ -219,7 +219,7 @@ namespace KidFansChannel.SoundCore.Ogg
 			lock (thislock)
 			{
 				void* ptr = null;
-				int num = 0;
+				int channels = 0;
 				try
 				{
 					if (NativeMethods.OpenStream(oggData, oggData.Length, &ptr) != 0)
@@ -251,7 +251,7 @@ namespace KidFansChannel.SoundCore.Ogg
 				{
 					return;
 				}
-				int num = 0;
+				int channels = 0;
 				void* vf_ptr = (void*)vorbisFile;
 				vorbisFile = IntPtr.Zero;
 				try
@@ -336,21 +336,21 @@ namespace KidFansChannel.SoundCore.Ogg
 			AutoResetEvent autoResetEvent3 = new AutoResetEvent(false);
 			try
 			{
-				int num = 0;
-				int num2 = 0;
-				int num3 = 0;
-				int num4 = 0;
-				int num5 = 0;
-				int num6 = 0;
-				int num7 = 0;
-				int num8 = 0;
-				int num9 = 0;
-				int num10 = 0;
+				int channels = 0;
+				int samplingRate = 0;
+				int lastChannels = 0;
+				int lastSamplingRate = 0;
+				int bytesPerSecond = 0;
+				int blockAlign = 0;
+				int written = 0;
+				int bufferSize = 0;
+				int writePos = 0;
+				int playPos = 0;
 				WaitHandle[] waitHandles = new WaitHandle[4] { autoResetEvent, autoResetEvent2, autoResetEvent3, ewh };
-				bool flag = true;
-				bool flag2 = false;
-				bool flag3 = true;
-				byte[] array = new byte[4096];
+				bool keepDecoding = true;
+				bool playbackDone = false;
+				bool firstFill = true;
+				byte[] decodeBuffer = new byte[4096];
 				memoryStream = new MemoryStream();
 				WaveFormat format = new WaveFormat();
 				lock (thislock)
@@ -371,51 +371,51 @@ namespace KidFansChannel.SoundCore.Ogg
 						}
 						break;
 					}
-					int num13;
-					fixed (byte* buf_out = &array[0])
+					int decodeResult;
+					fixed (byte* buf_out = &decodeBuffer[0])
 					{
-						int num11 = 0;
-						int num12 = 0;
+						int sampleCount = 0;
+						int channelMask = 0;
 						lock (thislock)
 						{
 							if (!(vorbisFile != IntPtr.Zero))
 							{
 								return;
 							}
-							num13 = NativeMethods.DecodePacket((void*)vorbisFile, buf_out, array.Length, 16, &num, &num2, &num11, &num12);
+							decodeResult = NativeMethods.DecodePacket((void*)vorbisFile, buf_out, decodeBuffer.Length, 16, &channels, &samplingRate, &sampleCount, &channelMask);
 							_position = (float)NativeMethods.TellTime((void*)vorbisFile);
 						}
 					}
-					if (num13 == 0)
+					if (decodeResult == 0)
 					{
 						if (float.IsNaN(_repeatPosition))
 						{
-							if (!flag3)
+							if (!firstFill)
 							{
-								if (num10 <= num9)
+								if (playPos <= writePos)
 								{
-									memoryStream.SetLength(num8 - num9);
+									memoryStream.SetLength(bufferSize - writePos);
 									memoryStream.Position = 0L;
-									SecBuf.Write(num9, memoryStream, num8 - num9, LockFlag.None);
-									memoryStream.SetLength(num10);
+									SecBuf.Write(writePos, memoryStream, bufferSize - writePos, LockFlag.None);
+									memoryStream.SetLength(playPos);
 									memoryStream.Position = 0L;
-									SecBuf.Write(0, memoryStream, num10, LockFlag.None);
+									SecBuf.Write(0, memoryStream, playPos, LockFlag.None);
 								}
 								else
 								{
-									memoryStream.SetLength(num10 - num9);
+									memoryStream.SetLength(playPos - writePos);
 									memoryStream.Position = 0L;
-									SecBuf.Write(num9, memoryStream, num10 - num9, LockFlag.None);
+									SecBuf.Write(writePos, memoryStream, playPos - writePos, LockFlag.None);
 								}
 							}
-							flag2 = true;
+							playbackDone = true;
 						}
 						else
 						{
-							fixed (byte* buf_out2 = &array[0])
+							fixed (byte* buf_out2 = &decodeBuffer[0])
 							{
-								int num14 = 0;
-								int num15 = 0;
+								int unused14 = 0;
+								int unused15 = 0;
 								lock (thislock)
 								{
 									if (!(vorbisFile != IntPtr.Zero))
@@ -423,13 +423,13 @@ namespace KidFansChannel.SoundCore.Ogg
 										return;
 									}
 									NativeMethods.SeekTime((void*)vorbisFile, _repeatPosition);
-									num13 = NativeMethods.DecodePacket((void*)vorbisFile, buf_out2, array.Length, 16, &num, &num2, &num14, &num15);
+									decodeResult = NativeMethods.DecodePacket((void*)vorbisFile, buf_out2, decodeBuffer.Length, 16, &channels, &samplingRate, &unused14, &unused15);
 									_position = (float)NativeMethods.TellTime((void*)vorbisFile);
 								}
 							}
 						}
 					}
-					if (flag && flag2)
+					if (keepDecoding && playbackDone)
 					{
 						if (Stopped != null)
 						{
@@ -439,7 +439,7 @@ namespace KidFansChannel.SoundCore.Ogg
 						_playing = false;
 						return;
 					}
-					if (!flag && (num != num3 || num2 != num4))
+					if (!keepDecoding && (channels != lastChannels || samplingRate != lastSamplingRate))
 					{
 						if (null != SecBuf)
 						{
@@ -453,22 +453,22 @@ namespace KidFansChannel.SoundCore.Ogg
 						_playing = false;
 						return;
 					}
-					if (flag)
+					if (keepDecoding)
 					{
-						num6 = num * 2;
-						num5 = num2 * num6;
-						int num16 = (int)((float)num2 * SecBufHoldThisManySeconds);
-						SecBufHoldThisManySeconds = (float)num16 / (float)num2;
-						bufferRate = num5;
-						format.AverageBytesPerSecond = num5;
+						blockAlign = channels * 2;
+						bytesPerSecond = samplingRate * blockAlign;
+						int unused16 = (int)((float)samplingRate * SecBufHoldThisManySeconds);
+						SecBufHoldThisManySeconds = (float)unused16 / (float)samplingRate;
+						bufferRate = bytesPerSecond;
+						format.AverageBytesPerSecond = bytesPerSecond;
 						format.BitsPerSample = 16;
-						format.BlockAlign = (short)num6;
-						format.Channels = (short)num;
-						format.SamplesPerSecond = num2;
+						format.BlockAlign = (short)blockAlign;
+						format.Channels = (short)channels;
+						format.SamplesPerSecond = samplingRate;
 						format.FormatTag = WaveFormatTag.Pcm;
 						bufferDescription = new BufferDescription();
 						bufferDescription.Format = format;
-						num8 = (bufferDescription.BufferBytes = num16 * num6);
+						bufferSize = (bufferDescription.BufferBytes = unused16 * blockAlign);
 						bufferDescription.CanGetCurrentPosition = true;
 						bufferDescription.ControlPositionNotify = true;
 						bufferDescription.ControlVolume = true;
@@ -500,59 +500,59 @@ namespace KidFansChannel.SoundCore.Ogg
 							bufferDescription.ControlPan = false;
 							SecBuf = new SecondaryBuffer(bufferDescription, directSoundDevice);
 						}
-						BufferPositionNotify[] array2 = new BufferPositionNotify[3];
-						array2[0].Offset = 0;
-						array2[0].EventNotifyHandle = autoResetEvent.SafeWaitHandle.DangerousGetHandle();
-						array2[1].Offset = num16 / 3 * num6;
-						array2[1].EventNotifyHandle = autoResetEvent2.SafeWaitHandle.DangerousGetHandle();
-						array2[2].Offset = num16 * 2 / 3 * num6;
-						array2[2].EventNotifyHandle = autoResetEvent3.SafeWaitHandle.DangerousGetHandle();
+						BufferPositionNotify[] tempBuffer = new BufferPositionNotify[3];
+						tempBuffer[0].Offset = 0;
+						tempBuffer[0].EventNotifyHandle = autoResetEvent.SafeWaitHandle.DangerousGetHandle();
+						tempBuffer[1].Offset = unused16 / 3 * blockAlign;
+						tempBuffer[1].EventNotifyHandle = autoResetEvent2.SafeWaitHandle.DangerousGetHandle();
+						tempBuffer[2].Offset = unused16 * 2 / 3 * blockAlign;
+						tempBuffer[2].EventNotifyHandle = autoResetEvent3.SafeWaitHandle.DangerousGetHandle();
 						notify = new Notify(SecBuf);
-						notify.SetNotificationPositions(array2);
-						num3 = num;
-						num4 = num2;
-						flag = false;
+						notify.SetNotificationPositions(tempBuffer);
+						lastChannels = channels;
+						lastSamplingRate = samplingRate;
+						keepDecoding = false;
 					}
-					else if (flag2)
+					else if (playbackDone)
 					{
-						if (flag3)
+						if (firstFill)
 						{
 							SecBuf.Play(0, BufferPlayFlags.Looping);
 						}
-						int num18 = 0;
-						int num19 = num10;
+						int wrapCount = 0;
+						int playSnapshot = playPos;
 						while (!stopNow)
 						{
 							int playPosition = SecBuf.PlayPosition;
-							if (playPosition < num19)
+							if (playPosition < playSnapshot)
 							{
-								num18++;
-								memoryStream.SetLength(num8 - num19);
+								wrapCount++;
+								memoryStream.SetLength(bufferSize - playSnapshot);
 								memoryStream.Position = 0L;
-								SecBuf.Write(num19, memoryStream, num8 - num19, LockFlag.None);
+								SecBuf.Write(playSnapshot, memoryStream, bufferSize - playSnapshot, LockFlag.None);
 								memoryStream.SetLength(playPosition);
 								memoryStream.Position = 0L;
 								SecBuf.Write(0, memoryStream, playPosition, LockFlag.None);
 							}
-							else if (playPosition > num19)
+							else if (playPosition > playSnapshot)
 							{
-								memoryStream.SetLength(playPosition - num19);
+								memoryStream.SetLength(playPosition - playSnapshot);
 								memoryStream.Position = 0L;
-								SecBuf.Write(num19, memoryStream, playPosition - num19, LockFlag.None);
+								SecBuf.Write(playSnapshot, memoryStream, playPosition - playSnapshot, LockFlag.None);
 							}
-							if (num10 <= num9)
+							if (playPos <= writePos)
 							{
-								if (playPosition >= num9 || num18 > 0)
+								if (playPosition >= writePos || wrapCount > 0)
 								{
 									break;
 								}
 							}
-							else if ((playPosition < num10 && playPosition >= num9) || num18 > 1)
+							else if ((playPosition < playPos && playPosition >= writePos) || wrapCount > 1)
 							{
 								break;
 							}
 							Thread.Sleep(20);
-							num19 = playPosition;
+							playSnapshot = playPosition;
 						}
 						if (null != SecBuf)
 						{
@@ -561,55 +561,55 @@ namespace KidFansChannel.SoundCore.Ogg
 						break;
 					}
 					memoryStream.SetLength(0L);
-					memoryStream.Write(array, 0, num13);
+					memoryStream.Write(decodeBuffer, 0, decodeResult);
 					memoryStream.Position = 0L;
-					num7 = 0;
-					if (flag3)
+					written = 0;
+					if (firstFill)
 					{
-						int num20 = (int)Math.Min(memoryStream.Length, num8 - num9);
-						if (num20 > 0)
+						int chunkLength = (int)Math.Min(memoryStream.Length, bufferSize - writePos);
+						if (chunkLength > 0)
 						{
-							SecBuf.Write(num9, memoryStream, num20, LockFlag.None);
-							num9 += num20;
-							num7 += num20;
+							SecBuf.Write(writePos, memoryStream, chunkLength, LockFlag.None);
+							writePos += chunkLength;
+							written += chunkLength;
 						}
-						if (num8 != num9)
+						if (bufferSize != writePos)
 						{
 							continue;
 						}
-						flag3 = false;
-						num9 = 0;
+						firstFill = false;
+						writePos = 0;
 						SecBuf.Play(0, BufferPlayFlags.Looping);
 						Thread.Sleep(0);
 					}
-					while (num7 < memoryStream.Length && !stopNow)
+					while (written < memoryStream.Length && !stopNow)
 					{
-						int num21 = 0;
+						int spaceLeft = 0;
 						int playPosition2 = SecBuf.PlayPosition;
 						int writePosition = SecBuf.WritePosition;
-						if (num9 < playPosition2 && (writePosition >= playPosition2 || writePosition < num9))
+						if (writePos < playPosition2 && (writePosition >= playPosition2 || writePosition < writePos))
 						{
-							num21 = playPosition2 - num9;
+							spaceLeft = playPosition2 - writePos;
 						}
-						else if (num9 > writePosition && writePosition >= playPosition2)
+						else if (writePos > writePosition && writePosition >= playPosition2)
 						{
-							num21 = num8 - num9 + playPosition2;
+							spaceLeft = bufferSize - writePos + playPosition2;
 						}
-						if (num21 > memoryStream.Length / 2)
+						if (spaceLeft > memoryStream.Length / 2)
 						{
-							num21 = (int)Math.Min(num21, memoryStream.Length - num7);
-							memoryStream.Position = num7;
-							SecBuf.Write(num9, memoryStream, num21, LockFlag.None);
-							num9 = (num9 + num21) % num8;
-							num10 = playPosition2;
-							num7 += num21;
+							spaceLeft = (int)Math.Min(spaceLeft, memoryStream.Length - written);
+							memoryStream.Position = written;
+							SecBuf.Write(writePos, memoryStream, spaceLeft, LockFlag.None);
+							writePos = (writePos + spaceLeft) % bufferSize;
+							playPos = playPosition2;
+							written += spaceLeft;
 						}
 						else
 						{
 							WaitHandle.WaitAny(waitHandles, new TimeSpan(0, 0, 5), true);
 						}
 					}
-					bufferPosition = num9;
+					bufferPosition = writePos;
 				}
 				if (Stopped != null)
 				{
