@@ -30,7 +30,7 @@ namespace KidFansChannel.InputCore
 
 		public List<GamePadInstance> GetGamePadList()
 		{
-			List<GamePadInstance> list = new List<GamePadInstance>();
+			List<GamePadInstance> pads = new List<GamePadInstance>();
 			DeviceList devices = Manager.GetDevices(DeviceClass.GameControl, EnumDevicesFlags.AttachedOnly);
 			foreach (DeviceInstance item in devices)
 			{
@@ -40,9 +40,9 @@ namespace KidFansChannel.InputCore
 				Device device = new Device(item.InstanceGuid);
 				gamePadInstance.ForceFeedback = device.Caps.ForceFeedback;
 				device.Dispose();
-				list.Add(gamePadInstance);
+				pads.Add(gamePadInstance);
 			}
-			return list;
+			return pads;
 		}
 
 		public void Initialize(GamePadInstance gamePadInstance, Form form)
@@ -65,23 +65,23 @@ namespace KidFansChannel.InputCore
 				}
 				if (gamePadInstance.ForceFeedback)
 				{
-					int[] array = null;
+					int[] axes = null;
 					foreach (DeviceObjectInstance object2 in directInputDevice.GetObjects(DeviceObjectTypeFlags.Axis))
 					{
 						if ((object2.Flags & 1) != 0)
 						{
-							if (array != null)
+							if (axes != null)
 							{
-								int[] array2 = new int[array.Length + 1];
-								array.CopyTo(array2, 0);
-								array = array2;
+								int[] grownAxes = new int[axes.Length + 1];
+								axes.CopyTo(grownAxes, 0);
+								axes = grownAxes;
 							}
 							else
 							{
-								array = new int[1];
+								axes = new int[1];
 							}
-							array[array.Length - 1] = object2.Offset;
-							if (2 == array.Length)
+							axes[axes.Length - 1] = object2.Offset;
+							if (2 == axes.Length)
 							{
 								break;
 							}
@@ -92,10 +92,10 @@ namespace KidFansChannel.InputCore
 						if (DInputHelper.GetTypeCode(effect.EffectType) == 1)
 						{
 							Effect die = new Effect();
-							die.SetDirection(new int[array.Length]);
-							die.SetAxes(new int[array.Length]);
+							die.SetDirection(new int[axes.Length]);
+							die.SetAxes(new int[axes.Length]);
 							die.EffectType = EffectType.ConstantForce;
-							die.ConditionStruct = new Condition[array.Length];
+							die.ConditionStruct = new Condition[axes.Length];
 							die.Duration = -1;
 							die.Gain = 10000;
 							die.SamplePeriod = 0;
@@ -103,7 +103,7 @@ namespace KidFansChannel.InputCore
 							die.TriggerRepeatInterval = -1;
 							die.Flags = EffectFlags.Cartesian | EffectFlags.ObjectOffsets;
 							die.Constant.Magnitude = 5000;
-							die.SetAxes(array);
+							die.SetAxes(axes);
 							effectObject = new EffectObject(effect.EffectGuid, die, directInputDevice);
 						}
 					}
@@ -178,22 +178,22 @@ namespace KidFansChannel.InputCore
 				buttonPressed[j] = false;
 			}
 			int[] pointOfView = currentJoystickState.GetPointOfView();
-			int num = ((pointOfView.Length != 0) ? pointOfView[0] : (-1));
+			int povAngle = ((pointOfView.Length != 0) ? pointOfView[0] : (-1));
 			int x = currentJoystickState.X;
 			int y = currentJoystickState.Y;
-			if ((x < -500 && x < -Math.Abs(y)) || num == 27000 || num == 31500 || num == 22500)
+			if ((x < -500 && x < -Math.Abs(y)) || povAngle == 27000 || povAngle == 31500 || povAngle == 22500)
 			{
 				buttonPressed[12] = true;
 			}
-			else if ((x > 500 && x > Math.Abs(y)) || num == 9000 || num == 13500 || num == 4500)
+			else if ((x > 500 && x > Math.Abs(y)) || povAngle == 9000 || povAngle == 13500 || povAngle == 4500)
 			{
 				buttonPressed[13] = true;
 			}
-			else if ((y < -500 && y <= -Math.Abs(x)) || num == 0 || num == 4500 || num == 31500)
+			else if ((y < -500 && y <= -Math.Abs(x)) || povAngle == 0 || povAngle == 4500 || povAngle == 31500)
 			{
 				buttonPressed[14] = true;
 			}
-			else if ((y > 500 && y >= Math.Abs(x)) || num == 18000 || num == 22500 || num == 13500)
+			else if ((y > 500 && y >= Math.Abs(x)) || povAngle == 18000 || povAngle == 22500 || povAngle == 13500)
 			{
 				buttonPressed[15] = true;
 			}

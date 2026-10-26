@@ -165,26 +165,26 @@ namespace KidFansChannel.InputCore
 			}
 			for (int i = 0; i < indexList.Count; i++)
 			{
-				bool flag = false;
+				bool pressed = false;
 				if (keyBoardMap.ContainsKey(indexList[i]) && keyBoard.GetKeyState(keyBoardMap[indexList[i]]))
 				{
-					flag = true;
+					pressed = true;
 				}
 				if (UseXInput)
 				{
 					if (gamePadMap.ContainsKey(indexList[i]) && xInput.GetButtonState(gamePadMap[indexList[i]]))
 					{
-						flag = true;
+						pressed = true;
 					}
 				}
 				else if (gamePadMap.ContainsKey(indexList[i]) && gamePad.GetButtonState(gamePadMap[indexList[i]]))
 				{
-					flag = true;
+					pressed = true;
 				}
-				if (flag != keyDown[i])
+				if (pressed != keyDown[i])
 				{
-					keyPress[i] = flag;
-					keyDown[i] = flag;
+					keyPress[i] = pressed;
+					keyDown[i] = pressed;
 				}
 			}
 			GetDirection();
@@ -215,14 +215,14 @@ namespace KidFansChannel.InputCore
 
 		public bool CheckPress(int index)
 		{
-			int num = indexList.IndexOf(index);
-			if (num == -1)
+			int keyIndex = indexList.IndexOf(index);
+			if (keyIndex == -1)
 			{
 				throw new ArgumentOutOfRangeException();
 			}
-			if (keyPress[num])
+			if (keyPress[keyIndex])
 			{
-				keyPress[num] = false;
+				keyPress[keyIndex] = false;
 				return true;
 			}
 			return false;
@@ -230,12 +230,12 @@ namespace KidFansChannel.InputCore
 
 		public bool CheckDown(int index)
 		{
-			int num = indexList.IndexOf(index);
-			if (num == -1)
+			int keyIndex = indexList.IndexOf(index);
+			if (keyIndex == -1)
 			{
 				throw new ArgumentOutOfRangeException();
 			}
-			return keyDown[num];
+			return keyDown[keyIndex];
 		}
 
 		public Direction GetDirection()
