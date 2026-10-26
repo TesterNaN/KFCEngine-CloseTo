@@ -159,7 +159,7 @@ namespace KidFansChannel.CloseTo.Commands.Map
 						{
 							picHintSubs[l][m][n] = GameManager.Graphics.CreateSubPicture(picHints[l][m], new Rectangle(n * 80, 0, 80, 80));
 						}
-						for (int num = 0; num < 3; num++)
+						for (int nodeIndex = 0; nodeIndex < 3; nodeIndex++)
 						{
 							picHintAnimes[l][m].AddFrame(picHintSubs[l][m][0], 0.5f);
 							picHintAnimes[l][m].AddFrame(picHintSubs[l][m][1], 0.5f);
@@ -430,7 +430,7 @@ namespace KidFansChannel.CloseTo.Commands.Map
 				}
 				return;
 			}
-			bool flag = false;
+			bool found = false;
 			if (GameManager.GalCore.GameInput.CheckDirectionPress(2))
 			{
 				if (Parent.CurrentSelected == -1)
@@ -445,7 +445,7 @@ namespace KidFansChannel.CloseTo.Commands.Map
 						toSelected = Parent.ItemStrings.Count - 1;
 					}
 				}
-				flag = true;
+				found = true;
 			}
 			else if (GameManager.GalCore.GameInput.CheckDirectionPress(3))
 			{
@@ -461,9 +461,9 @@ namespace KidFansChannel.CloseTo.Commands.Map
 						toSelected = 0;
 					}
 				}
-				flag = true;
+				found = true;
 			}
-			if (flag)
+			if (found)
 			{
 				Point location = new Point(iconRects[_icons[toSelected]].X + iconRects[_icons[toSelected]].Width / 2, iconRects[_icons[toSelected]].Y + iconRects[_icons[toSelected]].Height / 2);
 				((CloseToCore)GameManager.GalCore).MoveMouse(location);

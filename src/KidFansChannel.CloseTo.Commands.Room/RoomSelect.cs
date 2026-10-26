@@ -369,26 +369,26 @@ namespace KidFansChannel.CloseTo.Commands.Room
 			{
 				text = "00:00";
 			}
-			int num = int.Parse(text.Substring(0, 2));
-			if (num < 12)
+			int hour = int.Parse(text.Substring(0, 2));
+			if (hour < 12)
 			{
 				timeTexts[0] = 11;
 			}
 			else
 			{
 				timeTexts[0] = 12;
-				num -= 12;
+				hour -= 12;
 			}
-			if (num < 10)
+			if (hour < 10)
 			{
 				timeTexts[1] = 0;
 			}
 			else
 			{
 				timeTexts[1] = 1;
-				num -= 10;
+				hour -= 10;
 			}
-			timeTexts[2] = num;
+			timeTexts[2] = hour;
 			int num2 = int.Parse(text.Substring(3, 2));
 			timeTexts[3] = num2 / 10;
 			timeTexts[4] = num2 % 10;
@@ -485,9 +485,9 @@ namespace KidFansChannel.CloseTo.Commands.Room
 			}
 			for (int l = 0; l < powerTimes.Length; l++)
 			{
-				int num = (int)(powerTimes[l] / 0.5f);
-				picPowers[num].X = 120 + 40 * l;
-				canvas.DrawPicture(picPowers[num]);
+				int hour = (int)(powerTimes[l] / 0.5f);
+				picPowers[hour].X = 120 + 40 * l;
+				canvas.DrawPicture(picPowers[hour]);
 			}
 			if (GameManager.GalCore.GameOptions.HintShow)
 			{
@@ -746,24 +746,24 @@ namespace KidFansChannel.CloseTo.Commands.Room
 					}
 				}
 				currentObj = -1;
-				int num;
+				int hour;
 				int num2;
 				if (GameManager.GalCore.GameOptions.Graphics != GameOptions.Level.Low)
 				{
 					PointF pointF = RoomBg.ScreenToPicture(location, bg.CamPos);
-					num = (int)(pointF.X * (float)selectBmp.Width + 0.5f);
+					hour = (int)(pointF.X * (float)selectBmp.Width + 0.5f);
 					num2 = (int)(pointF.Y * (float)selectBmp.Height + 0.5f);
 				}
 				else
 				{
-					num = (int)(((float)location.X + (bg.CamPos - 630f / 4095f) * 1200f * 39f / 27f) / 2000f * (float)selectBmp.Width + 0.5f);
+					hour = (int)(((float)location.X + (bg.CamPos - 630f / 4095f) * 1200f * 39f / 27f) / 2000f * (float)selectBmp.Width + 0.5f);
 					num2 = (int)((float)location.Y / 600f * (float)selectBmp.Height + 0.5f);
 				}
-				if (num < 0 || num >= selectBmp.Width || num2 < 0 || num2 >= selectBmp.Height)
+				if (hour < 0 || hour >= selectBmp.Width || num2 < 0 || num2 >= selectBmp.Height)
 				{
 					return;
 				}
-				Color pixel = selectBmp.GetPixel(num, num2);
+				Color pixel = selectBmp.GetPixel(hour, num2);
 				if (pixel != Color.FromArgb(248, 248, 248))
 				{
 					for (int m = 0; m < objs.Count; m++)

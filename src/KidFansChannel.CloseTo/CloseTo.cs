@@ -73,7 +73,7 @@ namespace KidFansChannel.CloseTo
 			gameData.SetCurrentDirectory(Environment.CurrentDirectory);
 			if (!File.Exists("bg.dat") || !File.Exists("chara.dat") || !File.Exists("bgm.dat") || !File.Exists("se.dat") || !File.Exists("voice.dat"))
 			{
-				bool flag = false;
+				bool initialized = false;
 				string[] logicalDrives = Directory.GetLogicalDrives();
 				StringBuilder stringBuilder = new StringBuilder(256);
 				StringBuilder lpFileSystemNameBuffer = new StringBuilder(256);
@@ -86,7 +86,7 @@ namespace KidFansChannel.CloseTo
 					if (GetDriveType(logicalDrives[i]) == Drive_CDRom && GetVolumeInformation(logicalDrives[i], stringBuilder, 256, out lpVolumeSerialNumber, out lpMaximumComponentLength, out lpFileSystemFlags, lpFileSystemNameBuffer, 256) != 0 && stringBuilder.ToString().StartsWith("CloseTo") && Directory.Exists(path = Path.Combine(logicalDrives[i], "CloseTo")) && File.Exists(Path.Combine(path, "bg.dat")) && File.Exists(Path.Combine(path, "chara.dat")) && File.Exists(Path.Combine(path, "bgm.dat")) && File.Exists(Path.Combine(path, "se.dat")) && File.Exists(Path.Combine(path, "voice.dat")))
 					{
 						gameData.AddDirectory(Path.Combine(logicalDrives[i], "CloseTo"));
-						flag = true;
+						initialized = true;
 						break;
 					}
 				}

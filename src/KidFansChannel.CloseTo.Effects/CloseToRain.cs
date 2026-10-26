@@ -35,10 +35,10 @@ namespace KidFansChannel.CloseTo.Effects
 
 		protected override void InitStyle()
 		{
-			int num = Style % 9;
-			int num2 = num % 3;
-			int num3 = num / 3;
-			switch (num2)
+			int styleIndex = Style % 9;
+			int col = styleIndex % 3;
+			int row = styleIndex / 3;
+			switch (col)
 			{
 			case 0:
 				AngleMin = -13f;
@@ -55,7 +55,7 @@ namespace KidFansChannel.CloseTo.Effects
 			}
 			AngleMax *= (float)Math.PI / 180f;
 			AngleMin *= (float)Math.PI / 180f;
-			switch (num3)
+			switch (row)
 			{
 			case 0:
 				Num = 170;

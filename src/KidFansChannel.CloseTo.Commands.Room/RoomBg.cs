@@ -97,20 +97,20 @@ namespace KidFansChannel.CloseTo.Commands.Room
 
 		public static PointF ScreenToPicture(Point location, float canPos)
 		{
-			double num = Math.Atan(((double)((float)location.X / (float)BgDisplay.ScreenSize.Width) * 2.0 - 1.0) * Math.Tan(Math.PI / 6.0));
-			double num2 = 1.0 / Math.Cos(num);
-			double num3 = num / Math.PI * 360.0 / 390.0 + (double)canPos;
-			double num4 = ((double)((float)location.Y / (float)BgDisplay.ScreenSize.Height) - 0.5) / num2 + 0.5;
-			return new PointF((float)num3, (float)num4);
+			double angle = Math.Atan(((double)((float)location.X / (float)BgDisplay.ScreenSize.Width) * 2.0 - 1.0) * Math.Tan(Math.PI / 6.0));
+			double perspective = 1.0 / Math.Cos(angle);
+			double panX = angle / Math.PI * 360.0 / 390.0 + (double)canPos;
+			double screenY = ((double)((float)location.Y / (float)BgDisplay.ScreenSize.Height) - 0.5) / perspective + 0.5;
+			return new PointF((float)panX, (float)screenY);
 		}
 
 		public static Point PictureToScreen(PointF location, float canPos)
 		{
-			double num = (double)(location.X - canPos) * 390.0 / 360.0 * Math.PI;
-			double num2 = 1.0 / Math.Cos(num);
-			double num3 = (((double)location.Y - 0.5) * num2 + 0.5) * (double)BgDisplay.ScreenSize.Height;
-			double num4 = (Math.Tan(num) / Math.Tan(Math.PI / 6.0) + 1.0) / 2.0 * (double)BgDisplay.ScreenSize.Width;
-			return new Point((int)(num4 + 0.5), (int)(num3 + 0.5));
+			double angle = (double)(location.X - canPos) * 390.0 / 360.0 * Math.PI;
+			double perspective = 1.0 / Math.Cos(angle);
+			double panX = (((double)location.Y - 0.5) * perspective + 0.5) * (double)BgDisplay.ScreenSize.Height;
+			double screenY = (Math.Tan(angle) / Math.Tan(Math.PI / 6.0) + 1.0) / 2.0 * (double)BgDisplay.ScreenSize.Width;
+			return new Point((int)(screenY + 0.5), (int)(panX + 0.5));
 		}
 
 		public void Draw(ICanvas canvas)
@@ -134,8 +134,8 @@ namespace KidFansChannel.CloseTo.Commands.Room
 			}
 			else
 			{
-				float num = (_camPos - 630f / 4095f) * 1200f * 39f / 27f;
-				picSub.Rectangle = new Rectangle((int)(num + 0.5f), 0, 800, 600);
+				float angle = (_camPos - 630f / 4095f) * 1200f * 39f / 27f;
+				picSub.Rectangle = new Rectangle((int)(angle + 0.5f), 0, 800, 600);
 				canvas.DrawPicture(picSub);
 			}
 		}

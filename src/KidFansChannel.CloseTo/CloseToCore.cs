@@ -338,15 +338,15 @@ namespace KidFansChannel.CloseTo
 			}
 			else if (lastAutoOrQuick)
 			{
-				bool flag = false;
+				bool succeeded = false;
 				foreach (ScriptCommand currentCommand in CurrentCommandList)
 				{
 					if (currentCommand is Select)
 					{
-						flag = true;
+						succeeded = true;
 					}
 				}
-				if (!flag)
+				if (!succeeded)
 				{
 					GameData.LoadAndPlaySystemSound("cancel.ogg");
 				}
@@ -578,13 +578,13 @@ namespace KidFansChannel.CloseTo
 
 		private void CloseToLoadDropSave(object[] param)
 		{
-			bool flag = false;
+			bool succeeded = false;
 			if (DropScreen != null && ((CloseToSaveLoadScreen)DropScreen).Back)
 			{
-				flag = true;
+				succeeded = true;
 			}
 			base.LoadDropSave((string)param[0]);
-			if (flag)
+			if (succeeded)
 			{
 				GameManager.GalCore.HideTitleScreen();
 			}
