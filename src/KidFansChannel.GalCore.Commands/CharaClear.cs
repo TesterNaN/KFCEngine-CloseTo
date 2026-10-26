@@ -55,20 +55,20 @@ namespace KidFansChannel.GalCore.Commands
 		public override void InitCommand()
 		{
 			base.InitCommand();
-			int num = -1;
+			int charaIndex = -1;
 			for (int i = 0; i < ScriptCommand.CommandList.Count; i++)
 			{
 				ScriptCommand scriptCommand = ScriptCommand.CommandList[i];
 				if (scriptCommand is CharaDisplay && ((CharaDisplay)scriptCommand).Index == _index)
 				{
-					num = i;
+					charaIndex = i;
 				}
 			}
-			if (num == -1)
+			if (charaIndex == -1)
 			{
 				throw new RuntimeException(Node, Info, "No corresponding charadisplay found.");
 			}
-			CharaDisplay charaDisplay = (CharaDisplay)ScriptCommand.CommandList[num];
+			CharaDisplay charaDisplay = (CharaDisplay)ScriptCommand.CommandList[charaIndex];
 			if (_animation)
 			{
 				charaDisplay.Hide(Lasting, Animation);

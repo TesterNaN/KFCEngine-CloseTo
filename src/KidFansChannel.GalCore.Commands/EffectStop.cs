@@ -50,16 +50,16 @@ namespace KidFansChannel.GalCore.Commands
 				return;
 			}
 			_speed = ScriptHelper.GetArgumentFloat(node, info, "speed", 0.5f);
-			bool flag = false;
+			bool supportsSpeed = false;
 			foreach (ScriptCommand command in ScriptCommand.CommandList)
 			{
 				if (command is EffectStart && ((EffectStart)command).TypeStr == _typeStr)
 				{
-					flag = ((EffectStart)command).Effect.SupportSpeed;
+					supportsSpeed = ((EffectStart)command).Effect.SupportSpeed;
 				}
 			}
-			Single = flag && _speed > 0f;
-			Lasting = flag && _speed > 0f;
+			Single = supportsSpeed && _speed > 0f;
+			Lasting = supportsSpeed && _speed > 0f;
 		}
 
 		public override void InitCommand()

@@ -443,23 +443,23 @@ namespace KidFansChannel.GalCore.Commands
 			if (canRecord)
 			{
 				canRecord = false;
-				SelectRecord[] array = new SelectRecord[_cases.Count];
+				SelectRecord[] records = new SelectRecord[_cases.Count];
 				for (int i = 0; i < _cases.Count; i++)
 				{
-					array[i] = new SelectRecord();
-					array[i].Text = _itemStrings[i].String;
+					records[i] = new SelectRecord();
+					records[i].Text = _itemStrings[i].String;
 					if (_cases[i] == _define.Case[_define.Value])
 					{
-						array[i].Selected = true;
+						records[i].Selected = true;
 					}
 					else
 					{
-						array[i].Selected = false;
+						records[i].Selected = false;
 					}
-					array[i].Title = _define.Title;
-					array[i].Case = _cases[i];
+					records[i].Title = _define.Title;
+					records[i].Case = _cases[i];
 				}
-				return array;
+				return records;
 			}
 			return null;
 		}

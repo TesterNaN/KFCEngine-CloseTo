@@ -49,7 +49,7 @@ namespace KidFansChannel.GalCore.Commands
 		public override void InitCommand()
 		{
 			base.InitCommand();
-			bool flag = false;
+			bool volumeFound = false;
 			foreach (ScriptCommand command in ScriptCommand.CommandList)
 			{
 				if (command is BgmPlay)
@@ -63,12 +63,12 @@ namespace KidFansChannel.GalCore.Commands
 					{
 						ScriptCommand.Sound.VolumeBgm = _volume;
 					}
-					flag = true;
+					volumeFound = true;
 					break;
 				}
 			}
 			FinishCommand();
-			if (!flag)
+			if (!volumeFound)
 			{
 				throw new RuntimeException(Node, Info, "No bgm is playing now.");
 			}

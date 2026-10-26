@@ -64,7 +64,7 @@ namespace KidFansChannel.GalCore.Commands
 		public override void InitCommand()
 		{
 			base.InitCommand();
-			bool flag = false;
+			bool volumeFound = false;
 			foreach (ScriptCommand command in ScriptCommand.CommandList)
 			{
 				if (!(command is SePlay))
@@ -84,11 +84,11 @@ namespace KidFansChannel.GalCore.Commands
 				{
 					ScriptCommand.Sound.SetVolumeSound(_volume, _index);
 				}
-				flag = true;
+				volumeFound = true;
 				break;
 			}
 			FinishCommand();
-			if (!flag)
+			if (!volumeFound)
 			{
 				throw new RuntimeException(Node, Info, "No se is playing now.");
 			}

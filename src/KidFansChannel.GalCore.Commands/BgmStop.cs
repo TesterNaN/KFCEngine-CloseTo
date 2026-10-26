@@ -34,18 +34,18 @@ namespace KidFansChannel.GalCore.Commands
 		public override void InitCommand()
 		{
 			base.InitCommand();
-			bool flag = false;
+			bool stopped = false;
 			foreach (ScriptCommand command in ScriptCommand.CommandList)
 			{
 				if (command is BgmPlay)
 				{
 					((BgmPlay)command).Stop(_animation);
-					flag = true;
+					stopped = true;
 					break;
 				}
 			}
 			FinishCommand();
-			if (!flag)
+			if (!stopped)
 			{
 				throw new RuntimeException(Node, Info, "No bgm is playing now.");
 			}
