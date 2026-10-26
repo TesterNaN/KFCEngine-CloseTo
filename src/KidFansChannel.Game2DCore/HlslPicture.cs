@@ -95,8 +95,8 @@ namespace KidFansChannel.Game2DCore
 				_effect.Technique = "HlslPicture";
 				bool textured = Textured;
 				Textured = false;
-				int num = _effect.Begin(FX.None);
-				for (int i = 0; i < num; i++)
+				int passCount = _effect.Begin(FX.None);
+				for (int i = 0; i < passCount; i++)
 				{
 					_effect.BeginPass(i);
 					base.Draw(device, vb, target);

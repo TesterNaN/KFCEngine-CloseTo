@@ -97,8 +97,8 @@ namespace KidFansChannel.Game2DCore
 				_effect.SetValue("g_ArgColor", new ColorValue(ArgumentColor.R, ArgumentColor.G, ArgumentColor.B, ArgumentColor.A));
 				_effect.Technique = "MixPicture";
 				Textured = false;
-				int num = _effect.Begin(FX.None);
-				for (int i = 0; i < num; i++)
+				int passCount = _effect.Begin(FX.None);
+				for (int i = 0; i < passCount; i++)
 				{
 					_effect.BeginPass(i);
 					base.Draw(device, vb, target);
@@ -115,20 +115,20 @@ namespace KidFansChannel.Game2DCore
 			{
 				for (int k = 0; k < Width; k++)
 				{
-					uint num2 = *ptr2 >> 24;
-					uint num3 = *ptr3 >> 24;
-					if (num2 == 0 && num3 == 0)
+					uint srcAlpha = *ptr2 >> 24;
+					uint dstAlpha = *ptr3 >> 24;
+					if (srcAlpha == 0 && dstAlpha == 0)
 					{
 						*ptr = 0u;
 					}
-					else if (num2 == 0)
+					else if (srcAlpha == 0)
 					{
-						uint num4 = (uint)((float)num3 * _mixAlpha + 0.5f);
+						uint num4 = (uint)((float)dstAlpha * _mixAlpha + 0.5f);
 						*ptr = (*ptr3 & 0xFFFFFF) | (num4 << 24);
 					}
-					else if (num3 == 0)
+					else if (dstAlpha == 0)
 					{
-						uint num5 = (uint)((float)num2 * invMixAlpha + 0.5f);
+						uint num5 = (uint)((float)srcAlpha * invMixAlpha + 0.5f);
 						*ptr = (*ptr2 & 0xFFFFFF) | (num5 << 24);
 					}
 					else if (*ptr2 == *ptr3)
@@ -137,7 +137,7 @@ namespace KidFansChannel.Game2DCore
 					}
 					else
 					{
-						uint num6 = (uint)((float)num2 * invMixAlpha + (float)num3 * _mixAlpha + 0.5f);
+						uint num6 = (uint)((float)srcAlpha * invMixAlpha + (float)dstAlpha * _mixAlpha + 0.5f);
 						uint num7 = (uint)((float)(*ptr2 & 0xFF) * invMixAlpha + (float)(*ptr3 & 0xFF) * _mixAlpha + 0.5f);
 						uint num8 = (uint)((float)((*ptr2 >> 8) & 0xFF) * invMixAlpha + (float)((*ptr3 >> 8) & 0xFF) * _mixAlpha + 0.5f);
 						uint num9 = (uint)((float)((*ptr2 >> 16) & 0xFF) * invMixAlpha + (float)((*ptr3 >> 16) & 0xFF) * _mixAlpha + 0.5f);
