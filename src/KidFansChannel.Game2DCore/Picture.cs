@@ -742,18 +742,18 @@ namespace KidFansChannel.Game2DCore
 				_isSetupCircle = false;
 				return;
 			}
-			bool flag = false;
+			bool allDone = false;
 			if (UpdatePosition(elaspedTime))
 			{
-				flag = true;
+				allDone = true;
 			}
 			if (UpdateScale(elaspedTime))
 			{
-				flag = true;
+				allDone = true;
 			}
 			if (UpdateRotate(elaspedTime))
 			{
-				flag = true;
+				allDone = true;
 			}
 			UpdateAlpha(elaspedTime);
 			if (_time > elaspedTime)
@@ -764,7 +764,7 @@ namespace KidFansChannel.Game2DCore
 			{
 				_time = 0f;
 			}
-			if (flag)
+			if (allDone)
 			{
 				verts = CalculateVerts(_position, _scale, _rotate);
 			}
@@ -773,20 +773,20 @@ namespace KidFansChannel.Game2DCore
 
 		private bool UpdatePosition(float elaspedTime)
 		{
-			bool flag = false;
+			bool allDone = false;
 			switch (positionType)
 			{
 			case TransformType.Global:
 				if (_time > elaspedTime)
 				{
-					flag = true;
-					float num = elaspedTime / _time;
-					positionTemp.X += ((float)positionTo.X - positionTemp.X) * num;
-					positionTemp.Y += ((float)positionTo.Y - positionTemp.Y) * num;
+					allDone = true;
+					float t = elaspedTime / _time;
+					positionTemp.X += ((float)positionTo.X - positionTemp.X) * t;
+					positionTemp.Y += ((float)positionTo.Y - positionTemp.Y) * t;
 				}
 				else if (_time > 0f)
 				{
-					flag = true;
+					allDone = true;
 					positionTemp.X = positionTo.X;
 					positionTemp.Y = positionTo.Y;
 				}
@@ -794,22 +794,22 @@ namespace KidFansChannel.Game2DCore
 			case TransformType.Local:
 				if (positionTime > elaspedTime)
 				{
-					flag = true;
-					float num = elaspedTime / positionTime;
-					positionTemp.X += ((float)positionTo.X - positionTemp.X) * num;
-					positionTemp.Y += ((float)positionTo.Y - positionTemp.Y) * num;
+					allDone = true;
+					float t = elaspedTime / positionTime;
+					positionTemp.X += ((float)positionTo.X - positionTemp.X) * t;
+					positionTemp.Y += ((float)positionTo.Y - positionTemp.Y) * t;
 					positionTime -= elaspedTime;
 				}
 				else if (positionTime > 0f)
 				{
-					flag = true;
+					allDone = true;
 					positionTemp.X = positionTo.X;
 					positionTemp.Y = positionTo.Y;
 					positionTime = 0f;
 				}
 				break;
 			case TransformType.Loop:
-				flag = true;
+				allDone = true;
 				positionTime -= elaspedTime;
 				while (positionTime < (0f - positionLoopTime) / 2f)
 				{
@@ -819,18 +819,18 @@ namespace KidFansChannel.Game2DCore
 				positionTemp.Y = (float)positionTo.Y + Math.Abs(positionTime) * positionSpeedY;
 				break;
 			case TransformType.Function:
-				flag = true;
+				allDone = true;
 				positionTime += elaspedTime;
 				positionTemp.X = positionFunctionX(positionTime);
 				positionTemp.Y = positionFunctionY(positionTime);
 				break;
 			}
-			if (flag)
+			if (allDone)
 			{
 				_position.X = (int)((double)positionTemp.X + 0.5);
 				_position.Y = (int)((double)positionTemp.Y + 0.5);
 			}
-			return flag;
+			return allDone;
 		}
 
 		private bool UpdateScale(float elaspedTime)
@@ -842,9 +842,9 @@ namespace KidFansChannel.Game2DCore
 				if (_time > elaspedTime)
 				{
 					result = true;
-					float num = elaspedTime / _time;
-					_scale.Width += (scaleTo.Width - _scale.Width) * num;
-					_scale.Height += (scaleTo.Height - _scale.Height) * num;
+					float t = elaspedTime / _time;
+					_scale.Width += (scaleTo.Width - _scale.Width) * t;
+					_scale.Height += (scaleTo.Height - _scale.Height) * t;
 				}
 				else if (_time > 0f)
 				{
@@ -857,9 +857,9 @@ namespace KidFansChannel.Game2DCore
 				if (scaleTime > elaspedTime)
 				{
 					result = true;
-					float num = elaspedTime / scaleTime;
-					_scale.Width += (scaleTo.Width - _scale.Width) * num;
-					_scale.Height += (scaleTo.Height - _scale.Height) * num;
+					float t = elaspedTime / scaleTime;
+					_scale.Width += (scaleTo.Width - _scale.Width) * t;
+					_scale.Height += (scaleTo.Height - _scale.Height) * t;
 					scaleTime -= elaspedTime;
 				}
 				else if (scaleTime > 0f)
@@ -899,8 +899,8 @@ namespace KidFansChannel.Game2DCore
 				if (_time > elaspedTime)
 				{
 					result = true;
-					float num = elaspedTime / _time;
-					_rotate += (rotateTo - _rotate) * num;
+					float t = elaspedTime / _time;
+					_rotate += (rotateTo - _rotate) * t;
 				}
 				else if (_time > 0f)
 				{
@@ -912,8 +912,8 @@ namespace KidFansChannel.Game2DCore
 				if (rotateTime > elaspedTime)
 				{
 					result = true;
-					float num = elaspedTime / rotateTime;
-					_rotate += (rotateTo - _rotate) * num;
+					float t = elaspedTime / rotateTime;
+					_rotate += (rotateTo - _rotate) * t;
 					rotateTime -= elaspedTime;
 				}
 				else if (rotateTime > 0f)
@@ -943,39 +943,39 @@ namespace KidFansChannel.Game2DCore
 
 		private bool UpdateAlpha(float elaspedTime)
 		{
-			bool flag = false;
+			bool allDone = false;
 			switch (alphaType)
 			{
 			case TransformType.Global:
 				if (_time > elaspedTime)
 				{
-					flag = true;
-					float num = elaspedTime / _time;
-					alphaTemp += ((float)alphaTo - alphaTemp) * num;
+					allDone = true;
+					float t = elaspedTime / _time;
+					alphaTemp += ((float)alphaTo - alphaTemp) * t;
 				}
 				else if (_time > 0f)
 				{
-					flag = true;
+					allDone = true;
 					alphaTemp = alphaTo;
 				}
 				break;
 			case TransformType.Local:
 				if (alphaTime > elaspedTime)
 				{
-					flag = true;
-					float num = elaspedTime / alphaTime;
-					alphaTemp += ((float)alphaTo - alphaTemp) * num;
+					allDone = true;
+					float t = elaspedTime / alphaTime;
+					alphaTemp += ((float)alphaTo - alphaTemp) * t;
 					alphaTime -= elaspedTime;
 				}
 				else if (alphaTime > 0f)
 				{
-					flag = true;
+					allDone = true;
 					alphaTemp = alphaTo;
 					alphaTime = 0f;
 				}
 				break;
 			case TransformType.Loop:
-				flag = true;
+				allDone = true;
 				alphaTime -= elaspedTime;
 				while (alphaTime < (0f - alphaLoopTime) / 2f)
 				{
@@ -984,16 +984,16 @@ namespace KidFansChannel.Game2DCore
 				alphaTemp = (float)alphaTo + Math.Abs(alphaTime) * alphaSpeed;
 				break;
 			case TransformType.Function:
-				flag = true;
+				allDone = true;
 				alphaTime += elaspedTime;
 				alphaTemp = alphaFunction(alphaTime);
 				break;
 			}
-			if (flag)
+			if (allDone)
 			{
 				_alpha = (int)((double)alphaTemp + 0.5);
 			}
-			return flag;
+			return allDone;
 		}
 
 		public void Update()
@@ -1029,8 +1029,8 @@ namespace KidFansChannel.Game2DCore
 				{
 					throw new ArgumentNullException("Vertex buffer is null.");
 				}
-				CustomVertex.TransformedColoredTextured[] array = (CustomVertex.TransformedColoredTextured[])vb.Lock(0, LockFlags.None);
-				if (array.Length < 4)
+				CustomVertex.TransformedColoredTextured[] vertexArray = (CustomVertex.TransformedColoredTextured[])vb.Lock(0, LockFlags.None);
+				if (vertexArray.Length < 4)
 				{
 					throw new ArgumentException("Vertex buffer's number of vertices is less than 4.");
 				}
@@ -1038,22 +1038,22 @@ namespace KidFansChannel.Game2DCore
 				{
 					if (target)
 					{
-						array[i].X = verts[i].X * _core.TargetBounds.Width + _core.TargetBounds.X;
-						array[i].Y = verts[i].Y * _core.TargetBounds.Height + _core.TargetBounds.Y;
+						vertexArray[i].X = verts[i].X * _core.TargetBounds.Width + _core.TargetBounds.X;
+						vertexArray[i].Y = verts[i].Y * _core.TargetBounds.Height + _core.TargetBounds.Y;
 					}
 					else
 					{
-						array[i].X = verts[i].X;
-						array[i].Y = verts[i].Y;
+						vertexArray[i].X = verts[i].X;
+						vertexArray[i].Y = verts[i].Y;
 					}
-					array[i].Color = _argumentColor.ToArgb();
-					array[i].Z = _z;
-					array[i].Rhw = 1f;
-					array[i].Tu = _bounds[i].X;
-					array[i].Tv = _bounds[i].Y;
+					vertexArray[i].Color = _argumentColor.ToArgb();
+					vertexArray[i].Z = _z;
+					vertexArray[i].Rhw = 1f;
+					vertexArray[i].Tu = _bounds[i].X;
+					vertexArray[i].Tv = _bounds[i].Y;
 				}
 				vb.Unlock();
-				array = null;
+				vertexArray = null;
 				device.SetTexture(0, _texture);
 				if (_argumentColor == Color.Transparent)
 				{
@@ -1100,8 +1100,8 @@ namespace KidFansChannel.Game2DCore
 				{
 					throw new ArgumentNullException("Vertex buffer is null.");
 				}
-				CustomVertex.TransformedColoredTextured[] array2 = (CustomVertex.TransformedColoredTextured[])vb.Lock(0, LockFlags.None);
-				if (array2.Length < 4)
+				CustomVertex.TransformedColoredTextured[] tempArray = (CustomVertex.TransformedColoredTextured[])vb.Lock(0, LockFlags.None);
+				if (tempArray.Length < 4)
 				{
 					throw new ArgumentException("Vertex buffer's number of vertices is less than 4.");
 				}
@@ -1109,22 +1109,22 @@ namespace KidFansChannel.Game2DCore
 				{
 					if (target)
 					{
-						array2[j].X = verts[j].X * _core.TargetBounds.Width + _core.TargetBounds.X;
-						array2[j].Y = verts[j].Y * _core.TargetBounds.Height + _core.TargetBounds.Y;
+						tempArray[j].X = verts[j].X * _core.TargetBounds.Width + _core.TargetBounds.X;
+						tempArray[j].Y = verts[j].Y * _core.TargetBounds.Height + _core.TargetBounds.Y;
 					}
 					else
 					{
-						array2[j].X = verts[j].X;
-						array2[j].Y = verts[j].Y;
+						tempArray[j].X = verts[j].X;
+						tempArray[j].Y = verts[j].Y;
 					}
-					array2[j].Z = _z;
-					array2[j].Rhw = 1f;
-					array2[j].Color = Color.FromArgb(_alpha * _color.A / 255, _color).ToArgb();
-					array2[j].Tu = j & 1;
-					array2[j].Tv = j >> 1;
+					tempArray[j].Z = _z;
+					tempArray[j].Rhw = 1f;
+					tempArray[j].Color = Color.FromArgb(_alpha * _color.A / 255, _color).ToArgb();
+					tempArray[j].Tu = j & 1;
+					tempArray[j].Tv = j >> 1;
 				}
 				vb.Unlock();
-				array2 = null;
+				tempArray = null;
 				device.SetStreamSource(0, vb, 0);
 				device.VertexFormat = VertexFormats.Texture1 | VertexFormats.Diffuse | VertexFormats.Transformed;
 				device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
@@ -1133,29 +1133,29 @@ namespace KidFansChannel.Game2DCore
 
 		protected PointF[] CalculateVerts(Point position, SizeF scale, float rotate)
 		{
-			PointF[] array = new PointF[4];
-			array[0].X = -_center.X;
-			array[0].Y = -_center.Y;
-			array[1].X = _size.Width - _center.X;
-			array[1].Y = -_center.Y;
-			array[2].X = -_center.X;
-			array[2].Y = _size.Height - _center.Y;
-			array[3].X = _size.Width - _center.X;
-			array[3].Y = _size.Height - _center.Y;
+			PointF[] vertexArray = new PointF[4];
+			vertexArray[0].X = -_center.X;
+			vertexArray[0].Y = -_center.Y;
+			vertexArray[1].X = _size.Width - _center.X;
+			vertexArray[1].Y = -_center.Y;
+			vertexArray[2].X = -_center.X;
+			vertexArray[2].Y = _size.Height - _center.Y;
+			vertexArray[3].X = _size.Width - _center.X;
+			vertexArray[3].Y = _size.Height - _center.Y;
 			for (int i = 0; i < 4; i++)
 			{
-				array[i].X *= scale.Width;
-				array[i].Y *= scale.Height;
-				float x = (float)((double)array[i].X * Math.Cos(rotate) + (double)array[i].Y * Math.Sin(rotate));
-				float y = (float)((double)(0f - array[i].X) * Math.Sin(rotate) + (double)array[i].Y * Math.Cos(rotate));
-				array[i].X = x;
-				array[i].Y = y;
-				array[i].X += position.X;
-				array[i].Y += position.Y;
-				array[i].X -= 0.5f;
-				array[i].Y -= 0.5f;
+				vertexArray[i].X *= scale.Width;
+				vertexArray[i].Y *= scale.Height;
+				float x = (float)((double)vertexArray[i].X * Math.Cos(rotate) + (double)vertexArray[i].Y * Math.Sin(rotate));
+				float y = (float)((double)(0f - vertexArray[i].X) * Math.Sin(rotate) + (double)vertexArray[i].Y * Math.Cos(rotate));
+				vertexArray[i].X = x;
+				vertexArray[i].Y = y;
+				vertexArray[i].X += position.X;
+				vertexArray[i].Y += position.Y;
+				vertexArray[i].X -= 0.5f;
+				vertexArray[i].Y -= 0.5f;
 			}
-			return array;
+			return vertexArray;
 		}
 
 		protected void RefreshVerts()
