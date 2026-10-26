@@ -1062,18 +1062,18 @@ namespace KidFansChannel.GameCore
 			{
 				score += 0.1f;
 			}
-			bool flag2 = false;
+			bool sampleSupported = false;
 			for (int j = 0; j < deviceCombo.multiSampleTypeList.Count; j++)
 			{
 				MultiSampleType multiSampleType = deviceCombo.multiSampleTypeList[j];
-				uint num6 = (uint)deviceCombo.multiSampleQualityList[j];
-				if (multiSampleType == settings.PresentParameters.MultiSample && num6 >= settings.PresentParameters.MultiSampleQuality)
+				uint quality = (uint)deviceCombo.multiSampleQualityList[j];
+				if (multiSampleType == settings.PresentParameters.MultiSample && quality >= settings.PresentParameters.MultiSampleQuality)
 				{
-					flag2 = true;
+					sampleSupported = true;
 					break;
 				}
 			}
-			if (flag2)
+			if (sampleSupported)
 			{
 				score++;
 			}
@@ -1081,16 +1081,16 @@ namespace KidFansChannel.GameCore
 			{
 				score++;
 			}
-			bool flag3 = false;
+			bool refreshSupported = false;
 			for (int k = 0; k < deviceCombo.adapterInformation.displayModeList.Count; k++)
 			{
 				DisplayMode displayMode2 = deviceCombo.adapterInformation.displayModeList[k];
 				if (displayMode2.Format == deviceCombo.AdapterFormat && displayMode2.RefreshRate == settings.PresentParameters.FullScreenRefreshRateInHz)
 				{
-					flag3 = true;
+					refreshSupported = true;
 				}
 			}
-			if (flag3)
+			if (refreshSupported)
 			{
 				score++;
 			}
@@ -1134,7 +1134,7 @@ namespace KidFansChannel.GameCore
 			}
 			else
 			{
-				int num = 100000;
+				int bestDifference = 100000;
 				for (int j = 0; j < deviceCombo.adapterInformation.displayModeList.Count; j++)
 				{
 					DisplayMode displayMode2 = deviceCombo.adapterInformation.displayModeList[j];
@@ -1142,12 +1142,12 @@ namespace KidFansChannel.GameCore
 					{
 						continue;
 					}
-					int num2 = Math.Abs(displayMode2.Width - displayMode.Width) + Math.Abs(displayMode2.Height - displayMode.Height);
-					if (num2 < num)
+					int difference = Math.Abs(displayMode2.Width - displayMode.Width) + Math.Abs(displayMode2.Height - displayMode.Height);
+					if (difference < bestDifference)
 					{
 						result = displayMode;
-						num = num2;
-						if (num == 0)
+						bestDifference = difference;
+						if (bestDifference == 0)
 						{
 							break;
 						}
@@ -1281,14 +1281,14 @@ namespace KidFansChannel.GameCore
 
 		public List<string> GetAdaptersList()
 		{
-			List<string> list = new List<string>();
+			List<string> descriptions = new List<string>();
 			Enumeration.Enumerate();
 			List<EnumAdapterInformation> adapterInformationList = Enumeration.AdapterInformationList;
 			foreach (EnumAdapterInformation item in adapterInformationList)
 			{
-				list.Add(item.UniqueDescription);
+				descriptions.Add(item.UniqueDescription);
 			}
-			return list;
+			return descriptions;
 		}
 
 		public List<Size> GetResolutionsList(int adapterOrdinal)
@@ -1298,20 +1298,20 @@ namespace KidFansChannel.GameCore
 			{
 				return null;
 			}
-			List<Size> list = new List<Size>();
+			List<Size> resolutions = new List<Size>();
 			List<DisplayMode> displayModeList = Enumeration.GetAdapterInformation((uint)adapterOrdinal).displayModeList;
 			foreach (DisplayMode item2 in displayModeList)
 			{
 				if (item2.Format == Format.X8R8G8B8)
 				{
 					Size item = new Size(item2.Width, item2.Height);
-					if (!list.Contains(item))
+					if (!resolutions.Contains(item))
 					{
-						list.Add(item);
+						resolutions.Add(item);
 					}
 				}
 			}
-			return list;
+			return resolutions;
 		}
 
 		public void RenderEnvironment()
@@ -1406,14 +1406,14 @@ namespace KidFansChannel.GameCore
 					State.IsDeviceLost = false;
 				}
 				double time = GameCoreTimer.GetTime();
-				float num = (float)GameCoreTimer.GetElapsedTime();
-				if (num == 0f)
+				float elapsed = (float)GameCoreTimer.GetElapsedTime();
+				if (elapsed == 0f)
 				{
 					return;
 				}
 				if (time < nextRenderTime)
 				{
-					nowElapsedTime += num;
+					nowElapsedTime += elapsed;
 					Thread.Sleep((int)((nextRenderTime - time) * 1000.0));
 					return;
 				}
@@ -1422,15 +1422,15 @@ namespace KidFansChannel.GameCore
 					nextRenderTime += 1.0 / (double)device.DisplayMode.RefreshRate;
 				}
 				while (time >= nextRenderTime);
-				num += nowElapsedTime;
+				elapsed += nowElapsedTime;
 				nowElapsedTime = 0f;
 				State.CurrentTime = time;
-				State.ElapsedTime = num;
+				State.ElapsedTime = elapsed;
 				HandleTimers();
 				UpdateFrameStats();
 				if (FrameMove != null)
 				{
-					FrameMove(device, new RenderEventArgs(time, num));
+					FrameMove(device, new RenderEventArgs(time, elapsed));
 					device = State.Device;
 					if (device == null)
 					{
@@ -1450,7 +1450,7 @@ namespace KidFansChannel.GameCore
 					}
 					if (FrameRender != null)
 					{
-						FrameRender(device, new RenderEventArgs(time, num));
+						FrameRender(device, new RenderEventArgs(time, elapsed));
 					}
 					device = State.Device;
 					if (device == null)
@@ -1526,7 +1526,7 @@ namespace KidFansChannel.GameCore
 			}
 			lastDisplayedMessage = e;
 			State.ApplicationExitCode = 1;
-			bool flag = true;
+			bool gotMessage = true;
 			if (e is ApplicationException)
 			{
 				if (e is NoDirect3DException)
@@ -1559,15 +1559,15 @@ namespace KidFansChannel.GameCore
 				}
 				else
 				{
-					flag = false;
+					gotMessage = false;
 				}
 			}
 			else
 			{
-				flag = false;
+				gotMessage = false;
 			}
 			string empty = string.Empty;
-			if (flag && State.IsShowingMsgBoxOnError)
+			if (gotMessage && State.IsShowingMsgBoxOnError)
 			{
 				empty = e.Message;
 				if (e.InnerException != null)
@@ -1577,7 +1577,7 @@ namespace KidFansChannel.GameCore
 				}
 				MessageBox.Show(empty, "DirectX Application", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 			}
-			else if (!flag && State.IsShowingMsgBoxOnError)
+			else if (!gotMessage && State.IsShowingMsgBoxOnError)
 			{
 				empty = e.ToString();
 				MessageBox.Show(empty, "DirectX Application", MessageBoxButtons.OK, MessageBoxIcon.Hand);
@@ -1611,7 +1611,7 @@ namespace KidFansChannel.GameCore
 			{
 				throw new InvalidOperationException("The device should not be null.");
 			}
-			bool flag = true;
+			bool succeeded = true;
 			try
 			{
 				AdjustWindowStyle(GameWindow, IsWindowed);
@@ -1629,13 +1629,13 @@ namespace KidFansChannel.GameCore
 				catch (MediaNotFoundException e)
 				{
 					DisplayErrorMessage(e);
-					flag = false;
+					succeeded = false;
 					throw;
 				}
 				catch (Exception inner)
 				{
 					DisplayErrorMessage(new CreatingDeviceException(inner));
-					flag = false;
+					succeeded = false;
 					throw;
 				}
 				try
@@ -1650,19 +1650,19 @@ namespace KidFansChannel.GameCore
 				catch (MediaNotFoundException e2)
 				{
 					DisplayErrorMessage(e2);
-					flag = false;
+					succeeded = false;
 					throw;
 				}
 				catch (Exception inner2)
 				{
 					DisplayErrorMessage(new CreatingDeviceException(inner2));
-					flag = false;
+					succeeded = false;
 					throw;
 				}
 			}
 			finally
 			{
-				if (!flag)
+				if (!succeeded)
 				{
 					CleanupEnvironment(true);
 				}
