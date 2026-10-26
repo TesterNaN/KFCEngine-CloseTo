@@ -519,13 +519,13 @@ namespace KidFansChannel.GalCore
 							}
 							_currentStateCommands.Clear();
 							binaryReader.BaseStream.Position = 8232 + infoHeader.CommandOffset;
-							int num3 = binaryReader.ReadInt32();
-							List<uint> list = new List<uint>();
-							List<int> list2 = new List<int>();
-							for (int i = 0; i < num3; i++)
+							int blockCount = binaryReader.ReadInt32();
+							List<uint> blockOffsets = new List<uint>();
+							List<int> blockLengths = new List<int>();
+							for (int i = 0; i < blockCount; i++)
 							{
-								list.Add(binaryReader.ReadUInt32());
-								list2.Add(binaryReader.ReadInt32());
+								blockOffsets.Add(binaryReader.ReadUInt32());
+								blockLengths.Add(binaryReader.ReadInt32());
 							}
 							NodeInfo info = _info;
 							string file = (stateInfo.File = binaryReader.ReadString());
@@ -540,9 +540,9 @@ namespace KidFansChannel.GalCore
 							int click = (stateInfo.Click = binaryReader.ReadInt32());
 							info4.Click = click;
 							_gameDateTime = binaryReader.ReadString();
-							for (int j = 0; j < num3; j++)
+							for (int j = 0; j < blockCount; j++)
 							{
-								binaryReader.BaseStream.Position = 8232 + list[j];
+								binaryReader.BaseStream.Position = 8232 + blockOffsets[j];
 								string key = binaryReader.ReadString();
 								Type type = Parent.GalCore.GameScript.Types[key];
 								ISaveable saveable = (ISaveable)type.Assembly.CreateInstance(type.FullName);

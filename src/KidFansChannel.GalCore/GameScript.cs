@@ -350,12 +350,12 @@ namespace KidFansChannel.GalCore
 
 		public virtual void QuickLoad()
 		{
-			int num = _galCore.GameOptions.QuickSaveIndex;
-			if (num == -1)
+			int quickSlot = _galCore.GameOptions.QuickSaveIndex;
+			if (quickSlot == -1)
 			{
-				num = QuickIndexStart;
+				quickSlot = QuickIndexStart;
 			}
-			LoadStory(num);
+			LoadStory(quickSlot);
 		}
 
 		protected virtual void PrepareTypes()
@@ -420,23 +420,23 @@ namespace KidFansChannel.GalCore
 				throw new ScriptStructureException(documentElement, info, "Index's document element must be info.");
 			}
 			ScriptHelper.GetArgumentString(documentElement, info, "script");
-			string[] array = null;
+			string[] scripts = null;
 			foreach (XmlNode childNode in documentElement.ChildNodes)
 			{
 				if (childNode.Name == "definechapter" && ScriptHelper.GetArgumentString(childNode, info, "title") == chapter)
 				{
-					array = ScriptHelper.GetArgumentString(childNode, info, "script").Split(';');
+					scripts = ScriptHelper.GetArgumentString(childNode, info, "script").Split(';');
 					break;
 				}
 			}
-			if (array == null)
+			if (scripts == null)
 			{
 				return chapter;
 			}
 			xmlDocument = new XmlDocument();
-			if (!LoadScript(story + "\\" + array[0], xmlDocument))
+			if (!LoadScript(story + "\\" + scripts[0], xmlDocument))
 			{
-				throw new FileNotFoundException(null, Path.Combine("script", story + "\\" + array[0] + ".xml"));
+				throw new FileNotFoundException(null, Path.Combine("script", story + "\\" + scripts[0] + ".xml"));
 			}
 			documentElement = xmlDocument.SelectSingleNode("script/chapter[@title='" + chapter + "']/scene/showchapter");
 			if (documentElement != null && documentElement.HasChildNodes && documentElement.ChildNodes.Count == 1 && documentElement.ChildNodes[0].NodeType == XmlNodeType.Text)
@@ -516,11 +516,11 @@ namespace KidFansChannel.GalCore
 						for (int n = 0; n < xmlNodeList2.Count; n++)
 						{
 							XmlNodeList xmlNodeList3 = childNodes[j].SelectNodes("item");
-							for (int num = 0; num < xmlNodeList3.Count; num++)
+							for (int quickSlot = 0; quickSlot < xmlNodeList3.Count; quickSlot++)
 							{
-								string value4 = xmlNodeList3[num].Attributes["case"].Value;
+								string value4 = xmlNodeList3[quickSlot].Attributes["case"].Value;
 								XmlNode xmlNode2 = xmlNodeList2[n].SelectSingleNode("item[@case='" + value4 + "']");
-								xmlNode2.InnerXml = xmlNodeList3[num].InnerXml;
+								xmlNode2.InnerXml = xmlNodeList3[quickSlot].InnerXml;
 							}
 						}
 					}

@@ -766,32 +766,32 @@ namespace KidFansChannel.GalCore
 					{
 					case PlayState.Running:
 					{
-						bool flag2 = false;
+						bool advanced = false;
 						if (_preparingCommandList.Count == 0)
 						{
 							foreach (ScriptCommand currentCommand6 in _currentCommandList)
 							{
 								if (currentCommand6.Lasting)
 								{
-									flag2 = true;
+									advanced = true;
 								}
 							}
 						}
 						else
 						{
-							flag2 = true;
+							advanced = true;
 						}
-						if (flag2)
+						if (advanced)
 						{
 							break;
 						}
-						List<ScriptCommand> list2 = _gameScript.CurrentGameScript.ProcessNextCommands();
-						if (list2 == null)
+						List<ScriptCommand> nextCommands = _gameScript.CurrentGameScript.ProcessNextCommands();
+						if (nextCommands == null)
 						{
 							ReturnTitleScreen(false);
 							return;
 						}
-						foreach (ScriptCommand item5 in list2)
+						foreach (ScriptCommand item5 in nextCommands)
 						{
 							if (item5 is IInstanceDataUser)
 							{
@@ -810,7 +810,7 @@ namespace KidFansChannel.GalCore
 				}
 				if (currentMessageBox == null || !currentMessageBox.PauseBack)
 				{
-					bool flag3 = false;
+					bool finished = false;
 					if (lastPause && !_pause)
 					{
 						lastPause = false;
@@ -821,21 +821,21 @@ namespace KidFansChannel.GalCore
 						lastPause = true;
 						if (UpdatePause(e.AppTime, e.ElapsedTime) && screenStacks.Count > 0)
 						{
-							flag3 = true;
+							finished = true;
 						}
 					}
 					else if (_gameScript.CurrentGameScript == null)
 					{
 						if (screenStacks.Count > 0)
 						{
-							flag3 = true;
+							finished = true;
 						}
 					}
 					else if (screenStacks.Count > 0)
 					{
-						flag3 = true;
+						finished = true;
 					}
-					if (flag3)
+					if (finished)
 					{
 						GameScreen gameScreen = screenStacks.Peek();
 						if (gameScreen.Finished)
@@ -1463,14 +1463,14 @@ namespace KidFansChannel.GalCore
 				{
 					_gameScript.SaveLastGame();
 				}
-				List<ScriptCommand> list = new List<ScriptCommand>();
-				list.AddRange(_currentCommandList);
-				foreach (ScriptCommand item in list)
+				List<ScriptCommand> snapshot = new List<ScriptCommand>();
+				snapshot.AddRange(_currentCommandList);
+				foreach (ScriptCommand item in snapshot)
 				{
 					item.FinishCommand();
 					item.FinalCommand();
 				}
-				list.Clear();
+				snapshot.Clear();
 				_gameScript.StopStory();
 				GC.Collect();
 			}
