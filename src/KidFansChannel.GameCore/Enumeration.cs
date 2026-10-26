@@ -211,13 +211,13 @@ namespace KidFansChannel.GameCore
 			try
 			{
 				adapterInformationList.Clear();
-				List<Format> list = new List<Format>();
+				List<Format> supportedFormats = new List<Format>();
 				foreach (AdapterInformation adapter in Manager.Adapters)
 				{
 					EnumAdapterInformation enumAdapterInformation = new EnumAdapterInformation();
 					enumAdapterInformation.AdapterOrdinal = (uint)adapter.Adapter;
 					enumAdapterInformation.AdapterInformation = adapter.Information;
-					list.Clear();
+					supportedFormats.Clear();
 					for (int i = 0; i < allowedFormats.Length; i++)
 					{
 						foreach (DisplayMode item in adapter.SupportedDisplayModes[allowedFormats[i]])
@@ -225,26 +225,26 @@ namespace KidFansChannel.GameCore
 							if (item.Width >= minimumWidth && item.Height >= minimumHeight && item.Width <= maximumWidth && item.Height <= maximumHeight && item.RefreshRate >= minimumRefresh && item.RefreshRate <= maximumRefresh)
 							{
 								enumAdapterInformation.displayModeList.Add(item);
-								if (!list.Contains(item.Format))
+								if (!supportedFormats.Contains(item.Format))
 								{
-									list.Add(item.Format);
+									supportedFormats.Add(item.Format);
 								}
 							}
 						}
 					}
 					DisplayMode currentDisplayMode = adapter.CurrentDisplayMode;
-					if (!list.Contains(currentDisplayMode.Format))
+					if (!supportedFormats.Contains(currentDisplayMode.Format))
 					{
-						list.Add(currentDisplayMode.Format);
+						supportedFormats.Add(currentDisplayMode.Format);
 					}
 					enumAdapterInformation.displayModeList.Sort(comparer);
-					EnumerateDevices(enumAdapterInformation, list);
+					EnumerateDevices(enumAdapterInformation, supportedFormats);
 					if (enumAdapterInformation.deviceInfoList.Count > 0)
 					{
 						adapterInformationList.Add(enumAdapterInformation);
 					}
 				}
-				bool flag = true;
+				bool supportsFormat = true;
 				for (int j = 0; j < adapterInformationList.Count; j++)
 				{
 					for (int k = j + 1; k < adapterInformationList.Count; k++)
@@ -253,11 +253,11 @@ namespace KidFansChannel.GameCore
 						EnumAdapterInformation enumAdapterInformation3 = adapterInformationList[k];
 						if (string.Compare(enumAdapterInformation2.AdapterInformation.Description, enumAdapterInformation3.AdapterInformation.Description, true) == 0)
 						{
-							flag = false;
+							supportsFormat = false;
 							break;
 						}
 					}
-					if (!flag)
+					if (!supportsFormat)
 					{
 						break;
 					}
@@ -266,7 +266,7 @@ namespace KidFansChannel.GameCore
 				{
 					EnumAdapterInformation enumAdapterInformation4 = adapterInformationList[l];
 					enumAdapterInformation4.UniqueDescription = enumAdapterInformation4.AdapterInformation.Description;
-					if (!flag)
+					if (!supportsFormat)
 					{
 						enumAdapterInformation4.UniqueDescription += string.Format(" (#{0})", enumAdapterInformation4.AdapterOrdinal);
 					}
@@ -303,8 +303,8 @@ namespace KidFansChannel.GameCore
 				{
 					for (int j = 0; j < 2; j++)
 					{
-						bool flag = j == 1;
-						if ((!flag && adapterInfo.displayModeList.Count == 0) || !Manager.CheckDeviceType((int)adapterInfo.AdapterOrdinal, deviceInfo.DeviceType, adapterFormat, backbufferFormatsArray[i], flag) || (isPostPixelShaderBlendingRequired && !Manager.CheckDeviceFormat((int)adapterInfo.AdapterOrdinal, deviceInfo.DeviceType, adapterFormat, Usage.QueryPostPixelShaderBlending, ResourceType.Textures, backbufferFormatsArray[i])))
+						bool supportsFormat = j == 1;
+						if ((!supportsFormat && adapterInfo.displayModeList.Count == 0) || !Manager.CheckDeviceType((int)adapterInfo.AdapterOrdinal, deviceInfo.DeviceType, adapterFormat, backbufferFormatsArray[i], supportsFormat) || (isPostPixelShaderBlendingRequired && !Manager.CheckDeviceFormat((int)adapterInfo.AdapterOrdinal, deviceInfo.DeviceType, adapterFormat, Usage.QueryPostPixelShaderBlending, ResourceType.Textures, backbufferFormatsArray[i])))
 						{
 							continue;
 						}
@@ -317,7 +317,7 @@ namespace KidFansChannel.GameCore
 							enumDeviceSettingsCombo.DeviceType = deviceInfo.DeviceType;
 							enumDeviceSettingsCombo.AdapterFormat = adapterFormat;
 							enumDeviceSettingsCombo.BackBufferFormat = backbufferFormatsArray[i];
-							enumDeviceSettingsCombo.IsWindowed = flag;
+							enumDeviceSettingsCombo.IsWindowed = supportsFormat;
 							BuildDepthStencilFormatList(enumDeviceSettingsCombo);
 							BuildMultiSampleTypeList(enumDeviceSettingsCombo);
 							if (enumDeviceSettingsCombo.multiSampleTypeList.Count != 0)

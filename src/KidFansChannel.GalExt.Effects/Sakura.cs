@@ -234,9 +234,9 @@ namespace KidFansChannel.GalExt.Effects
 			}
 			else
 			{
-				float num2 = Math.Abs(oneSakura.GoalSpeed.Y - oneSakura.SpeedStart.Y) / Acc.Y;
+				float speedDelta = Math.Abs(oneSakura.GoalSpeed.Y - oneSakura.SpeedStart.Y) / Acc.Y;
 				speedStart.Y = oneSakura.GoalSpeed.Y;
-				position.Y = oneSakura.PositionStart.Y + num2 * oneSakura.SpeedStart.Y + num2 * num2 * (float)Math.Sign(oneSakura.GoalSpeed.Y - oneSakura.SpeedStart.Y) * Acc.Y / 2f + (oneSakura.CurrentTime - num2) * oneSakura.GoalSpeed.Y;
+				position.Y = oneSakura.PositionStart.Y + speedDelta * oneSakura.SpeedStart.Y + speedDelta * speedDelta * (float)Math.Sign(oneSakura.GoalSpeed.Y - oneSakura.SpeedStart.Y) * Acc.Y / 2f + (oneSakura.CurrentTime - speedDelta) * oneSakura.GoalSpeed.Y;
 			}
 			oneSakura.Position = position;
 			if (oneSakura.CurrentTime > oneSakura.ChangeTime)
