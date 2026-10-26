@@ -127,9 +127,9 @@ namespace KidFansChannel.CloseTo.Screens
 			}
 			int totalLine = eleScreen["text"].ElementString.TotalLine;
 			int width = eleScreen["text"].ElementString.Width + 80;
-			int num = (eleScreen["text"].ElementString.TotalLine + ((Buttons == MessageBoxButtons.OK) ? 1 : 2)) * 40 + 50;
+			int boxHeight = (eleScreen["text"].ElementString.TotalLine + ((Buttons == MessageBoxButtons.OK) ? 1 : 2)) * 40 + 50;
 			Label.CurrentId = labelId;
-			Label.SetBackSize(width, num);
+			Label.SetBackSize(width, boxHeight);
 			int colorIndex = Label.GetColorIndex();
 			picBack = GameManager.Graphics.CreateBindingPicture();
 			for (int i = 0; i < 9; i++)
@@ -138,31 +138,31 @@ namespace KidFansChannel.CloseTo.Screens
 				picBack.AddPicture(Label.PicBacks[colorIndex, i], Point.Empty);
 			}
 			eleScreen.ElementPicture = picBack;
-			eleScreen.Position = new Point(400, ((Buttons == MessageBoxButtons.OK) ? 360 : 400) - num / 2);
-			eleScreen["text"].Position = new Point(-360, -num / 2 + 25);
+			eleScreen.Position = new Point(400, ((Buttons == MessageBoxButtons.OK) ? 360 : 400) - boxHeight / 2);
+			eleScreen["text"].Position = new Point(-360, -boxHeight / 2 + 25);
 			if (Buttons == MessageBoxButtons.OK)
 			{
-				eleScreen["ok"].Position = new Point(-80, num / 2 - 60);
+				eleScreen["ok"].Position = new Point(-80, boxHeight / 2 - 60);
 				eleScreen["ok"].Region = new Rectangle(0, 0, 160, 40);
 				eleScreen["ok"].MouseEnter += Button_MouseEnter;
 				eleScreen["ok"].MouseLeave += Button_MouseLeave;
 				widths[0] = eleScreen["ok"]["text"].ElementString.Width;
-				heights[0] = num / 2 - 56;
+				heights[0] = boxHeight / 2 - 56;
 			}
 			else
 			{
-				eleScreen["ok"].Position = new Point(-80, num / 2 - 100);
+				eleScreen["ok"].Position = new Point(-80, boxHeight / 2 - 100);
 				eleScreen["ok"].Region = new Rectangle(0, 0, 160, 40);
 				eleScreen["ok"].MouseEnter += Button_MouseEnter;
 				eleScreen["ok"].MouseLeave += Button_MouseLeave;
-				eleScreen["cancel"].Position = new Point(-80, num / 2 - 60);
+				eleScreen["cancel"].Position = new Point(-80, boxHeight / 2 - 60);
 				eleScreen["cancel"].Region = new Rectangle(0, 0, 160, 40);
 				eleScreen["cancel"].MouseEnter += Button_MouseEnter;
 				eleScreen["cancel"].MouseLeave += Button_MouseLeave;
 				widths[0] = eleScreen["ok"]["text"].ElementString.Width;
 				widths[1] = eleScreen["cancel"]["text"].ElementString.Width;
-				heights[0] = num / 2 - 100;
-				heights[1] = num / 2 - 60;
+				heights[0] = boxHeight / 2 - 100;
+				heights[1] = boxHeight / 2 - 60;
 			}
 			Element element = new Element(selectBar);
 			element.Position = new Point(0, 20);

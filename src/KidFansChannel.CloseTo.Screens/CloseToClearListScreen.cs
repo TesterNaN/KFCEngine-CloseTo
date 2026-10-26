@@ -82,30 +82,30 @@ namespace KidFansChannel.CloseTo.Screens
 		public override void InitData()
 		{
 			base.InitData();
-			int num;
+			int paletteIndex;
 			switch (GameManager.GalCore.GameOptions.DialogueColor)
 			{
 			case "Blue":
-				num = 1;
+				paletteIndex = 1;
 				break;
 			case "Green":
-				num = 2;
+				paletteIndex = 2;
 				break;
 			case "Pink":
-				num = 3;
+				paletteIndex = 3;
 				break;
 			case "Gray":
-				num = 4;
+				paletteIndex = 4;
 				break;
 			default:
 				throw new Exception("Unbelievable!");
 			}
 			picClearLists[0] = GameManager.Data.LoadPicture("system", "clearlist0.png");
-			picClearLists[1] = GameManager.Data.LoadPicture("system", "clearlist" + num + ".png");
+			picClearLists[1] = GameManager.Data.LoadPicture("system", "clearlist" + paletteIndex + ".png");
 			picEndings[0] = GameManager.Data.LoadPicture("system", "ending0.png");
-			picEndings[1] = GameManager.Data.LoadPicture("system", "ending" + num + ".png");
+			picEndings[1] = GameManager.Data.LoadPicture("system", "ending" + paletteIndex + ".png");
 			picSceneTitles[0] = GameManager.Data.LoadPicture("system", "scenetitle0.png");
-			picSceneTitles[1] = GameManager.Data.LoadPicture("system", "scenetitle" + num + ".png");
+			picSceneTitles[1] = GameManager.Data.LoadPicture("system", "scenetitle" + paletteIndex + ".png");
 			picBack = GameManager.Data.LoadPicture("system", "screenback3.png");
 			picArrowBase = GameManager.Data.LoadPicture("system", "arrow.png");
 			picTitle = GameManager.Data.LoadPicture("system", "clearlist.png");
@@ -682,60 +682,60 @@ namespace KidFansChannel.CloseTo.Screens
 
 		protected void UpdateEnding()
 		{
-			string text = string.Empty;
+			string line = string.Empty;
 			for (int i = 0; i < LineNum; i++)
 			{
-				int num = i + currentEndingStartId;
-				if (num == EndingTitles.Length)
+				int paletteIndex = i + currentEndingStartId;
+				if (paletteIndex == EndingTitles.Length)
 				{
 					break;
 				}
-				text = text + (num + 1) + ". ";
-				if (EndingOpens[num])
+				line = line + (paletteIndex + 1) + ". ";
+				if (EndingOpens[paletteIndex])
 				{
-					text = text + EndingTitles[num] + "\n";
+					line = line + EndingTitles[paletteIndex] + "\n";
 					continue;
 				}
-				for (int j = 0; j < EndingTitles[num].Length; j++)
+				for (int j = 0; j < EndingTitles[paletteIndex].Length; j++)
 				{
-					text += "?";
+					line += "?";
 				}
-				text += "\n";
+				line += "\n";
 			}
 			strEnding.ClearString();
-			strEnding.AddString(text);
+			strEnding.AddString(line);
 			scrollBarEnding.Start = (float)currentEndingStartId / (float)EndingTitles.Length;
 		}
 
 		protected void UpdateSceneTitle()
 		{
-			string text = string.Empty;
-			string text2 = string.Empty;
+			string line = string.Empty;
+			string detail = string.Empty;
 			for (int i = 0; i < LineNum; i++)
 			{
-				int num = i + currentSceneStartId;
-				if (num == SceneTitles.Length)
+				int paletteIndex = i + currentSceneStartId;
+				if (paletteIndex == SceneTitles.Length)
 				{
 					break;
 				}
-				text = text + (num + 1).ToString("000") + ". ";
-				if (SceneOpens[num])
+				line = line + (paletteIndex + 1).ToString("000") + ". ";
+				if (SceneOpens[paletteIndex])
 				{
-					text = text + SceneTitles[num] + "\n";
-					text2 = text2 + Percentages[num].ToString("P") + "\n";
+					line = line + SceneTitles[paletteIndex] + "\n";
+					detail = detail + Percentages[paletteIndex].ToString("P") + "\n";
 					continue;
 				}
-				for (int j = 0; j < SceneTitles[num].Length; j++)
+				for (int j = 0; j < SceneTitles[paletteIndex].Length; j++)
 				{
-					text += "?";
+					line += "?";
 				}
-				text += "\n";
-				text2 += "\n";
+				line += "\n";
+				detail += "\n";
 			}
 			strSceneTitle.ClearString();
-			strSceneTitle.AddString(text);
+			strSceneTitle.AddString(line);
 			strScenePercentage.ClearString();
-			strScenePercentage.AddString(text2, ContentAlignment.TopRight);
+			strScenePercentage.AddString(detail, ContentAlignment.TopRight);
 			scrollBarScene.Start = (float)currentSceneStartId / (float)SceneTitles.Length;
 		}
 	}

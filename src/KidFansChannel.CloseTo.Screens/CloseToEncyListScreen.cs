@@ -265,11 +265,11 @@ namespace KidFansChannel.CloseTo.Screens
 		private void Unit_MouseClick(object sender, EventArgs e)
 		{
 			Element element = (Element)sender;
-			int num = (int)element.Value;
-			if (Opens[order[num]])
+			int entryId = (int)element.Value;
+			if (Opens[order[entryId]])
 			{
 				GameManager.Data.LoadAndPlaySystemSound("ok.ogg");
-				GameManager.GalCore.ShowEncyContentScreen(order[num]);
+				GameManager.GalCore.ShowEncyContentScreen(order[entryId]);
 				returnFromContent = true;
 			}
 		}
@@ -417,28 +417,28 @@ namespace KidFansChannel.CloseTo.Screens
 		{
 			for (int i = 0; i < LineNum; i++)
 			{
-				int num = i + currentStartId;
+				int entryId = i + currentStartId;
 				strIds[i].ClearString();
-				strIds[i].AddString((num + 1).ToString("000"));
+				strIds[i].AddString((entryId + 1).ToString("000"));
 				strTitles[i].ClearString();
 				strCatalogues[i].ClearString();
-				if (Opens[order[num]])
+				if (Opens[order[entryId]])
 				{
-					strTitles[i].AddString(Titles[order[num]]);
-					eleScreen["main"][i.ToString("00")]["title"].Position = new Point(Views[order[num]] ? 100 : 150, 0);
-					eleScreen["main"][i.ToString("00")].SetVisible("new", !Views[order[num]]);
-					strCatalogues[i].AddString(Catalogues[order[num]], ContentAlignment.TopRight);
+					strTitles[i].AddString(Titles[order[entryId]]);
+					eleScreen["main"][i.ToString("00")]["title"].Position = new Point(Views[order[entryId]] ? 100 : 150, 0);
+					eleScreen["main"][i.ToString("00")].SetVisible("new", !Views[order[entryId]]);
+					strCatalogues[i].AddString(Catalogues[order[entryId]], ContentAlignment.TopRight);
 				}
 				else
 				{
-					for (int j = 0; j < Titles[order[num]].Length; j++)
+					for (int j = 0; j < Titles[order[entryId]].Length; j++)
 					{
 						strTitles[i].AddString("?");
 					}
 					eleScreen["main"][i.ToString("00")]["title"].Position = new Point(100, 0);
 					eleScreen["main"][i.ToString("00")].SetVisible("new", false);
 				}
-				eleScreen["main"][i.ToString("00")].Value = num;
+				eleScreen["main"][i.ToString("00")].Value = entryId;
 			}
 			scrollBar.Start = (float)currentStartId / (float)Titles.Length;
 		}

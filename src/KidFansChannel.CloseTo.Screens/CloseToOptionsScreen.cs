@@ -148,9 +148,9 @@ namespace KidFansChannel.CloseTo.Screens
 				for (int j = 0; j < strItems[i].Length; j++)
 				{
 					Element element3 = new Element(strItems[i][j]);
-					int num = 600 / strItems[i].Length;
-					element3.Position = new Point(150 + num * j, 80 + 40 * i);
-					element3.Region = new Rectangle((num - strItems[i][j].Width) / 2, 0, strItems[i][j].Width, 40);
+					int slotWidth = 600 / strItems[i].Length;
+					element3.Position = new Point(150 + slotWidth * j, 80 + 40 * i);
+					element3.Region = new Rectangle((slotWidth - strItems[i][j].Width) / 2, 0, strItems[i][j].Width, 40);
 					Element element4 = new Element(picSelects[0]);
 					element4.Position = new Point(element3.Region.Left - 5, 0);
 					element3.Add(element4, "no", false);
@@ -169,13 +169,13 @@ namespace KidFansChannel.CloseTo.Screens
 				{
 					if (k < ItemValues.Count - 1)
 					{
-						int num2 = (int)((double)((float)l * (float)(strItems[k + 1].Length - 1) / (float)(strItems[k].Length - 1)) + 0.5);
-						eleScreen["main"][k.ToString("00") + l].Down = eleScreen["main"][(k + 1).ToString("00") + num2];
+						int downTarget = (int)((double)((float)l * (float)(strItems[k + 1].Length - 1) / (float)(strItems[k].Length - 1)) + 0.5);
+						eleScreen["main"][k.ToString("00") + l].Down = eleScreen["main"][(k + 1).ToString("00") + downTarget];
 					}
 					if (k > 0)
 					{
-						int num3 = (int)((double)((float)l * (float)(strItems[k - 1].Length - 1) / (float)(strItems[k].Length - 1)) + 0.5);
-						eleScreen["main"][k.ToString("00") + l].Up = eleScreen["main"][(k - 1).ToString("00") + num3];
+						int upTarget = (int)((double)((float)l * (float)(strItems[k - 1].Length - 1) / (float)(strItems[k].Length - 1)) + 0.5);
+						eleScreen["main"][k.ToString("00") + l].Up = eleScreen["main"][(k - 1).ToString("00") + upTarget];
 					}
 					eleScreen["main"][k.ToString("00") + l].Right = eleScreen["main"][k.ToString("00") + (l + 1) % strItems[k].Length];
 					eleScreen["main"][k.ToString("00") + (l + 1) % strItems[k].Length].Left = eleScreen["main"][k.ToString("00") + l];
@@ -276,21 +276,21 @@ namespace KidFansChannel.CloseTo.Screens
 		private void OptionsValue_MouseEnter(object sender, EventArgs e)
 		{
 			Element element = (Element)sender;
-			int num = (int)element.Value >> 8;
+			int slotWidth = (int)element.Value >> 8;
 			element.SetVisible("no", true);
-			if (num < optionsStart)
+			if (slotWidth < optionsStart)
 			{
-				optionsStart = num;
+				optionsStart = slotWidth;
 				UpdateOptions();
 			}
-			else if (num >= optionsStart + optionsLength)
+			else if (slotWidth >= optionsStart + optionsLength)
 			{
-				optionsStart = num - optionsLength + 1;
+				optionsStart = slotWidth - optionsLength + 1;
 				UpdateOptions();
 			}
 			strIntro.ClearString();
-			strIntro.AddString(ItemTitles[num] + "\n", ContentAlignment.TopCenter);
-			strIntro.AddXmlString(ItemIntros[num], new NodeInfo(), ContentAlignment.TopLeft);
+			strIntro.AddString(ItemTitles[slotWidth] + "\n", ContentAlignment.TopCenter);
+			strIntro.AddXmlString(ItemIntros[slotWidth], new NodeInfo(), ContentAlignment.TopLeft);
 			GameManager.Data.LoadAndPlaySystemSound("cursor.ogg");
 		}
 
@@ -303,15 +303,15 @@ namespace KidFansChannel.CloseTo.Screens
 		private void OptionsValue_MouseClick(object sender, EventArgs e)
 		{
 			Element element = (Element)sender;
-			int num = (int)element.Value >> 8;
+			int slotWidth = (int)element.Value >> 8;
 			int value = (int)element.Value & 0xF;
-			SetOptionsValue(num, value);
-			for (int i = 0; i < strItems[num].Length; i++)
+			SetOptionsValue(slotWidth, value);
+			for (int i = 0; i < strItems[slotWidth].Length; i++)
 			{
-				eleScreen["main"][num.ToString("00") + i].SetVisible("yes", false);
+				eleScreen["main"][slotWidth.ToString("00") + i].SetVisible("yes", false);
 			}
-			value = GetOptionsValue(num);
-			UpdateValue(num, value);
+			value = GetOptionsValue(slotWidth);
+			UpdateValue(slotWidth, value);
 			GameManager.Data.LoadAndPlaySystemSound("ok.ogg");
 		}
 

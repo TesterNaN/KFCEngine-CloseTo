@@ -61,25 +61,25 @@ namespace KidFansChannel.CloseTo.Screens
 			Opens[10] = (Opens[11] = GameManager.GameState.GlobalVarDefines["Clr_Mai"].Value == 1);
 			Opens[12] = (Opens[13] = GameManager.GameState.GlobalVarDefines["Clr_Ghost"].Value == 1);
 			picMains[0] = GameManager.Data.LoadPicture("system", "shortcut0.png");
-			int num;
+			int paletteIndex;
 			switch (GameManager.GalCore.GameOptions.DialogueColor)
 			{
 			case "Blue":
-				num = 1;
+				paletteIndex = 1;
 				break;
 			case "Green":
-				num = 2;
+				paletteIndex = 2;
 				break;
 			case "Pink":
-				num = 3;
+				paletteIndex = 3;
 				break;
 			case "Gray":
-				num = 4;
+				paletteIndex = 4;
 				break;
 			default:
 				throw new Exception("Unbelievable!");
 			}
-			picMains[1] = GameManager.Data.LoadPicture("system", "shortcut" + num + ".png");
+			picMains[1] = GameManager.Data.LoadPicture("system", "shortcut" + paletteIndex + ".png");
 			picBar = GameManager.Data.LoadPicture("system", "select_bar.png");
 			picBack = GameManager.Data.LoadPicture("system", "screenback0.png");
 			Font2D font = GameManager.GalCore.GameFont.GetFont(24);
@@ -179,11 +179,11 @@ namespace KidFansChannel.CloseTo.Screens
 		private void Unit_MouseClick(object sender, EventArgs e)
 		{
 			Element element = (Element)sender;
-			int num = (int)element.Value;
-			if (Opens[num])
+			int paletteIndex = (int)element.Value;
+			if (Opens[paletteIndex])
 			{
 				GameManager.Data.LoadAndPlaySystemSound("ok.ogg");
-				StartShortcut(num);
+				StartShortcut(paletteIndex);
 			}
 		}
 
@@ -191,11 +191,11 @@ namespace KidFansChannel.CloseTo.Screens
 		{
 			Element element = (Element)sender;
 			element.SetVisible("bar", true);
-			int num = (int)element.Value;
+			int paletteIndex = (int)element.Value;
 			strInfo.ClearString();
-			if (Opens[num])
+			if (Opens[paletteIndex])
 			{
-				strInfo.AddString(Names[num] + "\n" + Infos[num]);
+				strInfo.AddString(Names[paletteIndex] + "\n" + Infos[paletteIndex]);
 			}
 			GameManager.Data.LoadAndPlaySystemSound("cursor.ogg");
 		}
