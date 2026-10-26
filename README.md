@@ -206,12 +206,35 @@ namespace，.NET 2.0 的编译器不认。
 3. `VideoCore/Allocator.cs` 里枚举和整数直接 `|`，C# 2.0 不允许，加了 `(int)`；
 4. `Program.cs` 加了一行把异常写进 `error.log`，方便排查。
 
-局部变量名仍是反编译器生成的 `num` / `val` / `flag`（这一点和
-[KFCEngine-Again](https://github.com/TesterNaN/KFCEngine-Again) 不同，那边已经
-做过语义化）。因为原程序集的 PDB 没有随发行版流出：
+### 变量名
+
+反编译器只留下了 `num` / `num2` / `val` / `flag` 这样的占位符，原程序集的 PDB
+没有随发行版流出（只在字符串表里留了个路径）：
 
 ```
 PDB: H:\KFCProgram\CloseTo\Project\Managed\NoStaff\CloseTo.pdb   （仅路径，无文件）
+```
+
+全部 2,511 处已经按代码实际行为重新命名。这件事之所以可行，是因为 v3 大量复用了
+v2 的代码：两边有 186 个同名文件，其中 81 个内容**完全相同**——那部分直接沿用
+[KFCEngine-Again](https://github.com/TesterNaN/KFCEngine-Again) 的命名即可。
+剩下 105 个有差异的，`CloseTo*` 与 `Again*` 也是同一界面的两代，逐行对照后补齐。
+
+几处需要真读代码才能命名的：
+
+```csharp
+// 相册：组号和组内序号编码在同一个 float 里
+int groupId   = (int)Math.Floor((float)((Element)sender).Value) / 10;
+int itemIndex = (int)Math.Floor((float)((Element)sender).Value) % 10;
+
+// 房间背景：把平面坐标投到圆柱面上
+double angle       = Math.Atan((double)((float)location.X / (float)ScreenSize.Width));
+double perspective = 1.0 / Math.Cos(angle);
+double panX        = angle / Math.PI * 360.0 / 390.0 + (double)canPos;
+
+// 存档界面：5 列 × 6 行，另加 60 个普通槽位和 30 个快速槽位
+for (int slot = 0; slot < 60; slot++)
+    eleScreen["main"]["sl" + slot.ToString("00")].MouseClick += SaveLoadUnit_MouseClick;
 ```
 
 ---
@@ -224,13 +247,15 @@ PDB: H:\KFCProgram\CloseTo\Project\Managed\NoStaff\CloseTo.pdb   （仅路径，
 | 运行时 | .NET 1.1 | .NET 2.0 | .NET 2.0 |
 | 保护 | XenoCode PostBuild | StarForce FrontLine 5 | SecuROM 7.38.0007 |
 | 程序集 | 混淆 | 2,686,472 字节 | 2,078,216 字节 |
-| 反编译文件 | 32 | 216 | 239 |
-| 数据 | 212 MB（`game-data/`） | 缺 `bg`/`chara`/`voice` | 910 MB |
-| 可运行 | ✓ 到正片 | ✗ 到不了主循环 | ✓ 到开场剧情 |
+| 反编译文件 | 32 | 218 | 239 |
+| 数据 | 212 MB（`game-data/`） | 1.9 GB | 910 MB |
+| 可运行 | ✓ 到正片 | ✓ 到序幕 | ✓ 到开场剧情 |
+| 变量命名 | ✓ 全部语义化 | ✓ 全部语义化 | ✓ 全部语义化 |
 
-`KFCEngine-Yukihota` 里 `game-data/` 是完整的一套（`Bg`/`Chara`/`Voice`/`Movie` 都在），
-所以那边能直接双击跑到正片。只有 v2 是残的——它当年以补丁形式流出，
-`bg.dat`、`chara.dat`、`voice.dat` 这几个大头从来没出现在补丁包里。
+三代现在都能编译、都能跑。`KFCEngine-Yukihota` 的 `game-data/` 是完整的一套；
+v2 的数据在补齐之后有 1.9 GB（`chara.dat` 848 MB + `bg.dat` 303 MB + 语音、音乐、
+影片若干），取法和校验写在
+[KFCEngine-Again](https://github.com/TesterNaN/KFCEngine-Again) 的 README 里。
 
 三代是同一条引擎线上长出来的：雪萤定下底子，AGAIN 换成 .NET 2.0 并加上
 DirectShow 视频，Close to 在这一套上扩了地图（`CloseTo.Commands.Map`）和
@@ -252,7 +277,6 @@ v3 这边 `KID` 变成 `KIDS`，`v2Mullen` 变成 `ctMullen`（CloseTo + Mullen�
 
 ## 已知问题
 
-- 局部变量名未语义化（见上）
 - `DirectShowLib` 必须用游戏自带的 `DirectShowLib-2005.dll`（引用 `mscorlib 2.0.0.0`）。
   如果误用别处那份 2.1.0.1599 版（.NET 4 编译），`LogoScreen` 播影片时会抛
   `BadImageFormatException`，表现为黑屏。
