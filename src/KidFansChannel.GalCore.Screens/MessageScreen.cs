@@ -334,120 +334,120 @@ namespace KidFansChannel.GalCore.Screens
 
 		protected void MoveTo(int lineStart)
 		{
-			int num = -1;
-			int num2 = 0;
-			int num3 = 0;
-			int num4 = GameManager.GameState.CurrentGameState.RecordLines.Count - 1;
-			while (num4 - num3 > 1)
+			int recordIndex = -1;
+			int offsetInRecord = 0;
+			int low = 0;
+			int high = GameManager.GameState.CurrentGameState.RecordLines.Count - 1;
+			while (high - low > 1)
 			{
-				int num5 = (num3 + num4) / 2;
-				if (GameManager.GameState.CurrentGameState.RecordLines[num5] > lineStart)
+				int mid = (low + high) / 2;
+				if (GameManager.GameState.CurrentGameState.RecordLines[mid] > lineStart)
 				{
-					num4 = num5;
+					high = mid;
 					continue;
 				}
-				if (GameManager.GameState.CurrentGameState.RecordLines[num5] < lineStart)
+				if (GameManager.GameState.CurrentGameState.RecordLines[mid] < lineStart)
 				{
-					num3 = num5;
+					low = mid;
 					continue;
 				}
-				num = num5;
+				recordIndex = mid;
 				break;
 			}
-			if (num == -1)
+			if (recordIndex == -1)
 			{
-				num = num3;
-				num2 = lineStart - GameManager.GameState.CurrentGameState.RecordLines[num];
+				recordIndex = low;
+				offsetInRecord = lineStart - GameManager.GameState.CurrentGameState.RecordLines[recordIndex];
 			}
-			int num6 = 0;
+			int usedLines = 0;
 			Messages.Clear();
-			if (num2 > 0)
+			if (offsetInRecord > 0)
 			{
-				MessageDisplay messageDisplay = new MessageDisplay(GameManager.GameState.CurrentGameState.Records[num]);
-				messageDisplay.Index = num;
+				MessageDisplay messageDisplay = new MessageDisplay(GameManager.GameState.CurrentGameState.Records[recordIndex]);
+				messageDisplay.Index = recordIndex;
 				messageDisplay.LinePos = 0;
-				messageDisplay.From = num2;
+				messageDisplay.From = offsetInRecord;
 				Messages.AddLast(messageDisplay);
-				num6 += messageDisplay.LineNum - num2;
-				num++;
+				usedLines += messageDisplay.LineNum - offsetInRecord;
+				recordIndex++;
 			}
-			while (num6 < PageLineNum && num < GameManager.GameState.CurrentGameState.Records.Count)
+			while (usedLines < PageLineNum && recordIndex < GameManager.GameState.CurrentGameState.Records.Count)
 			{
-				MessageDisplay messageDisplay2 = new MessageDisplay(GameManager.GameState.CurrentGameState.Records[num]);
-				messageDisplay2.Index = num;
-				messageDisplay2.LinePos = num6;
-				num6 += messageDisplay2.LineNum;
+				MessageDisplay messageDisplay2 = new MessageDisplay(GameManager.GameState.CurrentGameState.Records[recordIndex]);
+				messageDisplay2.Index = recordIndex;
+				messageDisplay2.LinePos = usedLines;
+				usedLines += messageDisplay2.LineNum;
 				Messages.AddLast(messageDisplay2);
-				num++;
+				recordIndex++;
 			}
-			if (num6 > PageLineNum)
+			if (usedLines > PageLineNum)
 			{
-				Messages.Last.Value.To -= num6 - PageLineNum;
+				Messages.Last.Value.To -= usedLines - PageLineNum;
 			}
 		}
 
 		protected bool FindVoiceUp()
 		{
-			int num = -1;
+			int recordIndex = -1;
 			for (LinkedListNode<MessageDisplay> linkedListNode = Messages.First; linkedListNode != null; linkedListNode = linkedListNode.Next)
 			{
 				if (linkedListNode.Value.Voice != null)
 				{
-					num = linkedListNode.Value.Index;
+					recordIndex = linkedListNode.Value.Index;
 					break;
 				}
 			}
-			if (num == -1)
+			if (recordIndex == -1)
 			{
 				return false;
 			}
-			int num2 = num;
-			for (int num3 = num - 1; num3 >= 0; num3--)
+			int voiceIndex = recordIndex;
+			for (int probeIndex = recordIndex - 1; probeIndex >= 0; probeIndex--)
 			{
-				if (GameManager.GameState.CurrentGameState.Records[num3].HasVoice)
+				if (GameManager.GameState.CurrentGameState.Records[probeIndex].HasVoice)
 				{
-					num2 = num3;
+					voiceIndex = probeIndex;
 					break;
 				}
 			}
-			if (num == num2)
+			if (recordIndex == voiceIndex)
 			{
 				return false;
 			}
-			int num4 = GameManager.GameState.CurrentGameState.RecordLines[num2] - (GameManager.GameState.CurrentGameState.RecordLines[Messages.First.Value.Index] + Messages.First.Value.From);
-			ScrollUp(-num4);
+			int scrollAmount = GameManager.GameState.CurrentGameState.RecordLines[voiceIndex] - (GameManager.GameState.CurrentGameState.RecordLines[Messages.First.Value.Index] + Messages.First.Value.From);
+			ScrollUp(-scrollAmount);
 			return true;
 		}
 
 		protected bool FindVoiceDown()
 		{
-			int num = -1;
+			int startIndex = -1;
 			for (LinkedListNode<MessageDisplay> linkedListNode = Messages.Last; linkedListNode != null; linkedListNode = linkedListNode.Previous)
 			{
 				if (linkedListNode.Value.Voice != null)
 				{
-					num = linkedListNode.Value.Index;
+					startIndex = linkedListNode.Value.Index;
 					break;
 				}
 			}
-			if (num == -1)
+			if (startIndex == -1)
 			{
 				return false;
 			}
-			int num2 = num;
-			for (int i = num + 1; i < GameManager.GameState.CurrentGameState.Records.Count; i++)
+			int nextIndex = startIndex;
+			for (int i = startIndex + 1; i < GameManager.GameState.CurrentGameState.Records.Count; i++)
 			{
 				if (GameManager.GameState.CurrentGameState.Records[i].HasVoice)
 				{
-					num2 = i;
+					nextIndex = i;
 					break;
 				}
 			}
-			if (num == num2)
+			if (startIndex == nextIndex)
 			{
 				return false;
 			}
-			int line = GameManager.GameState.CurrentGameState.RecordLines[num2] + GameManager.GameState.CurrentGameState.Records[num2].Line - (GameManager.GameState.CurrentGameState.RecordLines[Messages.Last.Value.Index] + Messages.Last.Value.To - Messages.Last.Value.From + 1);
+			int line = GameManager.GameState.CurrentGameState.RecordLines[nextIndex] + GameManager.GameState.CurrentGameState.Records[nextIndex].Line - (GameManager.GameState.CurrentGameState.RecordLines[Messages.Last.Value.Index] + Messages.Last.Value.To - Messages.Last.Value.From + 1);
 			ScrollDown(line);
 			return true;
 		}
