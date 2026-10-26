@@ -127,8 +127,8 @@ namespace KidFansChannel.DataCore
 					dataIsPackages[count].Add(false);
 					dataDirectories[count].Add(item);
 				}
-				List<DataDecoder> list = new List<DataDecoder>();
-				List<DataDecoder> list2 = new List<DataDecoder>();
+				List<DataDecoder> decoders = new List<DataDecoder>();
+				List<DataDecoder> languageDecoders = new List<DataDecoder>();
 				string text;
 				string text2;
 				for (int j = 0; j < 100; j++)
@@ -141,32 +141,32 @@ namespace KidFansChannel.DataCore
 					{
 						DataDecoder item2 = ((!replaceNames.Contains(Path.GetFileName(text))) ? new DataDecoder(text) : new DataDecoder(text, replaceStreams[replaceNames.IndexOf(Path.GetFileName(text))]));
 						dataIsPackages[count].Add(true);
-						list.Add(item2);
+						decoders.Add(item2);
 						if (File.Exists(text2 = Path.Combine(directoryNames[i], string.Format("{0}{1:D2}.{2}.{3}", dataName, j, _languageExt, _extension))) || replaceNames.Contains(Path.GetFileName(text2)))
 						{
 							try
 							{
 								DataDecoder item3 = ((!replaceNames.Contains(Path.GetFileName(text2))) ? new DataDecoder(text2) : new DataDecoder(text2, replaceStreams[replaceNames.IndexOf(Path.GetFileName(text2))]));
-								list2.Add(item3);
+								languageDecoders.Add(item3);
 							}
 							catch (InvalidDataException)
 							{
-								list2.Add(null);
+								languageDecoders.Add(null);
 							}
 						}
-						list2.Add(null);
+						languageDecoders.Add(null);
 					}
 					catch (InvalidDataException)
 					{
 					}
 				}
-				for (int num = list.Count - 1; num >= 0; num--)
+				for (int slot = decoders.Count - 1; slot >= 0; slot--)
 				{
-					dataDecoders[count].Add(list[num]);
-					dataDecoderWithLanguages[count].Add(list2[num]);
+					dataDecoders[count].Add(decoders[slot]);
+					dataDecoderWithLanguages[count].Add(languageDecoders[slot]);
 				}
-				list.Clear();
-				list2.Clear();
+				decoders.Clear();
+				languageDecoders.Clear();
 				if (!File.Exists(text = Path.Combine(directoryNames[i], string.Format("{0}.{1}", dataName, _extension))) && !replaceNames.Contains(Path.GetFileName(text)))
 				{
 					continue;
@@ -203,8 +203,8 @@ namespace KidFansChannel.DataCore
 
 		public DataType CheckData(string dataName, string pathName, DataType defaultType)
 		{
-			int num = dataNames.IndexOf(dataName);
-			if (num == -1)
+			int dataIndex = dataNames.IndexOf(dataName);
+			if (dataIndex == -1)
 			{
 				nowData = DataType.Null;
 				nowFile = null;
@@ -215,41 +215,41 @@ namespace KidFansChannel.DataCore
 				nowStream = null;
 				return DataType.Null;
 			}
-			bool flag = false;
+			bool found = false;
 			switch (defaultType)
 			{
 			case DataType.Package:
 			{
-				for (int j = 0; j < dataDecoders[num].Count; j++)
+				for (int j = 0; j < dataDecoders[dataIndex].Count; j++)
 				{
 					try
 					{
-						if (CheckPackage(dataDecoders[num][j], dataDecoderWithLanguages[num][j], pathName))
+						if (CheckPackage(dataDecoders[dataIndex][j], dataDecoderWithLanguages[dataIndex][j], pathName))
 						{
-							flag = true;
+							found = true;
 							break;
 						}
 					}
 					catch (Exception)
 					{
-						if (!File.Exists(dataDecoders[num][j].PackageName) || !File.Exists(dataDecoderWithLanguages[num][j].PackageName))
+						if (!File.Exists(dataDecoders[dataIndex][j].PackageName) || !File.Exists(dataDecoderWithLanguages[dataIndex][j].PackageName))
 						{
-							RemovePackage(num, j);
+							RemovePackage(dataIndex, j);
 						}
 					}
 				}
-				if (!flag)
+				if (!found)
 				{
-					for (int k = 0; k < dataDirectories[num].Count; k++)
+					for (int k = 0; k < dataDirectories[dataIndex].Count; k++)
 					{
-						if (CheckFile(dataDirectories[num][k], pathName))
+						if (CheckFile(dataDirectories[dataIndex][k], pathName))
 						{
-							flag = true;
+							found = true;
 							break;
 						}
 					}
 				}
-				if (flag)
+				if (found)
 				{
 					break;
 				}
@@ -257,36 +257,36 @@ namespace KidFansChannel.DataCore
 			}
 			case DataType.File:
 			{
-				for (int l = 0; l < dataDirectories[num].Count; l++)
+				for (int l = 0; l < dataDirectories[dataIndex].Count; l++)
 				{
-					if (CheckFile(dataDirectories[num][l], pathName))
+					if (CheckFile(dataDirectories[dataIndex][l], pathName))
 					{
-						flag = true;
+						found = true;
 						break;
 					}
 				}
-				if (!flag)
+				if (!found)
 				{
-					for (int m = 0; m < dataDecoders[num].Count; m++)
+					for (int m = 0; m < dataDecoders[dataIndex].Count; m++)
 					{
 						try
 						{
-							if (CheckPackage(dataDecoders[num][m], dataDecoderWithLanguages[num][m], pathName))
+							if (CheckPackage(dataDecoders[dataIndex][m], dataDecoderWithLanguages[dataIndex][m], pathName))
 							{
-								flag = true;
+								found = true;
 								break;
 							}
 						}
 						catch (Exception)
 						{
-							if (!File.Exists(dataDecoders[num][m].PackageName) || !File.Exists(dataDecoderWithLanguages[num][m].PackageName))
+							if (!File.Exists(dataDecoders[dataIndex][m].PackageName) || !File.Exists(dataDecoderWithLanguages[dataIndex][m].PackageName))
 							{
-								RemovePackage(num, m);
+								RemovePackage(dataIndex, m);
 							}
 						}
 					}
 				}
-				if (flag)
+				if (found)
 				{
 					break;
 				}
@@ -294,41 +294,41 @@ namespace KidFansChannel.DataCore
 			}
 			case DataType.Any:
 			{
-				int num2 = 0;
-				int num3 = 0;
-				for (int i = 0; i < dataIsPackages[num].Count; i++)
+				int packageIndex = 0;
+				int directoryIndex = 0;
+				for (int i = 0; i < dataIsPackages[dataIndex].Count; i++)
 				{
-					if (dataIsPackages[num][i])
+					if (dataIsPackages[dataIndex][i])
 					{
 						try
 						{
-							if (CheckPackage(dataDecoders[num][num2], dataDecoderWithLanguages[num][num2], pathName))
+							if (CheckPackage(dataDecoders[dataIndex][packageIndex], dataDecoderWithLanguages[dataIndex][packageIndex], pathName))
 							{
-								flag = true;
+								found = true;
 								break;
 							}
-							num2++;
+							packageIndex++;
 						}
 						catch (Exception)
 						{
-							if (!File.Exists(dataDecoders[num][num2].PackageName) || !File.Exists(dataDecoderWithLanguages[num][num2].PackageName))
+							if (!File.Exists(dataDecoders[dataIndex][packageIndex].PackageName) || !File.Exists(dataDecoderWithLanguages[dataIndex][packageIndex].PackageName))
 							{
-								RemovePackage(num, num2);
+								RemovePackage(dataIndex, packageIndex);
 							}
 							i--;
 						}
 					}
 					else
 					{
-						if (CheckFile(dataDirectories[num][num3], pathName))
+						if (CheckFile(dataDirectories[dataIndex][directoryIndex], pathName))
 						{
-							flag = true;
+							found = true;
 							break;
 						}
-						num3++;
+						directoryIndex++;
 					}
 				}
-				if (flag)
+				if (found)
 				{
 					break;
 				}
@@ -347,21 +347,21 @@ namespace KidFansChannel.DataCore
 			return nowData;
 		}
 
-		private void RemovePackage(int index, int decoderIndex)
+		private void RemovePackage(int index, int searchIndex)
 		{
-			dataDecoders[index].RemoveAt(decoderIndex);
-			dataDecoderWithLanguages[index].RemoveAt(decoderIndex);
-			int num = 0;
+			dataDecoders[index].RemoveAt(searchIndex);
+			dataDecoderWithLanguages[index].RemoveAt(searchIndex);
+			int searchIndex = 0;
 			for (int i = 0; i < dataIsPackages[index].Count; i++)
 			{
 				if (dataIsPackages[index][i])
 				{
-					if (num == decoderIndex)
+					if (searchIndex == searchIndex)
 					{
 						dataIsPackages[index].RemoveAt(i);
 						break;
 					}
-					num++;
+					searchIndex++;
 				}
 			}
 		}
