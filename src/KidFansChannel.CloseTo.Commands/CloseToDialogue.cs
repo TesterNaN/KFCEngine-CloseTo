@@ -191,18 +191,18 @@ namespace KidFansChannel.CloseTo.Commands
 
 		protected override void DrawSpeakerBackGround()
 		{
-			float num;
+			float speakerScale;
 			if (Dialogue.SpeakerString.Width <= 150)
 			{
-				num = 1f;
+				speakerScale = 1f;
 			}
 			else
 			{
-				num = ((Dialogue.SpeakerString.Width > 250) ? 2f : 1.5f);
+				speakerScale = ((Dialogue.SpeakerString.Width > 250) ? 2f : 1.5f);
 			}
 			ScriptCommand.Graphics.DrawPicture(dialogueSpeakerBacks[0]);
 			ScriptCommand.Graphics.DrawPicture(dialogueSpeakerBacks[currentColorIndex]);
-			Dialogue.SpeakerString.Location = new Point((int)(-190f + 100f * num), 396);
+			Dialogue.SpeakerString.Location = new Point((int)(-190f + 100f * speakerScale), 396);
 		}
 
 		public override void InitStaticData()

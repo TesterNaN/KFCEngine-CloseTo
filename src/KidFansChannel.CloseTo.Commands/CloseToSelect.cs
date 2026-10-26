@@ -285,9 +285,9 @@ namespace KidFansChannel.CloseTo.Commands
 				Label.PicBacks[l, 6].ScaleTo(new SizeF(1f, 1f));
 				Label.PicBacks[l, 7].ScaleTo(new SizeF((float)(boxWidth - 60) / 20f, 1f));
 				Label.PicBacks[l, 8].ScaleTo(new SizeF(1f, 1f));
-				for (int num3 = 0; num3 < 9; num3++)
+				for (int row = 0; row < 9; row++)
 				{
-					Label.PicBacks[l, num3].EndTransform();
+					Label.PicBacks[l, row].EndTransform();
 				}
 			}
 		}
@@ -453,10 +453,10 @@ namespace KidFansChannel.CloseTo.Commands
 			if (iconPasses >= 0 && iconTime > 0f)
 			{
 				iconTime -= elaspedTime;
-				bool flag = false;
+				bool selected = false;
 				while (iconTime < 0f)
 				{
-					flag = true;
+					selected = true;
 					iconTime += 0.5f;
 					iconPasses--;
 					iconDirection = !iconDirection;
@@ -467,7 +467,7 @@ namespace KidFansChannel.CloseTo.Commands
 					iconPasses = 0;
 					iconX = (iconDirection ? (ItemStrings[CurrentSelected].Width / 2 + 15) : (-(ItemStrings[CurrentSelected].Width / 2 + 15)));
 				}
-				else if (flag)
+				else if (selected)
 				{
 					iconX = (float)(ItemStrings[CurrentSelected].Width + 30) * (0.5f - iconTime) / 0.5f;
 					if (iconDirection)

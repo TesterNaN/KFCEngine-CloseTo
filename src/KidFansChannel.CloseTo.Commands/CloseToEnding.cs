@@ -129,16 +129,16 @@ namespace KidFansChannel.CloseTo.Commands
 				ScriptCommand.GalCore.GameState.UpdateMusic(30);
 				break;
 			}
-			bool flag2 = true;
+			bool allSeen = true;
 			for (int i = 0; i < 7; i++)
 			{
 				if (EndingIndex != i && !ScriptCommand.GalCore.GameState.CheckEnding(i))
 				{
-					flag2 = false;
+					allSeen = false;
 					break;
 				}
 			}
-			if (flag2)
+			if (allSeen)
 			{
 				for (int j = 22; j < 28; j++)
 				{
@@ -155,17 +155,17 @@ namespace KidFansChannel.CloseTo.Commands
 
 		protected bool CheckToAllClear()
 		{
-			bool[] array = new bool[6];
+			bool[] endings = new bool[6];
 			for (int i = 0; i < 6; i++)
 			{
-				array[i] = ScriptCommand.GalCore.GameState.CheckEnding(i);
+				endings[i] = ScriptCommand.GalCore.GameState.CheckEnding(i);
 			}
-			if (array[0] && (array[1] || array[2]) && (array[3] || array[4]) && array[5])
+			if (endings[0] && (endings[1] || endings[2]) && (endings[3] || endings[4]) && endings[5])
 			{
 				return false;
 			}
-			array[EndingIndex] = true;
-			if (array[0] && (array[1] || array[2]) && (array[3] || array[4]) && array[5])
+			endings[EndingIndex] = true;
+			if (endings[0] && (endings[1] || endings[2]) && (endings[3] || endings[4]) && endings[5])
 			{
 				return true;
 			}

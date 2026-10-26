@@ -96,11 +96,11 @@ namespace KidFansChannel.CloseTo.Commands
 			{
 				ScriptCommand.Canvas.DrawPicture(timeColon);
 			}
-			int num2 = int.Parse(Time.Substring(3, 2));
-			timeNums[num2 / 10].X = 690;
-			ScriptCommand.Canvas.DrawPicture(timeNums[num2 / 10]);
-			timeNums[num2 % 10].X = 710;
-			ScriptCommand.Canvas.DrawPicture(timeNums[num2 % 10]);
+			int minute = int.Parse(Time.Substring(3, 2));
+			timeNums[minute / 10].X = 690;
+			ScriptCommand.Canvas.DrawPicture(timeNums[minute / 10]);
+			timeNums[minute % 10].X = 710;
+			ScriptCommand.Canvas.DrawPicture(timeNums[minute % 10]);
 		}
 
 		public override void Update(double appTime, float elaspedTime)
