@@ -281,10 +281,10 @@ namespace KidFansChannel.GameCore
 		private static void EnumerateDevices(EnumAdapterInformation adapterInfo, List<Format> adapterFormatList)
 		{
 			DirectXException.IgnoreExceptions();
-			for (uint num = 0u; num < deviceTypeArray.Length; num++)
+			for (uint typeIndex = 0u; typeIndex < deviceTypeArray.Length; typeIndex++)
 			{
 				EnumDeviceInformation enumDeviceInformation = new EnumDeviceInformation();
-				enumDeviceInformation.DeviceType = deviceTypeArray[num];
+				enumDeviceInformation.DeviceType = deviceTypeArray[typeIndex];
 				enumDeviceInformation.Caps = Manager.GetDeviceCaps((int)adapterInfo.AdapterOrdinal, enumDeviceInformation.DeviceType);
 				EnumerateDeviceCombos(adapterInfo, enumDeviceInformation, adapterFormatList);
 				if (enumDeviceInformation.deviceSettingsList.Count > 0)
