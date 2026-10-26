@@ -603,24 +603,24 @@ namespace KidFansChannel.CloseTo.Screens
 			eleScreen[screen]["menu"].ElementPicture = picMenus[_page];
 			strNumber.ClearString();
 			strName.ClearString();
-			int num = 0;
-			int num2 = -1;
-			int num3 = 0;
+			int groupCount = 0;
+			int firstOpen = -1;
+			int lastOpen = 0;
 			for (int i = 0; i < 20; i++)
 			{
 				if (hasGroup[_page, i])
 				{
-					if (num2 == -1)
+					if (firstOpen == -1)
 					{
-						num2 = i;
+						firstOpen = i;
 					}
-					num3 = i;
+					lastOpen = i;
 					eleScreen[screen].SetVisible(i.ToString("00"), true);
-					eleScreen[screen][i.ToString("00")].ElementPicture = (((_page == 7) ? movieScreen.GetOpens()[num] : GroupOpens[_page][num]) ? null : picNone);
-					eleScreen[screen][i.ToString("00")].Value = num;
+					eleScreen[screen][i.ToString("00")].ElementPicture = (((_page == 7) ? movieScreen.GetOpens()[groupCount] : GroupOpens[_page][groupCount]) ? null : picNone);
+					eleScreen[screen][i.ToString("00")].Value = groupCount;
 					if (_page == 7)
 					{
-						eleScreen[screen][i.ToString("00") + "0"].ElementPicture = (((_page == 7) ? movieScreen.GetOpens()[num] : GroupOpens[_page][num]) ? picMarks[0] : picMarks[1]);
+						eleScreen[screen][i.ToString("00") + "0"].ElementPicture = (((_page == 7) ? movieScreen.GetOpens()[groupCount] : GroupOpens[_page][groupCount]) ? picMarks[0] : picMarks[1]);
 						for (int j = 1; j < 4; j++)
 						{
 							eleScreen[screen][i.ToString("00") + j].ElementPicture = null;
@@ -628,16 +628,16 @@ namespace KidFansChannel.CloseTo.Screens
 					}
 					else
 					{
-						for (int k = 0; k < Opens[_page][num].Length; k++)
+						for (int k = 0; k < Opens[_page][groupCount].Length; k++)
 						{
-							eleScreen[screen][i.ToString("00") + k].ElementPicture = (Opens[_page][num][k] ? picMarks[0] : picMarks[1]);
+							eleScreen[screen][i.ToString("00") + k].ElementPicture = (Opens[_page][groupCount][k] ? picMarks[0] : picMarks[1]);
 						}
-						for (int l = Opens[_page][num].Length; l < 4; l++)
+						for (int l = Opens[_page][groupCount].Length; l < 4; l++)
 						{
 							eleScreen[screen][i.ToString("00") + l].ElementPicture = null;
 						}
 					}
-					num++;
+					groupCount++;
 				}
 				else
 				{
@@ -653,30 +653,30 @@ namespace KidFansChannel.CloseTo.Screens
 			{
 				if (hasGroup[_page, n])
 				{
-					int num4 = (n + 15) % 20;
-					int num5 = (n + 5) % 20;
-					int num6 = (n + 4) % 5 + n / 5 * 5;
-					int num7 = (n + 1) % 5 + n / 5 * 5;
-					while (!eleScreen[screen].GetVisible(num4.ToString("00")))
+					int upTarget = (n + 15) % 20;
+					int downTarget = (n + 5) % 20;
+					int leftTarget = (n + 4) % 5 + n / 5 * 5;
+					int rightTarget = (n + 1) % 5 + n / 5 * 5;
+					while (!eleScreen[screen].GetVisible(upTarget.ToString("00")))
 					{
-						num4 = (num4 + 15) % 20;
+						upTarget = (upTarget + 15) % 20;
 					}
-					eleScreen[screen][n.ToString("00")].Up = eleScreen[screen][num4.ToString("00")];
-					while (!eleScreen[screen].GetVisible(num5.ToString("00")))
+					eleScreen[screen][n.ToString("00")].Up = eleScreen[screen][upTarget.ToString("00")];
+					while (!eleScreen[screen].GetVisible(downTarget.ToString("00")))
 					{
-						num5 = (num5 + 5) % 20;
+						downTarget = (downTarget + 5) % 20;
 					}
-					eleScreen[screen][n.ToString("00")].Down = eleScreen[screen][num5.ToString("00")];
-					while (!eleScreen[screen].GetVisible(num6.ToString("00")))
+					eleScreen[screen][n.ToString("00")].Down = eleScreen[screen][downTarget.ToString("00")];
+					while (!eleScreen[screen].GetVisible(leftTarget.ToString("00")))
 					{
-						num6 = (num6 + 4) % 5 + num6 / 5 * 5;
+						leftTarget = (leftTarget + 4) % 5 + leftTarget / 5 * 5;
 					}
-					eleScreen[screen][n.ToString("00")].Left = eleScreen[screen][num6.ToString("00")];
-					while (!eleScreen[screen].GetVisible(num7.ToString("00")))
+					eleScreen[screen][n.ToString("00")].Left = eleScreen[screen][leftTarget.ToString("00")];
+					while (!eleScreen[screen].GetVisible(rightTarget.ToString("00")))
 					{
-						num7 = (num7 + 1) % 5 + num7 / 5 * 5;
+						rightTarget = (rightTarget + 1) % 5 + rightTarget / 5 * 5;
 					}
-					eleScreen[screen][n.ToString("00")].Right = eleScreen[screen][num7.ToString("00")];
+					eleScreen[screen][n.ToString("00")].Right = eleScreen[screen][rightTarget.ToString("00")];
 				}
 				else
 				{
@@ -689,16 +689,16 @@ namespace KidFansChannel.CloseTo.Screens
 					element.Up = up;
 				}
 			}
-			for (int num8 = 0; num8 < 4; num8++)
+			for (int selectIndex = 0; selectIndex < 4; selectIndex++)
 			{
-				picSelects[num8].Position = new Point(picSelects[num8].CenterX + ((num8 % 2 == 0) ? (-20) : 800), picSelects[num8].CenterY + ((num8 / 2 == 0) ? (-20) : 600));
+				picSelects[selectIndex].Position = new Point(picSelects[selectIndex].CenterX + ((selectIndex % 2 == 0) ? (-20) : 800), picSelects[selectIndex].CenterY + ((selectIndex / 2 == 0) ? (-20) : 600));
 			}
 			eleScreen[screen].ClearSelected();
 			Element element9 = eleScreen[screen];
-			Element childRight = (eleScreen[screen].ChildDown = eleScreen[screen][num2.ToString("00")]);
+			Element childRight = (eleScreen[screen].ChildDown = eleScreen[screen][firstOpen.ToString("00")]);
 			element9.ChildRight = childRight;
 			Element element11 = eleScreen[screen];
-			Element childLeft = (eleScreen[screen].ChildUp = eleScreen[screen][num3.ToString("00")]);
+			Element childLeft = (eleScreen[screen].ChildUp = eleScreen[screen][lastOpen.ToString("00")]);
 			element11.ChildLeft = childLeft;
 		}
 
@@ -770,17 +770,17 @@ namespace KidFansChannel.CloseTo.Screens
 					FocusedElement = eleScreen["main"];
 					eleScreen["main"].Focused = true;
 					eleScreen.Focused = false;
-					int num = -1;
+					int targetIndex = -1;
 					for (int i = 0; i < 20; i++)
 					{
 						if ((int)eleScreen["main"][i.ToString("00")].Value == (int)Math.Floor((float)eleScreen["album"].Value) / 10)
 						{
-							num = i;
+							targetIndex = i;
 						}
 					}
-					if (num != -1)
+					if (targetIndex != -1)
 					{
-						eleScreen["main"][num.ToString("00")].Selected = true;
+						eleScreen["main"][targetIndex.ToString("00")].Selected = true;
 					}
 					eleScreen["main"].SetVisible("number", true);
 					eleScreen["main"].SetVisible("name", true);
@@ -976,9 +976,9 @@ namespace KidFansChannel.CloseTo.Screens
 						{
 							using (Stream stream = GameManager.Data.GetStream())
 							{
-								byte[] array = new byte[stream.Length];
-								stream.Read(array, 0, array.Length);
-								fileStream.Write(array, 0, array.Length);
+								byte[] fileBytes = new byte[stream.Length];
+								stream.Read(fileBytes, 0, fileBytes.Length);
+								fileStream.Write(fileBytes, 0, fileBytes.Length);
 								break;
 							}
 						}
