@@ -304,9 +304,9 @@ namespace KidFansChannel.GalCore.Commands
 			string argumentString = ScriptHelper.GetArgumentString(node, info, "speaker", string.Empty);
 			if (argumentString != string.Empty)
 			{
-				string[] array = argumentString.Split(';');
-				string[] array2 = array;
-				foreach (string s in array2)
+				string[] nodes = argumentString.Split(';');
+				string[] nodeInfos = nodes;
+				foreach (string s in nodeInfos)
 				{
 					try
 					{
@@ -382,8 +382,8 @@ namespace KidFansChannel.GalCore.Commands
 			if (loadNum > 0)
 			{
 				XmlNode xmlNode = ScriptCommand.GameScript.CommandNode;
-				XmlNode[] array = new XmlNode[loadNum];
-				NodeInfo[] array2 = new NodeInfo[loadNum];
+				XmlNode[] nodes = new XmlNode[loadNum];
+				NodeInfo[] nodeInfos = new NodeInfo[loadNum];
 				for (int i = 0; i < loadNum; i++)
 				{
 					do
@@ -395,12 +395,12 @@ namespace KidFansChannel.GalCore.Commands
 					{
 						throw new RuntimeException(ScriptCommand.GameScript.CommandNode, new NodeInfo(), "No enough dialogue to load.");
 					}
-					array[loadNum - i - 1] = xmlNode;
-					array2[loadNum - i - 1] = ScriptCommand.GameState.CurrentGameState.Info;
+					nodes[loadNum - i - 1] = xmlNode;
+					nodeInfos[loadNum - i - 1] = ScriptCommand.GameState.CurrentGameState.Info;
 				}
 				for (int j = 0; j < loadNum; j++)
 				{
-					ConvertXml(array[j], array2[j]);
+					ConvertXml(nodes[j], nodeInfos[j]);
 				}
 				StringLength = 0f;
 				_stringNumber = loadNum;
@@ -677,17 +677,17 @@ namespace KidFansChannel.GalCore.Commands
 						list.Add(_string.LinkList[i].Value);
 					}
 				}
-				int num = list.IndexOf(_string.CurrentPointedLinkValue);
-				if (num != -1)
+				int loadIndex = list.IndexOf(_string.CurrentPointedLinkValue);
+				if (loadIndex != -1)
 				{
-					num--;
-					if (num == -1)
+					loadIndex--;
+					if (loadIndex == -1)
 					{
 						_string.CurrentPointedLinkValue = -1;
 					}
 					else
 					{
-						_string.CurrentPointedLinkValue = list[num];
+						_string.CurrentPointedLinkValue = list[loadIndex];
 					}
 				}
 			}

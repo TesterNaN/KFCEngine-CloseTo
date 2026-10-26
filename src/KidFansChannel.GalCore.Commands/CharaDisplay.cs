@@ -659,24 +659,24 @@ namespace KidFansChannel.GalCore.Commands
 				((BindingPicture)_chara).AddPicture(_charaParts[1], new Point(0, _eyeLocation.Y - _charaEye[0].Height / 2));
 				((BindingPicture)_chara).AddPicture(_charaParts[2], new Point(_eyeLocation.X + _charaEye[0].Width / 2, _eyeLocation.Y - _charaEye[0].Height / 2));
 				((BindingPicture)_chara).AddPicture(_charaParts[3], new Point(0, _eyeLocation.Y + _charaEye[0].Height / 2));
-				for (int num = 0; num < EyeNum; num++)
+				for (int eyeIndex = 0; eyeIndex < EyeNum; eyeIndex++)
 				{
-					((BindingPicture)_chara).AddPicture(_charaEye[num], new Point(_eyeLocation.X - _charaEye[0].Width / 2, _eyeLocation.Y - _charaEye[0].Height / 2));
+					((BindingPicture)_chara).AddPicture(_charaEye[eyeIndex], new Point(_eyeLocation.X - _charaEye[0].Width / 2, _eyeLocation.Y - _charaEye[0].Height / 2));
 				}
-				for (int num2 = 5; num2 < EyeNum + 4; num2++)
+				for (int visibleIndex = 5; visibleIndex < EyeNum + 4; visibleIndex++)
 				{
-					((BindingPicture)_chara).SetVisible(num2, false);
+					((BindingPicture)_chara).SetVisible(visibleIndex, false);
 				}
 			}
 			_chara.Center = new Point((int)(_center * (float)_chara.Width), _chara.Height);
-			bool flag = false;
-			for (int num3 = ScriptCommand.CommandList.Count - 1; num3 >= 0; num3--)
+			bool found = false;
+			for (int commandIndex = ScriptCommand.CommandList.Count - 1; commandIndex >= 0; commandIndex--)
 			{
-				ScriptCommand scriptCommand = ScriptCommand.CommandList[num3];
+				ScriptCommand scriptCommand = ScriptCommand.CommandList[commandIndex];
 				if (scriptCommand is CharaDisplay && scriptCommand != this && ((CharaDisplay)scriptCommand)._index == _index)
 				{
 					charaDisplay = (CharaDisplay)scriptCommand;
-					flag = true;
+					found = true;
 					break;
 				}
 				if (scriptCommand is Scene && (!((Scene)scriptCommand).Continue || ((Scene)scriptCommand).Load))
@@ -684,7 +684,7 @@ namespace KidFansChannel.GalCore.Commands
 					break;
 				}
 			}
-			if (!flag)
+			if (!found)
 			{
 				if (!_x.HasValue)
 				{
@@ -737,7 +737,7 @@ namespace KidFansChannel.GalCore.Commands
 				_chara.ArgumentColor = Color.FromArgb(64, 51, 47, 63);
 				break;
 			}
-			if (!flag)
+			if (!found)
 			{
 				if (_animation)
 				{
@@ -1143,7 +1143,7 @@ namespace KidFansChannel.GalCore.Commands
 					{
 						_chara.Scale = charaDisplay.Chara.Scale;
 					}
-					int num = (_alpha.HasValue ? _alpha.Value : charaDisplay.Alpha.Value);
+					int eyeIndex = (_alpha.HasValue ? _alpha.Value : charaDisplay.Alpha.Value);
 					if (ChangeBaseAlpha > 0.25f)
 					{
 						oldChara.Alpha = (int)(Math.Pow((double)(1f - ChangeBaseAlpha) / 0.75, 0.5) * (double)value + 0.5);
@@ -1154,11 +1154,11 @@ namespace KidFansChannel.GalCore.Commands
 					}
 					if (ChangeBaseAlpha < 0.75f)
 					{
-						_chara.Alpha = (int)(Math.Pow((double)ChangeBaseAlpha / 0.75, 0.5) * (double)num + 0.5);
+						_chara.Alpha = (int)(Math.Pow((double)ChangeBaseAlpha / 0.75, 0.5) * (double)eyeIndex + 0.5);
 					}
 					else
 					{
-						_chara.Alpha = num;
+						_chara.Alpha = eyeIndex;
 					}
 				}
 				if (ChangeBaseAlpha == 1f)
@@ -1289,18 +1289,18 @@ namespace KidFansChannel.GalCore.Commands
 			{
 				mouthTime -= 0.125f;
 			}
-			double num = voiceTime;
-			if (num == 0.0)
+			double eyeIndex = voiceTime;
+			if (eyeIndex == 0.0)
 			{
 				ChangeMouth(0);
 				return;
 			}
-			int num2 = (int)(num * 60.0);
-			if (num2 >= voiceVol.Length)
+			int visibleIndex = (int)(eyeIndex * 60.0);
+			if (visibleIndex >= voiceVol.Length)
 			{
 				MouthStop();
 			}
-			else if (voiceVol[num2] > 125)
+			else if (voiceVol[visibleIndex] > 125)
 			{
 				if (mouthOpening)
 				{

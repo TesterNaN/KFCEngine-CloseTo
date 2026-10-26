@@ -322,9 +322,9 @@ namespace KidFansChannel.GalCore.Commands
 			string argumentString2 = ScriptHelper.GetArgumentString(node, info, "speaker", string.Empty);
 			if (argumentString2 != string.Empty)
 			{
-				string[] array = argumentString2.Split(';');
-				string[] array2 = array;
-				foreach (string s in array2)
+				string[] nodes = argumentString2.Split(';');
+				string[] nodeInfos = nodes;
+				foreach (string s in nodeInfos)
 				{
 					try
 					{
@@ -381,8 +381,8 @@ namespace KidFansChannel.GalCore.Commands
 			if (loadNum > 0)
 			{
 				XmlNode xmlNode = ScriptCommand.GameScript.CommandNode;
-				XmlNode[] array = new XmlNode[loadNum];
-				NodeInfo[] array2 = new NodeInfo[loadNum];
+				XmlNode[] nodes = new XmlNode[loadNum];
+				NodeInfo[] nodeInfos = new NodeInfo[loadNum];
 				for (int i = 0; i < loadNum; i++)
 				{
 					do
@@ -394,18 +394,18 @@ namespace KidFansChannel.GalCore.Commands
 					{
 						throw new RuntimeException(ScriptCommand.GameScript.CommandNode, new NodeInfo(), "No enough paragraph to load.");
 					}
-					array[loadNum - i - 1] = xmlNode;
-					array2[loadNum - i - 1] = ScriptCommand.GameState.CurrentGameState.Info;
+					nodes[loadNum - i - 1] = xmlNode;
+					nodeInfos[loadNum - i - 1] = ScriptCommand.GameState.CurrentGameState.Info;
 				}
 				for (int j = 0; j < loadNum - 1; j++)
 				{
-					ConvertXml(array[j], array2[j]);
+					ConvertXml(nodes[j], nodeInfos[j]);
 					if (_paragraphContent != null)
 					{
-						_shownString.AddXmlString(_paragraphContent, array2[j], _align);
+						_shownString.AddXmlString(_paragraphContent, nodeInfos[j], _align);
 					}
 				}
-				ConvertXml(array[loadNum - 1], array2[loadNum - 1]);
+				ConvertXml(nodes[loadNum - 1], nodeInfos[loadNum - 1]);
 				_stringNumber = loadNum;
 			}
 			else
@@ -579,17 +579,17 @@ namespace KidFansChannel.GalCore.Commands
 						list.Add(_shownString.LinkList[i].Value);
 					}
 				}
-				int num = list.IndexOf(_shownString.CurrentPointedLinkValue);
-				if (num != -1)
+				int loadIndex = list.IndexOf(_shownString.CurrentPointedLinkValue);
+				if (loadIndex != -1)
 				{
-					num--;
-					if (num == -1)
+					loadIndex--;
+					if (loadIndex == -1)
 					{
 						_shownString.CurrentPointedLinkValue = -1;
 					}
 					else
 					{
-						_shownString.CurrentPointedLinkValue = list[num];
+						_shownString.CurrentPointedLinkValue = list[loadIndex];
 					}
 				}
 			}

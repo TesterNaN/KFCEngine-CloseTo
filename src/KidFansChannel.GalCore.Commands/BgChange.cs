@@ -188,65 +188,65 @@ namespace KidFansChannel.GalCore.Commands
 		{
 			base.ConvertXml(node, info);
 			_bgStr = ScriptHelper.GetArgumentString(node, info, "file");
-			float? num = null;
-			float? num2 = null;
-			float? num3 = null;
-			float? num4 = null;
+			float? top = null;
+			float? bottom = null;
+			float? left = null;
+			float? right = null;
 			try
 			{
-				num = ScriptHelper.GetArgumentFloat(node, info, "top");
+				top = ScriptHelper.GetArgumentFloat(node, info, "top");
 			}
 			catch (ScriptArgumentException)
 			{
 			}
 			try
 			{
-				num2 = ScriptHelper.GetArgumentFloat(node, info, "bottom");
+				bottom = ScriptHelper.GetArgumentFloat(node, info, "bottom");
 			}
 			catch (ScriptArgumentException)
 			{
 			}
 			try
 			{
-				num3 = ScriptHelper.GetArgumentFloat(node, info, "left");
+				left = ScriptHelper.GetArgumentFloat(node, info, "left");
 			}
 			catch (ScriptArgumentException)
 			{
 			}
 			try
 			{
-				num4 = ScriptHelper.GetArgumentFloat(node, info, "right");
+				right = ScriptHelper.GetArgumentFloat(node, info, "right");
 			}
 			catch (ScriptArgumentException)
 			{
 			}
-			if (!num.HasValue && !num2.HasValue && !num3.HasValue && !num4.HasValue)
+			if (!top.HasValue && !bottom.HasValue && !left.HasValue && !right.HasValue)
 			{
 				_bounds = null;
 			}
 			else
 			{
-				if (!num.HasValue)
+				if (!top.HasValue)
 				{
-					num = 0f;
+					top = 0f;
 				}
-				if (!num2.HasValue)
+				if (!bottom.HasValue)
 				{
-					num2 = 1f;
+					bottom = 1f;
 				}
-				if (!num3.HasValue)
+				if (!left.HasValue)
 				{
-					num3 = 0f;
+					left = 0f;
 				}
-				if (!num4.HasValue)
+				if (!right.HasValue)
 				{
-					num4 = 1f;
+					right = 1f;
 				}
 				Rectangle value = default(Rectangle);
-				value.Width = (int)((double?)(1f / (num4 - num3) * 800f) + 0.5).Value;
-				value.Height = (int)((double?)(1f / (num2 - num) * 600f) + 0.5).Value;
-				value.X = -(int)((double?)(num3 * (float)value.Width) + 0.5).Value;
-				value.Y = -(int)((double?)(num * (float)value.Height) + 0.5).Value;
+				value.Width = (int)((double?)(1f / (right - left) * 800f) + 0.5).Value;
+				value.Height = (int)((double?)(1f / (bottom - top) * 600f) + 0.5).Value;
+				value.X = -(int)((double?)(left * (float)value.Width) + 0.5).Value;
+				value.Y = -(int)((double?)(top * (float)value.Height) + 0.5).Value;
 				_bounds = value;
 			}
 			_speed = ScriptHelper.GetArgumentFloat(node, info, "speed", BgDisplay.DefaultSpeed);
