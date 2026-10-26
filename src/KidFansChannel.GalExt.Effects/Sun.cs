@@ -138,16 +138,16 @@ namespace KidFansChannel.GalExt.Effects
 			{
 				UpdateOneSun(sun, elaspedTime);
 			}
-			int num = 0;
-			while (num < Suns.Count)
+			int index = 0;
+			while (index < Suns.Count)
 			{
-				if (Suns[num].CurrentTime < Suns[num].Time + 2f * ShowHideTime)
+				if (Suns[index].CurrentTime < Suns[index].Time + 2f * ShowHideTime)
 				{
-					num++;
+					index++;
 				}
 				else
 				{
-					Suns.RemoveAt(num);
+					Suns.RemoveAt(index);
 				}
 			}
 		}

@@ -55,17 +55,17 @@ namespace KidFansChannel.GalExt.Effects
 		{
 			string argumentString = ScriptHelper.GetArgumentString(node, info, "color");
 			int alpha = 0;
-			int num = 0;
-			int num2 = 0;
-			int num3 = 0;
+			int red = 0;
+			int green = 0;
+			int blue = 0;
 			if (argumentString.Length > 6)
 			{
 				alpha = int.Parse(argumentString.Substring(0, argumentString.Length - 6), NumberStyles.HexNumber);
 			}
-			num = int.Parse(argumentString.Substring(argumentString.Length - 6, 2), NumberStyles.HexNumber);
-			num2 = int.Parse(argumentString.Substring(argumentString.Length - 4, 2), NumberStyles.HexNumber);
-			num3 = int.Parse(argumentString.Substring(argumentString.Length - 2, 2), NumberStyles.HexNumber);
-			_value = Color.FromArgb(alpha, num, num2, num3);
+			red = int.Parse(argumentString.Substring(argumentString.Length - 6, 2), NumberStyles.HexNumber);
+			green = int.Parse(argumentString.Substring(argumentString.Length - 4, 2), NumberStyles.HexNumber);
+			blue = int.Parse(argumentString.Substring(argumentString.Length - 2, 2), NumberStyles.HexNumber);
+			_value = Color.FromArgb(alpha, red, green, blue);
 			Single = ScriptHelper.GetArgumentFloat(node, info, "speed", 0.5f) > 0f;
 		}
 

@@ -151,8 +151,8 @@ namespace KidFansChannel.GalExt.Effects
 
 		public override void InitCommand(float speed)
 		{
-			int num = Ran.Next(NumMin, NumMax);
-			for (int i = 0; i < num; i++)
+			int spawnCount = Ran.Next(NumMin, NumMax);
+			for (int i = 0; i < spawnCount; i++)
 			{
 				Sakuras.Add(GenerateOneSakura(false));
 			}
@@ -176,32 +176,32 @@ namespace KidFansChannel.GalExt.Effects
 			{
 				UpdateOneSakura(sakura, elaspedTime);
 			}
-			int num = 0;
-			while (num < Sakuras.Count)
+			int spawnCount = 0;
+			while (spawnCount < Sakuras.Count)
 			{
-				bool flag = false;
+				bool offscreen = false;
 				switch (_style)
 				{
 				case 0:
-					flag = Sakuras[num].Position.X > (float)(BgDisplay.ScreenSize.Width + HalfSize / 2);
+					offscreen = Sakuras[spawnCount].Position.X > (float)(BgDisplay.ScreenSize.Width + HalfSize / 2);
 					break;
 				case 1:
-					flag = Sakuras[num].Position.X < (float)(-HalfSize / 2);
+					offscreen = Sakuras[spawnCount].Position.X < (float)(-HalfSize / 2);
 					break;
 				case 2:
-					flag = Sakuras[num].Position.Y > (float)(BgDisplay.ScreenSize.Height + HalfSize / 2);
+					offscreen = Sakuras[spawnCount].Position.Y > (float)(BgDisplay.ScreenSize.Height + HalfSize / 2);
 					break;
 				case 3:
-					flag = Sakuras[num].Position.Y < (float)(-HalfSize / 2);
+					offscreen = Sakuras[spawnCount].Position.Y < (float)(-HalfSize / 2);
 					break;
 				}
-				if (!flag)
+				if (!offscreen)
 				{
-					num++;
+					spawnCount++;
 				}
 				else
 				{
-					Sakuras.RemoveAt(num);
+					Sakuras.RemoveAt(spawnCount);
 				}
 			}
 		}
@@ -223,9 +223,9 @@ namespace KidFansChannel.GalExt.Effects
 			}
 			else
 			{
-				float num = Math.Abs(oneSakura.GoalSpeed.X - oneSakura.SpeedStart.X) / Acc.X;
+				float spawnCount = Math.Abs(oneSakura.GoalSpeed.X - oneSakura.SpeedStart.X) / Acc.X;
 				speedStart.X = oneSakura.GoalSpeed.X;
-				position.X = oneSakura.PositionStart.X + num * oneSakura.SpeedStart.X + num * num * (float)Math.Sign(oneSakura.GoalSpeed.X - oneSakura.SpeedStart.X) * Acc.X / 2f + (oneSakura.CurrentTime - num) * oneSakura.GoalSpeed.X;
+				position.X = oneSakura.PositionStart.X + spawnCount * oneSakura.SpeedStart.X + spawnCount * spawnCount * (float)Math.Sign(oneSakura.GoalSpeed.X - oneSakura.SpeedStart.X) * Acc.X / 2f + (oneSakura.CurrentTime - spawnCount) * oneSakura.GoalSpeed.X;
 			}
 			if (Math.Abs(oneSakura.GoalSpeed.Y - oneSakura.SpeedStart.Y) > oneSakura.CurrentTime * Acc.Y)
 			{
@@ -282,11 +282,11 @@ namespace KidFansChannel.GalExt.Effects
 
 		protected void DrawOneSakura(OneSakura oneSakura)
 		{
-			int num = (int)(oneSakura.OwnTime / AnimiSpeed);
-			PicSakuras[oneSakura.Type, num].X = (int)oneSakura.Position.X;
-			PicSakuras[oneSakura.Type, num].Y = (int)oneSakura.Position.Y;
-			PicSakuras[oneSakura.Type, num].Rotate = oneSakura.Rotate;
-			ScriptCommand.Canvas.DrawPicture(PicSakuras[oneSakura.Type, num]);
+			int spawnCount = (int)(oneSakura.OwnTime / AnimiSpeed);
+			PicSakuras[oneSakura.Type, spawnCount].X = (int)oneSakura.Position.X;
+			PicSakuras[oneSakura.Type, spawnCount].Y = (int)oneSakura.Position.Y;
+			PicSakuras[oneSakura.Type, spawnCount].Rotate = oneSakura.Rotate;
+			ScriptCommand.Canvas.DrawPicture(PicSakuras[oneSakura.Type, spawnCount]);
 		}
 
 		public override void Save(BinaryWriter bw)

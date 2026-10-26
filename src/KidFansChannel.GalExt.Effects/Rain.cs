@@ -96,14 +96,14 @@ namespace KidFansChannel.GalExt.Effects
 			oneRain.Angle = (float)(Ran.NextDouble() * (double)(AngleMax - AngleMin) + (double)AngleMin);
 			if (begin)
 			{
-				double num = Ran.NextDouble();
-				if (num > (double)SideRate)
+				double spawnChance = Ran.NextDouble();
+				if (spawnChance > (double)SideRate)
 				{
-					oneRain.Position = new PointF((float)(num - (double)SideRate) / (1f - SideRate) * (float)(BgDisplay.ScreenSize.Width + BgDisplay.ScreenSize.Height), 0f);
+					oneRain.Position = new PointF((float)(spawnChance - (double)SideRate) / (1f - SideRate) * (float)(BgDisplay.ScreenSize.Width + BgDisplay.ScreenSize.Height), 0f);
 				}
 				else
 				{
-					oneRain.Position = new PointF((!(oneRain.Angle > 0f)) ? BgDisplay.ScreenSize.Width : 0, (float)(num / (double)SideRate * (double)BgDisplay.ScreenSize.Height));
+					oneRain.Position = new PointF((!(oneRain.Angle > 0f)) ? BgDisplay.ScreenSize.Width : 0, (float)(spawnChance / (double)SideRate * (double)BgDisplay.ScreenSize.Height));
 				}
 			}
 			else
@@ -145,16 +145,16 @@ namespace KidFansChannel.GalExt.Effects
 			{
 				UpdateOneRain(rain, elaspedTime);
 			}
-			int num = 0;
-			while (num < Rains.Count)
+			int spawnChance = 0;
+			while (spawnChance < Rains.Count)
 			{
-				if (!((double)Rains[num].Position.Y > (double)BgDisplay.ScreenSize.Height + (double)Rains[num].Length * Math.Cos(Rains[num].Angle)) && !((double)Rains[num].Position.X < (double)(0f - Rains[num].Length) * Math.Abs(Math.Sin(Rains[num].Angle))) && !((double)Rains[num].Position.X > (double)BgDisplay.ScreenSize.Width + (double)Rains[num].Length * Math.Abs(Math.Sin(Rains[num].Angle))))
+				if (!((double)Rains[spawnChance].Position.Y > (double)BgDisplay.ScreenSize.Height + (double)Rains[spawnChance].Length * Math.Cos(Rains[spawnChance].Angle)) && !((double)Rains[spawnChance].Position.X < (double)(0f - Rains[spawnChance].Length) * Math.Abs(Math.Sin(Rains[spawnChance].Angle))) && !((double)Rains[spawnChance].Position.X > (double)BgDisplay.ScreenSize.Width + (double)Rains[spawnChance].Length * Math.Abs(Math.Sin(Rains[spawnChance].Angle))))
 				{
-					num++;
+					spawnChance++;
 				}
 				else
 				{
-					Rains.RemoveAt(num);
+					Rains.RemoveAt(spawnChance);
 				}
 			}
 		}
