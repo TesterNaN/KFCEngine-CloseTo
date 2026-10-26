@@ -78,21 +78,45 @@ msbuild CloseTo.csproj /t:Build
 
 ## 跑起来
 
-数据不在仓库里（约 900 MB，GitHub 放不下）。需要你自己准备一份原版镜像。
+数据不在仓库里（约 910 MB，GitHub 放不下）。两条路，任选一条。
+
+### 方式一：从原版镜像取数据
+
+手上有 `CLOSETO.mdf`（1.43 GB 光盘镜像）就用这个。
 
 ```
-# 把镜像里的数据取到 bin\Release
 .\tools\prepare-data.ps1 -Source "D:\Download\思念的碎片\CLOSETO.mdf"
-
-# 然后直接启动
-.\bin\Release\CloseTo.exe
 ```
 
-脚本会提取这些文件：
+### 方式二：直接下载数据包
+
+不想折腾镜像的话，数据包已经打好了（1.09 GB，含全部素材）：
+
+| 网盘 | 链接 |
+|---|---|
+| Google Drive | *(待填)* |
+| 百度网盘 | *(待填，提取码：*) |
+
+下载 `CloseTo-data.7z.001` 后：
+
+```
+.\tools\restore-data.ps1 -Archive "D:\Downloads\CloseTo-data.7z.001"
+```
+
+脚本会先核对 SHA256 再解包，文件对不上就停下：
+
+```
+SHA256  9B11EAC363536909F845A0C9551B39EA2CDCB907B988AD0A7F0288678E244D67
+大小    1,140,073,389 字节
+```
+
+### 数据里有什么
+
+不管走哪条路，`bin\Release` 最后会是这样：
 
 | 文件 | 大小 | 内容 |
 |---|---|---|
-| `bg.dat` | 329 MB | 393 张背景 PNG |
+| `bg.dat` | 329 MB | 393 张背景 PNG（960×720） |
 | `chara.dat` | 368 MB | 角色立绘 |
 | `voice.dat` | 190 MB | 语音 |
 | `system.dat` | 9.8 MB | 系统脚本 |
@@ -102,7 +126,7 @@ msbuild CloseTo.csproj /t:Build
 | `script.dat` | 1.2 MB | 剧情脚本 |
 | `Bgm/` | 60 个 | 背景音乐 |
 
-`.zh-CHS.dat` 是语言覆盖包，引擎会在查文件时优先命中它们
+`.zh-CHS.dat` 是语言覆盖包，引擎查文件时会优先命中它们
 （`DataCore.CheckFile` / `CheckPackage` 里那套优先顺序）。
 
 第一次启动会调用 `CloseToSetting.exe` 让你选显示设备，选项存在
