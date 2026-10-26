@@ -201,34 +201,34 @@ namespace KidFansChannel.GalCore
 					throw new InvalidDataException();
 				}
 				StringBuilder stringBuilder = new StringBuilder();
-				char[] array = br.ReadChars(1024);
-				for (int i = 0; i < 1024 && array[i] != '\0'; i++)
+				char[] charBuffer = br.ReadChars(1024);
+				for (int i = 0; i < 1024 && charBuffer[i] != '\0'; i++)
 				{
-					stringBuilder.Append(array[i]);
+					stringBuilder.Append(charBuffer[i]);
 				}
 				if (stringBuilder.ToString() != GameName)
 				{
 					throw new InvalidDataException();
 				}
 				stringBuilder = new StringBuilder();
-				array = br.ReadChars(1024);
-				for (int j = 0; j < 1024 && array[j] != '\0'; j++)
+				charBuffer = br.ReadChars(1024);
+				for (int j = 0; j < 1024 && charBuffer[j] != '\0'; j++)
 				{
-					stringBuilder.Append(array[j]);
+					stringBuilder.Append(charBuffer[j]);
 				}
 				SaveName = stringBuilder.ToString();
 				stringBuilder = new StringBuilder();
-				array = br.ReadChars(1024);
-				for (int k = 0; k < 1024 && array[k] != '\0'; k++)
+				charBuffer = br.ReadChars(1024);
+				for (int k = 0; k < 1024 && charBuffer[k] != '\0'; k++)
 				{
-					stringBuilder.Append(array[k]);
+					stringBuilder.Append(charBuffer[k]);
 				}
 				LevelName = stringBuilder.ToString();
 				stringBuilder = new StringBuilder();
-				array = br.ReadChars(1024);
-				for (int l = 0; l < 1024 && array[l] != '\0'; l++)
+				charBuffer = br.ReadChars(1024);
+				for (int l = 0; l < 1024 && charBuffer[l] != '\0'; l++)
 				{
-					stringBuilder.Append(array[l]);
+					stringBuilder.Append(charBuffer[l]);
 				}
 				Comments = stringBuilder.ToString();
 			}
@@ -472,8 +472,8 @@ namespace KidFansChannel.GalCore
 		public void UpdateTime(double appTime)
 		{
 			lastAppTime = appTime;
-			double num = ((!timerStopped) ? appTime : stopTime);
-			Time = (float)(num - baseTime);
+			double now = ((!timerStopped) ? appTime : stopTime);
+			Time = (float)(now - baseTime);
 		}
 
 		public void InitNewState(string storyName)
@@ -541,16 +541,16 @@ namespace KidFansChannel.GalCore
 			{
 				if (StringReads[_currentGameState.StoryName + "_" + _currentGameState.Chapter].Length <= index)
 				{
-					bool flag = false;
+					bool found = false;
 					foreach (string key in StringReads.Keys)
 					{
-						if (flag)
+						if (found)
 						{
 							return StringReads[key][0];
 						}
 						if (key == _currentGameState.StoryName + "_" + _currentGameState.Chapter)
 						{
-							flag = true;
+							found = true;
 						}
 					}
 					return true;
@@ -631,48 +631,48 @@ namespace KidFansChannel.GalCore
 
 		public int CountEndings()
 		{
-			int num = 0;
+			int count = 0;
 			for (int i = 0; i < Endings.Length; i++)
 			{
 				if (Endings[i])
 				{
-					num++;
+					count++;
 				}
 			}
-			return num;
+			return count;
 		}
 
 		public virtual int CountChapters()
 		{
-			int num = 0;
+			int count = 0;
 			foreach (KeyValuePair<string, int> item in StringReadNum)
 			{
 				if (item.Value > 0)
 				{
-					num++;
+					count++;
 				}
 			}
-			return num;
+			return count;
 		}
 
 		public int CountStringsTotal()
 		{
-			int num = 0;
+			int count = 0;
 			foreach (KeyValuePair<string, bool[]> stringRead in StringReads)
 			{
-				num += stringRead.Value.Length;
+				count += stringRead.Value.Length;
 			}
-			return num;
+			return count;
 		}
 
 		public int CountStringsRead()
 		{
-			int num = 0;
+			int count = 0;
 			foreach (KeyValuePair<string, int> item in StringReadNum)
 			{
-				num += item.Value;
+				count += item.Value;
 			}
-			return num;
+			return count;
 		}
 
 		public int CountSelectsTotal()
@@ -682,15 +682,15 @@ namespace KidFansChannel.GalCore
 
 		public int CountSelectsRead()
 		{
-			int num = 0;
+			int count = 0;
 			foreach (KeyValuePair<string, bool> selectChosen in SelectChosens)
 			{
 				if (selectChosen.Value)
 				{
-					num++;
+					count++;
 				}
 			}
-			return num;
+			return count;
 		}
 
 		public bool CheckAlbum(int index)
@@ -700,28 +700,28 @@ namespace KidFansChannel.GalCore
 
 		public int CountAlbums()
 		{
-			int num = 0;
+			int count = 0;
 			for (int i = 0; i < Albums.Length; i++)
 			{
 				if (Albums[i])
 				{
-					num++;
+					count++;
 				}
 			}
-			return num;
+			return count;
 		}
 
 		public int CountEncys()
 		{
-			int num = 0;
+			int count = 0;
 			for (int i = 0; i < EncyOpens.Length; i++)
 			{
 				if (EncyOpens[i])
 				{
-					num++;
+					count++;
 				}
 			}
-			return num;
+			return count;
 		}
 
 		public void InitAlbum(int number)
@@ -766,15 +766,15 @@ namespace KidFansChannel.GalCore
 
 		public int CountMusics()
 		{
-			int num = 0;
+			int count = 0;
 			for (int i = 0; i < Musics.Length; i++)
 			{
 				if (Musics[i])
 				{
-					num++;
+					count++;
 				}
 			}
-			return num;
+			return count;
 		}
 
 		public int GetMusicNumber()
@@ -799,15 +799,15 @@ namespace KidFansChannel.GalCore
 
 		public int CountMovies()
 		{
-			int num = 0;
+			int count = 0;
 			for (int i = 0; i < Movies.Length; i++)
 			{
 				if (Movies[i])
 				{
-					num++;
+					count++;
 				}
 			}
-			return num;
+			return count;
 		}
 
 		public int GetMovieNumber()
@@ -1434,7 +1434,7 @@ namespace KidFansChannel.GalCore
 							b = 0;
 							bitIndex = 7;
 						}
-						for (int num5 = totalSelects; num5 < (totalSelects + 3) / 4 * 4; num5++)
+						for (int padding = totalSelects; padding < (totalSelects + 3) / 4 * 4; padding++)
 						{
 							binaryWriter.Write((byte)0);
 						}
@@ -1517,26 +1517,26 @@ namespace KidFansChannel.GalCore
 		private void SaveArrays(BinaryWriter bw, bool[] datas)
 		{
 			byte b = 0;
-			int num = 7;
+			int bitIndex = 7;
 			for (int i = 0; i < datas.Length; i++)
 			{
 				if (datas[i])
 				{
-					b |= (byte)(1 << num);
+					b |= (byte)(1 << bitIndex);
 				}
-				num--;
-				if (num < 0)
+				bitIndex--;
+				if (bitIndex < 0)
 				{
 					bw.Write(b);
 					b = 0;
-					num = 7;
+					bitIndex = 7;
 				}
 			}
-			if (num < 7)
+			if (bitIndex < 7)
 			{
 				bw.Write(b);
 				b = 0;
-				num = 7;
+				bitIndex = 7;
 			}
 			for (int j = (datas.Length + 7) / 8; j < ((datas.Length + 7) / 8 + 3) / 4 * 4; j++)
 			{
