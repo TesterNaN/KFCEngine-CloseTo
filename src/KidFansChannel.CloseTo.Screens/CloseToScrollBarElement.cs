@@ -82,51 +82,51 @@ namespace KidFansChannel.CloseTo.Screens
 
 		protected override void UpdateBar()
 		{
-			int num = (int)(Start * (float)Size + 0.5f);
-			int num2 = ((Length != 0f) ? ((int)(Length * (float)Size + 0.5f)) : Size);
-			if (num2 > 30)
+			int thumbStart = (int)(Start * (float)Size + 0.5f);
+			int thumbSize = ((Length != 0f) ? ((int)(Length * (float)Size + 0.5f)) : Size);
+			if (thumbSize > 30)
 			{
-				base["scrollbar0"].Position = new Point(0, num);
+				base["scrollbar0"].Position = new Point(0, thumbStart);
 				SetVisible("scrollbar1", true);
-				base["scrollbar1"].Position = new Point(0, num + 15);
-				base["scrollbar1"].ElementPicture.ScaleY = (float)(num2 - 30) / 15f;
-				base["scrollbar2"].Position = new Point(0, num + num2 - 15);
+				base["scrollbar1"].Position = new Point(0, thumbStart + 15);
+				base["scrollbar1"].ElementPicture.ScaleY = (float)(thumbSize - 30) / 15f;
+				base["scrollbar2"].Position = new Point(0, thumbStart + thumbSize - 15);
 				return;
 			}
-			int num3 = (int)((Start + Length / 2f) * (float)Size + 0.5f);
+			int thumbCenter = (int)((Start + Length / 2f) * (float)Size + 0.5f);
 			SetVisible("scrollbar1", false);
-			if (num3 < 15)
+			if (thumbCenter < 15)
 			{
 				base["scrollbar0"].Position = new Point(0, 0);
 				base["scrollbar2"].Position = new Point(0, 15);
 			}
-			else if (num3 > Size - 15)
+			else if (thumbCenter > Size - 15)
 			{
 				base["scrollbar0"].Position = new Point(0, Size - 30);
 				base["scrollbar2"].Position = new Point(0, Size - 15);
 			}
 			else
 			{
-				base["scrollbar0"].Position = new Point(0, num3 - 15);
-				base["scrollbar2"].Position = new Point(0, num3);
+				base["scrollbar0"].Position = new Point(0, thumbCenter - 15);
+				base["scrollbar2"].Position = new Point(0, thumbCenter);
 			}
 		}
 
 		public override ScrollBarArea GetArea(Point location)
 		{
-			int num = (int)(Start * (float)Size + 0.5f);
-			int num2 = ((Length != 0f) ? ((int)(Length * (float)Size + 0.5f)) : Size);
-			if (num2 < 30)
+			int thumbStart = (int)(Start * (float)Size + 0.5f);
+			int thumbSize = ((Length != 0f) ? ((int)(Length * (float)Size + 0.5f)) : Size);
+			if (thumbSize < 30)
 			{
-				int num3 = (int)((Start + Length / 2f) * (float)Size + 0.5f);
-				num = ((num3 >= 15) ? ((num3 <= Size - 15) ? (num3 - 15) : (Size - 30)) : 0);
-				num2 = 30;
+				int thumbCenter = (int)((Start + Length / 2f) * (float)Size + 0.5f);
+				thumbStart = ((thumbCenter >= 15) ? ((thumbCenter <= Size - 15) ? (thumbCenter - 15) : (Size - 30)) : 0);
+				thumbSize = 30;
 			}
-			if (location.Y < num)
+			if (location.Y < thumbStart)
 			{
 				return ScrollBarArea.Up;
 			}
-			if (location.Y < num + num2)
+			if (location.Y < thumbStart + thumbSize)
 			{
 				return ScrollBarArea.Block;
 			}
