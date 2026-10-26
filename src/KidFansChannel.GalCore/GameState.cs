@@ -1097,71 +1097,71 @@ namespace KidFansChannel.GalCore
 							}
 							baseTime = -infoHeader.Time;
 							binaryReader.BaseStream.Position = 8232 + infoHeader.StringReadOffset;
-							int num = binaryReader.ReadInt32();
-							uint[] array = new uint[num];
-							int[] array2 = new int[num];
-							for (int i = 0; i < num; i++)
+							int entryCount = binaryReader.ReadInt32();
+							uint[] offsets = new uint[entryCount];
+							int[] lengths = new int[entryCount];
+							for (int i = 0; i < entryCount; i++)
 							{
-								array[i] = binaryReader.ReadUInt32();
-								array2[i] = binaryReader.ReadInt32();
+								offsets[i] = binaryReader.ReadUInt32();
+								lengths[i] = binaryReader.ReadInt32();
 							}
-							int num2 = 0;
+							int index = 0;
 							foreach (bool[] value in StringReads.Values)
 							{
-								binaryReader.BaseStream.Position = 8232 + array[num2];
-								LoadArrays(binaryReader, value, array2[num2]);
-								num2++;
+								binaryReader.BaseStream.Position = 8232 + offsets[index];
+								LoadArrays(binaryReader, value, lengths[index]);
+								index++;
 							}
 							binaryReader.BaseStream.Position = 8232 + infoHeader.SelectChosenOffset;
-							int num3 = binaryReader.ReadInt32();
-							uint[] array3 = new uint[num3];
-							int[] array4 = new int[num3];
-							for (int j = 0; j < num3; j++)
+							int selectCount = binaryReader.ReadInt32();
+							uint[] selectOffsets = new uint[selectCount];
+							int[] selectLengths = new int[selectCount];
+							for (int j = 0; j < selectCount; j++)
 							{
-								array3[j] = binaryReader.ReadUInt32();
-								array4[j] = binaryReader.ReadInt32();
+								selectOffsets[j] = binaryReader.ReadUInt32();
+								selectLengths[j] = binaryReader.ReadInt32();
 							}
-							int num4 = -1;
-							string text = null;
-							int num5 = 7;
+							int selectIndex = -1;
+							string lastKey = null;
+							int bitIndex = 7;
 							byte b = 0;
-							int num6 = 0;
-							List<string> list = new List<string>();
+							int itemIndex = 0;
+							List<string> chosen = new List<string>();
 							foreach (KeyValuePair<string, bool> selectChosen in SelectChosens)
 							{
 								string key = selectChosen.Key;
 								key = key.Substring(0, key.IndexOf('_'));
-								if (text != key)
+								if (lastKey != key)
 								{
-									text = key;
-									num4++;
-									binaryReader.BaseStream.Position = 8232 + array3[num4];
-									num6 = 0;
-									if (num6 >= array4[num4])
+									lastKey = key;
+									selectIndex++;
+									binaryReader.BaseStream.Position = 8232 + selectOffsets[selectIndex];
+									itemIndex = 0;
+									if (itemIndex >= selectLengths[selectIndex])
 									{
 										break;
 									}
 									b = binaryReader.ReadByte();
-									num6++;
-									num5 = 7;
+									itemIndex++;
+									bitIndex = 7;
 								}
-								if (((b >> num5) & 1) == 1)
+								if (((b >> bitIndex) & 1) == 1)
 								{
-									list.Add(selectChosen.Key);
+									chosen.Add(selectChosen.Key);
 								}
-								num5--;
-								if (num5 < 0)
+								bitIndex--;
+								if (bitIndex < 0)
 								{
-									if (num6 >= array4[num4])
+									if (itemIndex >= selectLengths[selectIndex])
 									{
 										break;
 									}
 									b = binaryReader.ReadByte();
-									num6++;
-									num5 = 7;
+									itemIndex++;
+									bitIndex = 7;
 								}
 							}
-							foreach (string item in list)
+							foreach (string item in chosen)
 							{
 								SelectChosens[item] = true;
 							}
@@ -1178,17 +1178,17 @@ namespace KidFansChannel.GalCore
 							binaryReader.BaseStream.Position = 8232 + infoHeader.EncyViewOffset;
 							LoadArrays(binaryReader, EncyViews, infoHeader.EncyViewLength);
 							binaryReader.BaseStream.Position = 8232 + infoHeader.GlobalVarOffset;
-							int num7 = 0;
+							int storyIndex = 0;
 							foreach (VarDefine value2 in _globalVarDefines.Values)
 							{
-								if (num7 < infoHeader.GlobalVarLength)
+								if (storyIndex < infoHeader.GlobalVarLength)
 								{
 									value2.Value = binaryReader.ReadByte();
 									if (value2.Value >= 128)
 									{
 										value2.Value -= 256;
 									}
-									num7++;
+									storyIndex++;
 									continue;
 								}
 								break;
@@ -1198,15 +1198,15 @@ namespace KidFansChannel.GalCore
 				}
 				foreach (KeyValuePair<string, bool[]> stringRead in StringReads)
 				{
-					int num8 = 0;
+					int readCount = 0;
 					for (int k = 0; k < stringRead.Value.Length; k++)
 					{
 						if (stringRead.Value[k])
 						{
-							num8++;
+							readCount++;
 						}
 					}
-					StringReadNum[stringRead.Key] = num8;
+					StringReadNum[stringRead.Key] = readCount;
 				}
 			}
 			catch (Exception ex)
@@ -1264,67 +1264,67 @@ namespace KidFansChannel.GalCore
 						default:
 							throw new FileNotFoundException(null, Path.Combine("system", "save_sys.png"));
 						}
-						byte[] array = new byte[stream.Length];
-						stream.Read(array, 0, array.Length);
+						byte[] thumbnail = new byte[stream.Length];
+						stream.Read(thumbnail, 0, thumbnail.Length);
 						stream.Close();
 						InfoHeader infoHeader = default(InfoHeader);
 						FileHeader.ThumbnailOffset = Marshal.SizeOf(infoHeader);
-						FileHeader.ThumbnailSize = array.Length;
+						FileHeader.ThumbnailSize = thumbnail.Length;
 						FileHeader.Write(binaryWriter);
-						uint num = 0u;
-						num = (infoHeader.StringReadOffset = (infoHeader.Size = (uint)Marshal.SizeOf(infoHeader)) + (uint)((array.Length + 3) / 4 * 4));
-						List<int> list = new List<int>();
+						uint offset = 0u;
+						offset = (infoHeader.StringReadOffset = (infoHeader.Size = (uint)Marshal.SizeOf(infoHeader)) + (uint)((thumbnail.Length + 3) / 4 * 4));
+						List<int> stringCounts = new List<int>();
 						foreach (bool[] value in StringReads.Values)
 						{
-							list.Add((value.Length + 7) / 8);
+							stringCounts.Add((value.Length + 7) / 8);
 						}
-						int num2 = 0;
-						foreach (int item in list)
+						int totalStrings = 0;
+						foreach (int item in stringCounts)
 						{
-							num2 += item;
+							totalStrings += item;
 						}
-						infoHeader.StringReadLength = 4 + 8 * list.Count + num2;
-						num = (infoHeader.SelectChosenOffset = num + (uint)((infoHeader.StringReadLength + 3) / 4 * 4));
-						List<int> list2 = new List<int>();
-						string text = null;
+						infoHeader.StringReadLength = 4 + 8 * stringCounts.Count + totalStrings;
+						offset = (infoHeader.SelectChosenOffset = offset + (uint)((infoHeader.StringReadLength + 3) / 4 * 4));
+						List<int> selectCounts = new List<int>();
+						string lastKey = null;
 						foreach (KeyValuePair<string, bool> selectChosen in SelectChosens)
 						{
 							string key = selectChosen.Key;
 							key = key.Substring(0, key.IndexOf('_'));
-							if (text != key)
+							if (lastKey != key)
 							{
-								text = key;
-								list2.Add(1);
+								lastKey = key;
+								selectCounts.Add(1);
 							}
 							else
 							{
-								list2[list2.Count - 1]++;
+								selectCounts[selectCounts.Count - 1]++;
 							}
 						}
-						for (int i = 0; i < list2.Count; i++)
+						for (int i = 0; i < selectCounts.Count; i++)
 						{
-							list2[i] = (list2[i] + 7) / 8;
+							selectCounts[i] = (selectCounts[i] + 7) / 8;
 						}
-						int num3 = 0;
-						foreach (int item2 in list2)
+						int totalSelects = 0;
+						foreach (int item2 in selectCounts)
 						{
-							num3 += item2;
+							totalSelects += item2;
 						}
-						infoHeader.SelectChosenLength = 4 + 8 * list2.Count + num3;
-						num = (infoHeader.EndingOffset = num + (uint)((infoHeader.SelectChosenLength + 3) / 4 * 4));
+						infoHeader.SelectChosenLength = 4 + 8 * selectCounts.Count + totalSelects;
+						offset = (infoHeader.EndingOffset = offset + (uint)((infoHeader.SelectChosenLength + 3) / 4 * 4));
 						infoHeader.EndingLength = (Endings.Length + 7) / 8;
-						num = (infoHeader.AlbumOffset = num + (uint)((infoHeader.EndingLength + 3) / 4 * 4));
+						offset = (infoHeader.AlbumOffset = offset + (uint)((infoHeader.EndingLength + 3) / 4 * 4));
 						infoHeader.AlbumLength = (Albums.Length + 7) / 8;
-						num = (infoHeader.MusicOffset = num + (uint)((infoHeader.AlbumLength + 3) / 4 * 4));
+						offset = (infoHeader.MusicOffset = offset + (uint)((infoHeader.AlbumLength + 3) / 4 * 4));
 						infoHeader.MusicLength = (Musics.Length + 7) / 8;
-						num = (infoHeader.MovieOffset = num + (uint)((infoHeader.MusicLength + 3) / 4 * 4));
+						offset = (infoHeader.MovieOffset = offset + (uint)((infoHeader.MusicLength + 3) / 4 * 4));
 						infoHeader.MovieLength = (Movies.Length + 7) / 8;
-						num = (infoHeader.EncyOpenOffset = num + (uint)((infoHeader.MovieLength + 3) / 4 * 4));
+						offset = (infoHeader.EncyOpenOffset = offset + (uint)((infoHeader.MovieLength + 3) / 4 * 4));
 						infoHeader.EncyOpenLength = (EncyOpens.Length + 7) / 8;
-						num = (infoHeader.EncyViewOffset = num + (uint)((infoHeader.EncyOpenLength + 3) / 4 * 4));
+						offset = (infoHeader.EncyViewOffset = offset + (uint)((infoHeader.EncyOpenLength + 3) / 4 * 4));
 						infoHeader.EncyViewLength = (EncyViews.Length + 7) / 8;
 						infoHeader.Time = (int)Time;
-						num = (infoHeader.GlobalVarOffset = num + (uint)((infoHeader.EncyViewLength + 3) / 4 * 4));
+						offset = (infoHeader.GlobalVarOffset = offset + (uint)((infoHeader.EncyViewLength + 3) / 4 * 4));
 						infoHeader.GlobalVarLength = _globalVarDefines.Count;
 						binaryWriter.Write(infoHeader.Size);
 						binaryWriter.Write(infoHeader.StringReadOffset);
@@ -1346,95 +1346,95 @@ namespace KidFansChannel.GalCore
 						binaryWriter.Write(infoHeader.Time);
 						binaryWriter.Write(infoHeader.GlobalVarOffset);
 						binaryWriter.Write(infoHeader.GlobalVarLength);
-						fileStream.Write(array, 0, array.Length);
-						for (int j = array.Length; j < (array.Length + 3) / 4 * 4; j++)
+						fileStream.Write(thumbnail, 0, thumbnail.Length);
+						for (int j = thumbnail.Length; j < (thumbnail.Length + 3) / 4 * 4; j++)
 						{
 							binaryWriter.Write((byte)0);
 						}
-						num = infoHeader.StringReadOffset;
-						binaryWriter.Write(list.Count);
-						num += (uint)(4 + 8 * list.Count);
-						for (int k = 0; k < list.Count; k++)
+						offset = infoHeader.StringReadOffset;
+						binaryWriter.Write(stringCounts.Count);
+						offset += (uint)(4 + 8 * stringCounts.Count);
+						for (int k = 0; k < stringCounts.Count; k++)
 						{
-							binaryWriter.Write(num);
-							binaryWriter.Write(list[k]);
-							num += (uint)list[k];
+							binaryWriter.Write(offset);
+							binaryWriter.Write(stringCounts[k]);
+							offset += (uint)stringCounts[k];
 						}
 						byte b = 0;
-						int num4 = 7;
+						int bitIndex = 7;
 						foreach (bool[] value2 in StringReads.Values)
 						{
 							for (int l = 0; l < value2.Length; l++)
 							{
 								if (value2[l])
 								{
-									b |= (byte)(1 << num4);
+									b |= (byte)(1 << bitIndex);
 								}
-								num4--;
-								if (num4 < 0)
+								bitIndex--;
+								if (bitIndex < 0)
 								{
 									binaryWriter.Write(b);
 									b = 0;
-									num4 = 7;
+									bitIndex = 7;
 								}
 							}
-							if (num4 < 7)
+							if (bitIndex < 7)
 							{
 								binaryWriter.Write(b);
 								b = 0;
-								num4 = 7;
+								bitIndex = 7;
 							}
 						}
-						for (int m = num2; m < (num2 + 3) / 4 * 4; m++)
+						for (int m = totalStrings; m < (totalStrings + 3) / 4 * 4; m++)
 						{
 							binaryWriter.Write((byte)0);
 						}
-						num = infoHeader.SelectChosenOffset;
-						binaryWriter.BaseStream.Position = 8232 + num;
-						binaryWriter.Write(list2.Count);
-						num += (uint)(4 + 8 * list2.Count);
-						for (int n = 0; n < list2.Count; n++)
+						offset = infoHeader.SelectChosenOffset;
+						binaryWriter.BaseStream.Position = 8232 + offset;
+						binaryWriter.Write(selectCounts.Count);
+						offset += (uint)(4 + 8 * selectCounts.Count);
+						for (int n = 0; n < selectCounts.Count; n++)
 						{
-							binaryWriter.Write(num);
-							binaryWriter.Write(list2[n]);
-							num += (uint)list2[n];
+							binaryWriter.Write(offset);
+							binaryWriter.Write(selectCounts[n]);
+							offset += (uint)selectCounts[n];
 						}
-						text = null;
+						lastKey = null;
 						b = 0;
-						num4 = 7;
+						bitIndex = 7;
 						foreach (KeyValuePair<string, bool> selectChosen2 in SelectChosens)
 						{
 							string key2 = selectChosen2.Key;
 							key2 = key2.Substring(0, key2.IndexOf('_'));
-							if (text != key2)
+							if (lastKey != key2)
 							{
-								text = key2;
-								if (num4 < 7)
+								lastKey = key2;
+								if (bitIndex < 7)
 								{
 									binaryWriter.Write(b);
 									b = 0;
-									num4 = 7;
+									bitIndex = 7;
 								}
 							}
 							if (selectChosen2.Value)
 							{
-								b |= (byte)(1 << num4);
+								b |= (byte)(1 << bitIndex);
 							}
-							num4--;
-							if (num4 < 0)
+							bitIndex--;
+							if (bitIndex < 0)
 							{
 								binaryWriter.Write(b);
 								b = 0;
-								num4 = 7;
+								bitIndex = 7;
 							}
 						}
-						if (num4 < 7)
+						if (bitIndex < 7)
 						{
 							binaryWriter.Write(b);
 							b = 0;
-							num4 = 7;
+							bitIndex = 7;
 						}
-						for (int num5 = num3; num5 < (num3 + 3) / 4 * 4; num5++)
+						for (int num5 = totalSelects; num5 < (totalSelects + 3) / 4 * 4; num5++)
 						{
 							binaryWriter.Write((byte)0);
 						}
@@ -1448,7 +1448,7 @@ namespace KidFansChannel.GalCore
 						{
 							binaryWriter.Write((byte)value3.Value);
 						}
-						for (int num6 = infoHeader.GlobalVarLength; num6 < (infoHeader.GlobalVarLength + 3) / 4 * 4; num6++)
+						for (int varPad = infoHeader.GlobalVarLength; varPad < (infoHeader.GlobalVarLength + 3) / 4 * 4; varPad++)
 						{
 							binaryWriter.Write((byte)0);
 						}
