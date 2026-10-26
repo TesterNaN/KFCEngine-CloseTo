@@ -102,10 +102,10 @@ namespace KidFansChannel.CloseTo.Screens
 				strMenuItem[j].LineSize = new Size(190, 40);
 				strMenuItem[j].LineNum = 1;
 			}
-			string[] array = GameManager.GalCore.GameLanguage.ResourceManager.GetString("MenuItemStr").Split('\n');
+			string[] menuTexts = GameManager.GalCore.GameLanguage.ResourceManager.GetString("MenuItemStr").Split('\n');
 			for (int k = 0; k < 8; k++)
 			{
-				strMenuItem[k].AddString(array[k]);
+				strMenuItem[k].AddString(menuTexts[k]);
 			}
 			if (!GameManager.GameState.CurrentGameState.CanSave)
 			{
@@ -143,14 +143,14 @@ namespace KidFansChannel.CloseTo.Screens
 				return false;
 			}
 			Element element = new Element();
-			string[] array = new string[4] { "Blue", "Green", "Pink", "Gray" };
+			string[] menuTexts = new string[4] { "Blue", "Green", "Pink", "Gray" };
 			for (int i = 0; i < 5; i++)
 			{
 				Element item = new Element(picMains[i]);
 				element.Add(item, "sub" + i);
 				if (i > 0)
 				{
-					element.SetVisible("sub" + i, GameManager.GalCore.GameOptions.DialogueColor == array[i - 1]);
+					element.SetVisible("sub" + i, GameManager.GalCore.GameOptions.DialogueColor == menuTexts[i - 1]);
 				}
 			}
 			picMains[0].Alpha = (int)(GameManager.GalCore.GameOptions.DialogueAlpha * 255f + 0.5f);
@@ -334,9 +334,9 @@ namespace KidFansChannel.CloseTo.Screens
 							iconDirection = true;
 							if (iconX1 > iconX2)
 							{
-								float num = iconX1;
+								float iconX = iconX1;
 								iconX1 = iconX2;
-								iconX2 = num;
+								iconX2 = iconX;
 							}
 						}
 						else if (iconPasses == 0)
@@ -364,10 +364,10 @@ namespace KidFansChannel.CloseTo.Screens
 			if (iconPasses >= 0 && iconTime > 0f)
 			{
 				iconTime -= elaspedTime;
-				bool flag = false;
+				bool selected = false;
 				while (iconTime < 0f)
 				{
-					flag = true;
+					selected = true;
 					iconTime += 0.5f;
 					iconPasses--;
 					iconDirection = !iconDirection;
@@ -387,7 +387,7 @@ namespace KidFansChannel.CloseTo.Screens
 						iconX2 = strMenuItem[CurrentSelected].Width + 30;
 					}
 				}
-				else if (flag)
+				else if (selected)
 				{
 					iconX1 = (iconX2 = (float)(strMenuItem[CurrentSelected].Width + 30) * (0.5f - iconTime) / 0.5f);
 					if (iconDirection)
