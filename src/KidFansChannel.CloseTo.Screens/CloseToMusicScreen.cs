@@ -76,25 +76,25 @@ namespace KidFansChannel.CloseTo.Screens
 			base.InitData();
 			picDisc = GameManager.Data.LoadPicture("system", "music_disc.png");
 			picMains[0] = GameManager.Data.LoadPicture("system", "music0.png");
-			int num;
+			int paletteIndex;
 			switch (GameManager.GalCore.GameOptions.DialogueColor)
 			{
 			case "Blue":
-				num = 1;
+				paletteIndex = 1;
 				break;
 			case "Green":
-				num = 2;
+				paletteIndex = 2;
 				break;
 			case "Pink":
-				num = 3;
+				paletteIndex = 3;
 				break;
 			case "Gray":
-				num = 4;
+				paletteIndex = 4;
 				break;
 			default:
 				throw new Exception("Unbelievable!");
 			}
-			picMains[1] = GameManager.Data.LoadPicture("system", "music" + num + ".png");
+			picMains[1] = GameManager.Data.LoadPicture("system", "music" + paletteIndex + ".png");
 			picBar = GameManager.Data.LoadPicture("system", "select_bar.png");
 			picBack = GameManager.Data.LoadPicture("system", "screenback1.png");
 			Font2D font = GameManager.GalCore.GameFont.GetFont(24);
@@ -261,12 +261,12 @@ namespace KidFansChannel.CloseTo.Screens
 		private void Unit_MouseClick(object sender, EventArgs e)
 		{
 			Element element = (Element)sender;
-			int num = (int)element.Value;
-			if (!Opens[num])
+			int musicId = (int)element.Value;
+			if (!Opens[musicId])
 			{
 				return;
 			}
-			if (currentPlayId == num)
+			if (currentPlayId == musicId)
 			{
 				StopMusic();
 				currentPlayId = -1;
@@ -275,15 +275,15 @@ namespace KidFansChannel.CloseTo.Screens
 				eleScreen["main"].SetVisible("info", true);
 				return;
 			}
-			PlayMusic(Files[num]);
-			currentPlayId = num;
+			PlayMusic(Files[musicId]);
+			currentPlayId = musicId;
 			eleScreen["main"].SetVisible("disc", true);
-			if (PrepareLyric(Files[num]))
+			if (PrepareLyric(Files[musicId]))
 			{
 				eleScreen["main"].SetVisible("lyricback", true);
 				eleScreen["main"].SetVisible("info", false);
 			}
-			eleScreen["main"]["disc"].Position = new Point(45, 260 + (num - currentStartId) * 40);
+			eleScreen["main"]["disc"].Position = new Point(45, 260 + (musicId - currentStartId) * 40);
 			playTime = 0f;
 		}
 
@@ -291,17 +291,17 @@ namespace KidFansChannel.CloseTo.Screens
 		{
 			Element element = (Element)sender;
 			element.SetVisible("bar", true);
-			int num = (int)element.Value;
+			int musicId = (int)element.Value;
 			strName.ClearString();
 			strTime.ClearString();
 			strInfo.ClearString();
-			if (Opens[num])
+			if (Opens[musicId])
 			{
-				strName.AddString((num + 1).ToString("00") + ". " + Names[num]);
-				strTime.AddString(Times[num], ContentAlignment.TopRight);
-				strInfo.AddString(Infos[num]);
+				strName.AddString((musicId + 1).ToString("00") + ". " + Names[musicId]);
+				strTime.AddString(Times[musicId], ContentAlignment.TopRight);
+				strInfo.AddString(Infos[musicId]);
 			}
-			showId = num;
+			showId = musicId;
 			showCurrentTime = false;
 			GameManager.Data.LoadAndPlaySystemSound("cursor.ogg");
 		}
@@ -461,10 +461,10 @@ namespace KidFansChannel.CloseTo.Screens
 					playTime += elaspedTime;
 					if (currentPlayId == showId)
 					{
-						int num = (int)playTime / 60;
+						int musicId = (int)playTime / 60;
 						int num2 = (int)playTime % 60;
 						strTime.ClearString();
-						strTime.AddString(num + ":" + num2.ToString("00"), ContentAlignment.TopRight);
+						strTime.AddString(musicId + ":" + num2.ToString("00"), ContentAlignment.TopRight);
 						showCurrentTime = true;
 						if (Lyrics != null)
 						{
@@ -528,23 +528,23 @@ namespace KidFansChannel.CloseTo.Screens
 			bool flag = false;
 			for (int i = 0; i < LineNum; i++)
 			{
-				int num = i + currentStartId;
+				int musicId = i + currentStartId;
 				strNames[i].ClearString();
 				strTimes[i].ClearString();
-				if (Opens[num])
+				if (Opens[musicId])
 				{
-					strNames[i].AddString((num + 1).ToString("00") + ". " + Names[num]);
-					strTimes[i].AddString(Times[num], ContentAlignment.TopRight);
+					strNames[i].AddString((musicId + 1).ToString("00") + ". " + Names[musicId]);
+					strTimes[i].AddString(Times[musicId], ContentAlignment.TopRight);
 				}
 				else
 				{
-					for (int j = 0; j < Names[num].Length; j++)
+					for (int j = 0; j < Names[musicId].Length; j++)
 					{
 						strNames[i].AddString("?");
 					}
 				}
-				eleScreen["main"][i.ToString("00")].Value = num;
-				if (num == currentPlayId)
+				eleScreen["main"][i.ToString("00")].Value = musicId;
+				if (musicId == currentPlayId)
 				{
 					eleScreen["main"].SetVisible("disc", true);
 					eleScreen["main"]["disc"].Position = new Point(45, 260 + i * 40);
