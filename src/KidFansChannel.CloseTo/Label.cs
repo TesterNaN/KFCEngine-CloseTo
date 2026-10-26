@@ -72,27 +72,27 @@ namespace KidFansChannel.CloseTo
 		public static void Update(Point location)
 		{
 			_location = location;
-			int num = _stringBase.TotalLine * 28 + 30;
-			int num2 = _stringBase.Width + 60;
+			int boxHeight = _stringBase.TotalLine * 28 + 30;
+			int boxWidth = _stringBase.Width + 60;
 			for (int i = 0; i < 5; i++)
 			{
-				backParts[i, 0].Center = new Point(num2 / 2, num / 2);
-				backParts[i, 1].Center = new Point(10, num / 2);
-				backParts[i, 2].Center = new Point(30 - num2 / 2, num / 2);
-				backParts[i, 3].Center = new Point(num2 / 2, 5);
+				backParts[i, 0].Center = new Point(boxWidth / 2, boxHeight / 2);
+				backParts[i, 1].Center = new Point(10, boxHeight / 2);
+				backParts[i, 2].Center = new Point(30 - boxWidth / 2, boxHeight / 2);
+				backParts[i, 3].Center = new Point(boxWidth / 2, 5);
 				backParts[i, 4].Center = new Point(10, 5);
-				backParts[i, 5].Center = new Point(30 - num2 / 2, 5);
-				backParts[i, 6].Center = new Point(num2 / 2, 25 - num / 2);
-				backParts[i, 7].Center = new Point(10, 25 - num / 2);
-				backParts[i, 8].Center = new Point(30 - num2 / 2, 25 - num / 2);
+				backParts[i, 5].Center = new Point(30 - boxWidth / 2, 5);
+				backParts[i, 6].Center = new Point(boxWidth / 2, 25 - boxHeight / 2);
+				backParts[i, 7].Center = new Point(10, 25 - boxHeight / 2);
+				backParts[i, 8].Center = new Point(30 - boxWidth / 2, 25 - boxHeight / 2);
 				backParts[i, 0].Scale = new SizeF(1f, 1f);
-				backParts[i, 1].Scale = new SizeF((float)(num2 - 60) / 20f, 1f);
+				backParts[i, 1].Scale = new SizeF((float)(boxWidth - 60) / 20f, 1f);
 				backParts[i, 2].Scale = new SizeF(1f, 1f);
-				backParts[i, 3].Scale = new SizeF(1f, (float)(num - 50) / 10f);
-				backParts[i, 4].Scale = new SizeF((float)(num2 - 60) / 20f, (float)(num - 50) / 10f);
-				backParts[i, 5].Scale = new SizeF(1f, (float)(num - 50) / 10f);
+				backParts[i, 3].Scale = new SizeF(1f, (float)(boxHeight - 50) / 10f);
+				backParts[i, 4].Scale = new SizeF((float)(boxWidth - 60) / 20f, (float)(boxHeight - 50) / 10f);
+				backParts[i, 5].Scale = new SizeF(1f, (float)(boxHeight - 50) / 10f);
 				backParts[i, 6].Scale = new SizeF(1f, 1f);
-				backParts[i, 7].Scale = new SizeF((float)(num2 - 60) / 20f, 1f);
+				backParts[i, 7].Scale = new SizeF((float)(boxWidth - 60) / 20f, 1f);
 				backParts[i, 8].Scale = new SizeF(1f, 1f);
 			}
 			for (int j = 0; j < 9; j++)
@@ -104,12 +104,12 @@ namespace KidFansChannel.CloseTo
 			arrowIndex = 0;
 			if (location.X < BgDisplay.ScreenSize.Width / 2)
 			{
-				position.X += num2 / 2 + 20;
+				position.X += boxWidth / 2 + 20;
 				location2.X += 50;
 			}
 			else
 			{
-				position.X -= num2 / 2 + 20;
+				position.X -= boxWidth / 2 + 20;
 				location2.X -= 50 + _stringBase.Width;
 				arrowIndex++;
 			}
@@ -284,10 +284,10 @@ namespace KidFansChannel.CloseTo
 
 		public static void ReleaseId(int id)
 		{
-			int num = ids[id];
+			int boxHeight = ids[id];
 			for (int i = 0; i < ids.Count; i++)
 			{
-				if (ids[i] > num)
+				if (ids[i] > boxHeight)
 				{
 					ids[i]--;
 				}
@@ -297,11 +297,11 @@ namespace KidFansChannel.CloseTo
 			{
 				for (int k = 0; k < 9; k++)
 				{
-					backLists[num][j, k].Dispose();
-					backLists[num][j, k] = null;
+					backLists[boxHeight][j, k].Dispose();
+					backLists[boxHeight][j, k] = null;
 				}
 			}
-			backLists.RemoveAt(num);
+			backLists.RemoveAt(boxHeight);
 		}
 	}
 }
