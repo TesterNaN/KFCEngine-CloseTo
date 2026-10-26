@@ -104,25 +104,25 @@ namespace KidFansChannel.CloseTo.Screens
 			base.InitData();
 			picSLIcon = GameManager.Data.LoadPicture("system", "sl_icon.png");
 			picMains[0] = GameManager.Data.LoadPicture("system", (isSave ? "save" : "load") + "0.png");
-			int num;
+			int paletteIndex;
 			switch (GameManager.GalCore.GameOptions.DialogueColor)
 			{
 			case "Blue":
-				num = 1;
+				paletteIndex = 1;
 				break;
 			case "Green":
-				num = 2;
+				paletteIndex = 2;
 				break;
 			case "Pink":
-				num = 3;
+				paletteIndex = 3;
 				break;
 			case "Gray":
-				num = 4;
+				paletteIndex = 4;
 				break;
 			default:
 				throw new Exception("Unbelievable!");
 			}
-			picMains[1] = GameManager.Data.LoadPicture("system", (isSave ? "save" : "load") + num + ".png");
+			picMains[1] = GameManager.Data.LoadPicture("system", (isSave ? "save" : "load") + paletteIndex + ".png");
 			if (back)
 			{
 				picBack = GameManager.Data.LoadPicture("system", "screenback" + (isSave ? "1" : "0") + ".png");
@@ -191,10 +191,10 @@ namespace KidFansChannel.CloseTo.Screens
 				return false;
 			}
 			Element item = new Element(picSLSelectIcon);
-			Element[] array = new Element[7];
+			Element[] icons = new Element[7];
 			for (int i = 0; i < 7; i++)
 			{
-				array[i] = new Element(picSLIcons[i]);
+				icons[i] = new Element(picSLIcons[i]);
 			}
 			Element item2 = new Element(picSLNoneIcon);
 			Element element = new Element();
@@ -202,7 +202,7 @@ namespace KidFansChannel.CloseTo.Screens
 			element.Add(item2, "none", false);
 			for (int j = 0; j < 7; j++)
 			{
-				element.Add(array[j], "icon" + j, false);
+				element.Add(icons[j], "icon" + j, false);
 			}
 			element.Region = new Rectangle(0, 0, 50, 50);
 			Element element2 = new Element(picMains[0]);
@@ -228,13 +228,13 @@ namespace KidFansChannel.CloseTo.Screens
 			{
 				Element element4 = (Element)element.Clone();
 				element4.Position = new Point(525 + l % 5 * 50, 70 + l / 5 * 50);
-				int num = l;
-				num = ((GameManager.GalCore.GameOptions.QuickSaveIndex != -1) ? (num + GameManager.GalCore.GameOptions.QuickSaveIndex) : (num + GameManager.GameScript.QuickIndexStart));
-				if (num >= GameManager.GameScript.QuickIndexEnd)
+				int slotIndex = l;
+				slotIndex = ((GameManager.GalCore.GameOptions.QuickSaveIndex != -1) ? (slotIndex + GameManager.GalCore.GameOptions.QuickSaveIndex) : (slotIndex + GameManager.GameScript.QuickIndexStart));
+				if (slotIndex >= GameManager.GameScript.QuickIndexEnd)
 				{
-					num -= GameManager.GameScript.QuickIndexEnd - GameManager.GameScript.QuickIndexStart;
+					slotIndex -= GameManager.GameScript.QuickIndexEnd - GameManager.GameScript.QuickIndexStart;
 				}
-				element4.Value = Icons[num];
+				element4.Value = Icons[slotIndex];
 				if ((int)element4.Value != -1)
 				{
 					element4.SetVisible("icon" + (int)element4.Value, true);
@@ -261,22 +261,22 @@ namespace KidFansChannel.CloseTo.Screens
 			}
 			if (!isSave)
 			{
-				for (int num2 = 0; num2 < 5; num2++)
+				for (int col = 0; col < 5; col++)
 				{
-					for (int num3 = 0; num3 < 6; num3++)
+					for (int row = 0; row < 6; row++)
 					{
-						eleScreen["main"]["slquick" + (num2 + num3 * 5).ToString("00")].Left = eleScreen["main"]["slquick" + ((num2 + 4) % 5 + num3 * 5).ToString("00")];
-						eleScreen["main"]["slquick" + (num2 + num3 * 5).ToString("00")].Right = eleScreen["main"]["slquick" + ((num2 + 1) % 5 + num3 * 5).ToString("00")];
-						eleScreen["main"]["slquick" + (num2 + num3 * 5).ToString("00")].Up = eleScreen["main"]["slquick" + (num2 + (num3 + 5) % 6 * 5).ToString("00")];
-						eleScreen["main"]["slquick" + (num2 + num3 * 5).ToString("00")].Down = eleScreen["main"]["slquick" + (num2 + (num3 + 1) % 6 * 5).ToString("00")];
+						eleScreen["main"]["slquick" + (col + row * 5).ToString("00")].Left = eleScreen["main"]["slquick" + ((col + 4) % 5 + row * 5).ToString("00")];
+						eleScreen["main"]["slquick" + (col + row * 5).ToString("00")].Right = eleScreen["main"]["slquick" + ((col + 1) % 5 + row * 5).ToString("00")];
+						eleScreen["main"]["slquick" + (col + row * 5).ToString("00")].Up = eleScreen["main"]["slquick" + (col + (row + 5) % 6 * 5).ToString("00")];
+						eleScreen["main"]["slquick" + (col + row * 5).ToString("00")].Down = eleScreen["main"]["slquick" + (col + (row + 1) % 6 * 5).ToString("00")];
 					}
 				}
-				for (int num4 = 0; num4 < 6; num4++)
+				for (int row = 0; row < 6; row++)
 				{
-					eleScreen["main"]["sl" + (num4 * 10).ToString("00")].Left = eleScreen["main"]["slquick" + (4 + num4 * 5).ToString("00")];
-					eleScreen["main"]["slquick" + (num4 * 5).ToString("00")].Left = eleScreen["main"]["sl" + (9 + num4 * 10).ToString("00")];
-					eleScreen["main"]["slquick" + (4 + num4 * 5).ToString("00")].Right = eleScreen["main"]["sl" + (num4 * 10).ToString("00")];
-					eleScreen["main"]["sl" + (9 + num4 * 10).ToString("00")].Right = eleScreen["main"]["slquick" + (num4 * 5).ToString("00")];
+					eleScreen["main"]["sl" + (row * 10).ToString("00")].Left = eleScreen["main"]["slquick" + (4 + row * 5).ToString("00")];
+					eleScreen["main"]["slquick" + (row * 5).ToString("00")].Left = eleScreen["main"]["sl" + (9 + row * 10).ToString("00")];
+					eleScreen["main"]["slquick" + (4 + row * 5).ToString("00")].Right = eleScreen["main"]["sl" + (row * 10).ToString("00")];
+					eleScreen["main"]["sl" + (9 + row * 10).ToString("00")].Right = eleScreen["main"]["slquick" + (row * 5).ToString("00")];
 				}
 				Element element5 = eleScreen["main"];
 				Element childLeft = (eleScreen["main"].ChildUp = eleScreen["main"]["slquick" + (GameManager.GameScript.QuickIndexEnd - GameManager.GameScript.QuickIndexStart - 1).ToString("00")]);
@@ -291,19 +291,19 @@ namespace KidFansChannel.CloseTo.Screens
 			Element element9 = eleScreen["main"];
 			Element childRight = (eleScreen["main"].ChildDown = eleScreen["main"]["sl00"]);
 			element9.ChildRight = childRight;
-			for (int num5 = 0; num5 < 60; num5++)
+			for (int slot = 0; slot < 60; slot++)
 			{
-				eleScreen["main"]["sl" + num5.ToString("00")].MouseClick += SaveLoadUnit_MouseClick;
-				eleScreen["main"]["sl" + num5.ToString("00")].MouseEnter += SaveLoadUnit_MouseEnter;
-				eleScreen["main"]["sl" + num5.ToString("00")].MouseLeave += SaveLoadUnit_MouseLeave;
+				eleScreen["main"]["sl" + slot.ToString("00")].MouseClick += SaveLoadUnit_MouseClick;
+				eleScreen["main"]["sl" + slot.ToString("00")].MouseEnter += SaveLoadUnit_MouseEnter;
+				eleScreen["main"]["sl" + slot.ToString("00")].MouseLeave += SaveLoadUnit_MouseLeave;
 			}
 			if (!isSave)
 			{
-				for (int num6 = 0; num6 < 30; num6++)
+				for (int quickSlot = 0; quickSlot < 30; quickSlot++)
 				{
-					eleScreen["main"]["slquick" + num6.ToString("00")].MouseClick += SaveLoadUnit_MouseClick;
-					eleScreen["main"]["slquick" + num6.ToString("00")].MouseEnter += SaveLoadUnit_MouseEnter;
-					eleScreen["main"]["slquick" + num6.ToString("00")].MouseLeave += SaveLoadUnit_MouseLeave;
+					eleScreen["main"]["slquick" + quickSlot.ToString("00")].MouseClick += SaveLoadUnit_MouseClick;
+					eleScreen["main"]["slquick" + quickSlot.ToString("00")].MouseEnter += SaveLoadUnit_MouseEnter;
+					eleScreen["main"]["slquick" + quickSlot.ToString("00")].MouseLeave += SaveLoadUnit_MouseLeave;
 				}
 			}
 			Element element11 = new Element();
@@ -322,18 +322,18 @@ namespace KidFansChannel.CloseTo.Screens
 			element15.Position = new Point(30, 425);
 			eleScreen["main"].Add(element15, "comment");
 			Element element16 = new Element(picBlack);
-			for (int num7 = 0; num7 < 4; num7++)
+			for (int iconIndex = 0; iconIndex < 4; iconIndex++)
 			{
 				Element element17 = new Element();
 				element17.Add(item, "select", false);
-				element17.Add(array[num7], "icon", true);
+				element17.Add(icons[iconIndex], "icon", true);
 				element17.Region = new Rectangle(0, 0, 50, 50);
-				element17.Position = new Point(num7 % 2 * 50 - 50, num7 / 2 * 50 - 50);
-				element17.Value = num7;
-				element16.Add(element17, "icon" + num7);
-				element16["icon" + num7].MouseEnter += SaveIcon_MouseEnter;
-				element16["icon" + num7].MouseLeave += SaveIcon_MouseLeave;
-				element16["icon" + num7].MouseClick += SaveIcon_MouseClick;
+				element17.Position = new Point(iconIndex % 2 * 50 - 50, iconIndex / 2 * 50 - 50);
+				element17.Value = iconIndex;
+				element16.Add(element17, "icon" + iconIndex);
+				element16["icon" + iconIndex].MouseEnter += SaveIcon_MouseEnter;
+				element16["icon" + iconIndex].MouseLeave += SaveIcon_MouseLeave;
+				element16["icon" + iconIndex].MouseClick += SaveIcon_MouseClick;
 			}
 			for (int num8 = 0; num8 < 4; num8++)
 			{
