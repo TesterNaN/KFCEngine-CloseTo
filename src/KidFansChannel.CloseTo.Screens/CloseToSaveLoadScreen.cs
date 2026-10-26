@@ -335,13 +335,13 @@ namespace KidFansChannel.CloseTo.Screens
 				element16["icon" + iconIndex].MouseLeave += SaveIcon_MouseLeave;
 				element16["icon" + iconIndex].MouseClick += SaveIcon_MouseClick;
 			}
-			for (int num8 = 0; num8 < 4; num8++)
+			for (int iconIndex = 0; iconIndex < 4; iconIndex++)
 			{
-				Element element18 = element16["icon" + num8];
-				Element up = (element16["icon" + num8].Up = element16["icon" + (num8 + 2) % 4]);
+				Element element18 = element16["icon" + iconIndex];
+				Element up = (element16["icon" + iconIndex].Up = element16["icon" + (iconIndex + 2) % 4]);
 				element18.Up = up;
-				Element element20 = element16["icon" + num8];
-				Element childLeft = (element16["icon" + num8].Right = element16["icon" + ((num8 + 1) % 2 + num8 / 2 * 2)]);
+				Element element20 = element16["icon" + iconIndex];
+				Element childLeft = (element16["icon" + iconIndex].Right = element16["icon" + ((iconIndex + 1) % 2 + iconIndex / 2 * 2)]);
 				element20.Left = childLeft;
 			}
 			element16.ChildLeft = element16["icon3"];
@@ -365,20 +365,20 @@ namespace KidFansChannel.CloseTo.Screens
 		private void SaveIcon_MouseClick(object sender, EventArgs e)
 		{
 			Element element = (Element)sender;
-			int num = (int)eleScreen["main"]["iconpanel"].Value;
-			int num2 = (int)element.Value;
+			int slotIndex = (int)eleScreen["main"]["iconpanel"].Value;
+			int iconIndex = (int)element.Value;
 			eleScreen["main"]["iconpanel"].Value = null;
 			eleScreen["main"].SetVisible("iconpanel", false);
 			eleScreen["main"]["iconpanel"].Focused = false;
 			eleScreen["main"].Focused = true;
 			FocusedElement = eleScreen["main"];
-			if (Icons[num] >= 0)
+			if (Icons[slotIndex] >= 0)
 			{
-				GameManager.GalCore.ShowMessageBox(new CloseToMessageBoxScreen(GameManager.GalCore.GameLanguage.ResourceManager.GetString("SaveStr"), MessageBoxButtons.YesNo, CloseToSave, new object[2] { num, num2 }));
+				GameManager.GalCore.ShowMessageBox(new CloseToMessageBoxScreen(GameManager.GalCore.GameLanguage.ResourceManager.GetString("SaveStr"), MessageBoxButtons.YesNo, CloseToSave, new object[2] { slotIndex, iconIndex }));
 			}
 			else
 			{
-				CloseToSave(new object[2] { num, num2 });
+				CloseToSave(new object[2] { slotIndex, iconIndex });
 				GameManager.Data.LoadAndPlaySystemSound("ok.ogg");
 			}
 		}
@@ -391,18 +391,18 @@ namespace KidFansChannel.CloseTo.Screens
 				return;
 			}
 			string text = eleScreen["main"].NameOf(element);
-			int num;
+			int slotIndex;
 			if (text.Length == 4)
 			{
-				num = int.Parse(text.Substring(2));
+				slotIndex = int.Parse(text.Substring(2));
 			}
 			else
 			{
-				num = int.Parse(text.Substring(7));
-				num = ((GameManager.GalCore.GameOptions.QuickSaveIndex != -1) ? (num + GameManager.GalCore.GameOptions.QuickSaveIndex) : (num + GameManager.GameScript.QuickIndexStart));
-				if (num >= GameManager.GameScript.QuickIndexEnd)
+				slotIndex = int.Parse(text.Substring(7));
+				slotIndex = ((GameManager.GalCore.GameOptions.QuickSaveIndex != -1) ? (slotIndex + GameManager.GalCore.GameOptions.QuickSaveIndex) : (slotIndex + GameManager.GameScript.QuickIndexStart));
+				if (slotIndex >= GameManager.GameScript.QuickIndexEnd)
 				{
-					num -= GameManager.GameScript.QuickIndexEnd - GameManager.GameScript.QuickIndexStart;
+					slotIndex -= GameManager.GameScript.QuickIndexEnd - GameManager.GameScript.QuickIndexStart;
 				}
 			}
 			if (isSave)
@@ -412,12 +412,12 @@ namespace KidFansChannel.CloseTo.Screens
 				eleScreen["main"]["iconpanel"].Focused = true;
 				eleScreen["main"].Focused = false;
 				FocusedElement = eleScreen["main"]["iconpanel"];
-				eleScreen["main"]["iconpanel"].Value = num;
+				eleScreen["main"]["iconpanel"].Value = slotIndex;
 				GameManager.Data.LoadAndPlaySystemSound("ok.ogg");
 			}
 			else
 			{
-				GameManager.GalCore.ShowMessageBox(new CloseToMessageBoxScreen(GameManager.GalCore.GameLanguage.ResourceManager.GetString("LoadStr"), MessageBoxButtons.YesNo, CloseToLoad, new object[1] { num }));
+				GameManager.GalCore.ShowMessageBox(new CloseToMessageBoxScreen(GameManager.GalCore.GameLanguage.ResourceManager.GetString("LoadStr"), MessageBoxButtons.YesNo, CloseToLoad, new object[1] { slotIndex }));
 			}
 		}
 
@@ -455,21 +455,21 @@ namespace KidFansChannel.CloseTo.Screens
 			if ((int)element.Value != -1)
 			{
 				string text = eleScreen["main"].NameOf(element);
-				int num;
+				int slotIndex;
 				if (text.Length == 4)
 				{
-					num = int.Parse(text.Substring(2));
+					slotIndex = int.Parse(text.Substring(2));
 				}
 				else
 				{
-					num = int.Parse(text.Substring(7));
-					num = ((GameManager.GalCore.GameOptions.QuickSaveIndex != -1) ? (num + GameManager.GalCore.GameOptions.QuickSaveIndex) : (num + GameManager.GameScript.QuickIndexStart));
-					if (num >= GameManager.GameScript.QuickIndexEnd)
+					slotIndex = int.Parse(text.Substring(7));
+					slotIndex = ((GameManager.GalCore.GameOptions.QuickSaveIndex != -1) ? (slotIndex + GameManager.GalCore.GameOptions.QuickSaveIndex) : (slotIndex + GameManager.GameScript.QuickIndexStart));
+					if (slotIndex >= GameManager.GameScript.QuickIndexEnd)
 					{
-						num -= GameManager.GameScript.QuickIndexEnd - GameManager.GameScript.QuickIndexStart;
+						slotIndex -= GameManager.GameScript.QuickIndexEnd - GameManager.GameScript.QuickIndexStart;
 					}
 				}
-				GetInfo(num);
+				GetInfo(slotIndex);
 				eleScreen["main"]["snap"].ElementPicture = picSnap;
 				strLevel.ClearString();
 				strIndex.ClearString();
@@ -480,7 +480,7 @@ namespace KidFansChannel.CloseTo.Screens
 					string value = Level.Substring(Level.IndexOf("/") + 2) + "\n";
 					strLevel.AddString(value, ContentAlignment.TopCenter);
 				}
-				strIndex.AddString(num.ToString("00"));
+				strIndex.AddString(slotIndex.ToString("00"));
 				strTime.AddString((SaveTime.Year % 100).ToString("00") + "/" + SaveTime.Month.ToString("00") + "/" + SaveTime.Day.ToString("00") + " " + SaveTime.Hour.ToString("00") + ":" + SaveTime.Minute.ToString("00"), ContentAlignment.TopRight);
 				if (Comment != null)
 				{
