@@ -669,25 +669,25 @@ namespace KidFansChannel.GalCore.Commands
 					_string.CurrentPointedLinkValue = _string.LinkList[_string.LinkList.Count - 1].Value;
 					return;
 				}
-				List<int> list = new List<int>();
+				List<int> forwardLinks = new List<int>();
 				for (int i = 0; i < _string.LinkList.Count; i++)
 				{
-					if (!list.Contains(_string.LinkList[i].Value))
+					if (!forwardLinks.Contains(_string.LinkList[i].Value))
 					{
-						list.Add(_string.LinkList[i].Value);
+						forwardLinks.Add(_string.LinkList[i].Value);
 					}
 				}
-				int loadIndex = list.IndexOf(_string.CurrentPointedLinkValue);
-				if (loadIndex != -1)
+				int linkIndex = forwardLinks.IndexOf(_string.CurrentPointedLinkValue);
+				if (linkIndex != -1)
 				{
-					loadIndex--;
-					if (loadIndex == -1)
+					linkIndex--;
+					if (linkIndex == -1)
 					{
 						_string.CurrentPointedLinkValue = -1;
 					}
 					else
 					{
-						_string.CurrentPointedLinkValue = list[loadIndex];
+						_string.CurrentPointedLinkValue = forwardLinks[linkIndex];
 					}
 				}
 			}
@@ -702,25 +702,25 @@ namespace KidFansChannel.GalCore.Commands
 					_string.CurrentPointedLinkValue = _string.LinkList[0].Value;
 					return;
 				}
-				List<int> list2 = new List<int>();
+				List<int> backwardLinks = new List<int>();
 				for (int j = 0; j < _string.LinkList.Count; j++)
 				{
-					if (!list2.Contains(_string.LinkList[j].Value))
+					if (!backwardLinks.Contains(_string.LinkList[j].Value))
 					{
-						list2.Add(_string.LinkList[j].Value);
+						backwardLinks.Add(_string.LinkList[j].Value);
 					}
 				}
-				int num2 = list2.IndexOf(_string.CurrentPointedLinkValue);
+				int num2 = backwardLinks.IndexOf(_string.CurrentPointedLinkValue);
 				if (num2 != -1)
 				{
 					num2++;
-					if (num2 == list2.Count)
+					if (num2 == backwardLinks.Count)
 					{
 						_string.CurrentPointedLinkValue = -1;
 					}
 					else
 					{
-						_string.CurrentPointedLinkValue = list2[num2];
+						_string.CurrentPointedLinkValue = backwardLinks[num2];
 					}
 				}
 			}

@@ -773,9 +773,9 @@ namespace KidFansChannel.GalCore.Commands
 				}
 				oldId = charaDisplay.Id;
 				ChangeBaseAlpha = 0f;
-				bool flag2 = (ScriptCommand.Options.Graphics == GameOptions.Level.High || ScriptCommand.Options.Graphics == GameOptions.Level.Mid) && !_x.HasValue && !_y.HasValue && !_rotate.HasValue && !_zoom.HasValue && !_alpha.HasValue && (MouthNum == 0 || _mouthLocation == oldMouthLocation) && (EyeNum == 0 || _eyeLocation == oldEyeLocation) && _id == oldId;
+				bool highQuality = (ScriptCommand.Options.Graphics == GameOptions.Level.High || ScriptCommand.Options.Graphics == GameOptions.Level.Mid) && !_x.HasValue && !_y.HasValue && !_rotate.HasValue && !_zoom.HasValue && !_alpha.HasValue && (MouthNum == 0 || _mouthLocation == oldMouthLocation) && (EyeNum == 0 || _eyeLocation == oldEyeLocation) && _id == oldId;
 				charaDisplay.Change(Lasting);
-				if (flag2)
+				if (highQuality)
 				{
 					if (MouthNum == 0 && EyeNum == 0)
 					{

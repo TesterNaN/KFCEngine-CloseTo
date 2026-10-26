@@ -571,25 +571,25 @@ namespace KidFansChannel.GalCore.Commands
 					_shownString.CurrentPointedLinkValue = _shownString.LinkList[_shownString.LinkList.Count - 1].Value;
 					return;
 				}
-				List<int> list = new List<int>();
+				List<int> forwardLinks = new List<int>();
 				for (int i = 0; i < _shownString.LinkList.Count; i++)
 				{
-					if (!list.Contains(_shownString.LinkList[i].Value))
+					if (!forwardLinks.Contains(_shownString.LinkList[i].Value))
 					{
-						list.Add(_shownString.LinkList[i].Value);
+						forwardLinks.Add(_shownString.LinkList[i].Value);
 					}
 				}
-				int loadIndex = list.IndexOf(_shownString.CurrentPointedLinkValue);
-				if (loadIndex != -1)
+				int linkIndex = forwardLinks.IndexOf(_shownString.CurrentPointedLinkValue);
+				if (linkIndex != -1)
 				{
-					loadIndex--;
-					if (loadIndex == -1)
+					linkIndex--;
+					if (linkIndex == -1)
 					{
 						_shownString.CurrentPointedLinkValue = -1;
 					}
 					else
 					{
-						_shownString.CurrentPointedLinkValue = list[loadIndex];
+						_shownString.CurrentPointedLinkValue = forwardLinks[linkIndex];
 					}
 				}
 			}
@@ -604,25 +604,25 @@ namespace KidFansChannel.GalCore.Commands
 					_shownString.CurrentPointedLinkValue = _shownString.LinkList[0].Value;
 					return;
 				}
-				List<int> list2 = new List<int>();
+				List<int> backwardLinks = new List<int>();
 				for (int j = 0; j < _shownString.LinkList.Count; j++)
 				{
-					if (!list2.Contains(_shownString.LinkList[j].Value))
+					if (!backwardLinks.Contains(_shownString.LinkList[j].Value))
 					{
-						list2.Add(_shownString.LinkList[j].Value);
+						backwardLinks.Add(_shownString.LinkList[j].Value);
 					}
 				}
-				int num2 = list2.IndexOf(_shownString.CurrentPointedLinkValue);
+				int num2 = backwardLinks.IndexOf(_shownString.CurrentPointedLinkValue);
 				if (num2 != -1)
 				{
 					num2++;
-					if (num2 == list2.Count)
+					if (num2 == backwardLinks.Count)
 					{
 						_shownString.CurrentPointedLinkValue = -1;
 					}
 					else
 					{
-						_shownString.CurrentPointedLinkValue = list2[num2];
+						_shownString.CurrentPointedLinkValue = backwardLinks[num2];
 					}
 				}
 			}
