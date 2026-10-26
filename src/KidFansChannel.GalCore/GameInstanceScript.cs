@@ -287,28 +287,28 @@ namespace KidFansChannel.GalCore
 		public void JumpScene(string script, string chapter, int scene, bool only, bool load)
 		{
 			NewScene = false;
-			bool flag = load;
-			if (flag || script != _state.File)
+			bool changed = load;
+			if (changed || script != _state.File)
 			{
 				if (!parent.LoadScript(_storyName + "\\" + script, _currentXmlDocument))
 				{
 					throw new FileNotFoundException(null, Path.Combine("script", _storyName + "\\" + script + ".xml"));
 				}
-				flag = true;
+				changed = true;
 			}
-			if (flag || chapter != _state.Chapter)
+			if (changed || chapter != _state.Chapter)
 			{
 				_currentChapter = _currentXmlDocument.DocumentElement.SelectSingleNode("chapter[@title=\"" + chapter + "\"]");
 				if (InitChapter() && !load)
 				{
 					_newChapter = true;
 				}
-				flag = true;
+				changed = true;
 			}
-			if (flag || scene != _state.Scene)
+			if (changed || scene != _state.Scene)
 			{
 				_currentScene = _currentChapter.SelectSingleNode("scene[" + (scene + 1) + "]");
-				flag = true;
+				changed = true;
 			}
 			_state.File = script;
 			_state.Chapter = chapter;
@@ -322,16 +322,16 @@ namespace KidFansChannel.GalCore
 					((Scene)scriptCommand).Load = true;
 				}
 				scriptCommand.ConvertXml(_currentScene, _state.Info);
-				bool flag2 = false;
+				bool sectionChanged = false;
 				foreach (ScriptCommand preCommand in preCommandList)
 				{
 					if (preCommand is Scene && (!((Scene)preCommand).Continue || ((Scene)preCommand).Load))
 					{
-						flag2 = true;
+						sectionChanged = true;
 						break;
 					}
 				}
-				if (!flag2)
+				if (!sectionChanged)
 				{
 					preCommandList.Add(scriptCommand);
 				}
@@ -514,15 +514,15 @@ namespace KidFansChannel.GalCore
 
 		public List<ScriptCommand> ProcessNextCommands()
 		{
-			List<ScriptCommand> list = new List<ScriptCommand>();
-			list.AddRange(preCommandList);
+			List<ScriptCommand> commands = new List<ScriptCommand>();
+			commands.AddRange(preCommandList);
 			preCommandList.Clear();
 			if (justLoad)
 			{
 				FindNextStringNode();
 				nextProcessStringRead = _nextCommand == NextStringNode;
 				justLoad = false;
-				return list;
+				return commands;
 			}
 			if (NewScene)
 			{
@@ -533,7 +533,7 @@ namespace KidFansChannel.GalCore
 			{
 				return null;
 			}
-			bool flag = false;
+			bool stable = false;
 			int parValue = 0;
 			do
 			{
@@ -555,29 +555,29 @@ namespace KidFansChannel.GalCore
 				}
 				if (scriptCommand != null)
 				{
-					list.Add(scriptCommand);
+					commands.Add(scriptCommand);
 					if (scriptCommand.Single)
 					{
-						flag = true;
+						stable = true;
 					}
 				}
 				if (!GotoNextCommand(false))
 				{
-					flag = true;
+					stable = true;
 					NewScene = true;
 				}
 			}
-			while (!flag);
-			list.AddRange(ProcessPar(parValue));
-			return list;
+			while (!stable);
+			commands.AddRange(ProcessPar(parValue));
+			return commands;
 		}
 
 		protected List<ScriptCommand> ProcessPar(int parValue)
 		{
-			List<ScriptCommand> list = new List<ScriptCommand>();
+			List<ScriptCommand> commands = new List<ScriptCommand>();
 			while (parValue > 0)
 			{
-				bool flag = false;
+				bool hasMore = false;
 				if (nextProcessStringRead)
 				{
 					FindNextStringNode();
@@ -593,18 +593,18 @@ namespace KidFansChannel.GalCore
 				{
 					if (parValue == 0)
 					{
-						for (int i = 0; i < list.Count; i++)
+						for (int i = 0; i < commands.Count; i++)
 						{
-							if (!(list[i] is Wait))
+							if (!(commands[i] is Wait))
 							{
-								list[i].Lasting = false;
+								commands[i].Lasting = false;
 							}
 						}
 					}
 					else
 					{
 						Wait wait = (Wait)scriptCommand;
-						list.Add(scriptCommand);
+						commands.Add(scriptCommand);
 						GotoNextCommand(true);
 						if (nextProcessStringRead)
 						{
@@ -624,7 +624,7 @@ namespace KidFansChannel.GalCore
 						GotoNextCommand(true);
 						wait.ParList = ProcessPar(((Par)scriptCommand).Value);
 						parValue -= ((Par)scriptCommand).Value;
-						flag = true;
+						hasMore = true;
 					}
 				}
 				else if (scriptCommand is Par)
@@ -633,9 +633,9 @@ namespace KidFansChannel.GalCore
 				}
 				if (scriptCommand != null && !(scriptCommand is Par))
 				{
-					list.Add(scriptCommand);
+					commands.Add(scriptCommand);
 				}
-				if (!flag)
+				if (!hasMore)
 				{
 					GotoNextCommand(false);
 				}
@@ -644,7 +644,7 @@ namespace KidFansChannel.GalCore
 					throw new ScriptCommandException(_currentXmlDocument.DocumentElement, _state.Info, "No enough commands in par series.");
 				}
 			}
-			return list;
+			return commands;
 		}
 
 		protected virtual ScriptCommand ProcessCommand(XmlNode nextCommand, NodeInfo info)
