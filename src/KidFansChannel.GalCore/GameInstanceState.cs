@@ -486,33 +486,33 @@ namespace KidFansChannel.GalCore
 								throw new InvalidDataException("Different story");
 							}
 							binaryReader.BaseStream.Position = 8232 + infoHeader.SelectOffset;
-							int num = 0;
+							int selectIndex = 0;
 							foreach (SelectDefine value in _selectDefines.Values)
 							{
-								if (num < infoHeader.SelectLength)
+								if (selectIndex < infoHeader.SelectLength)
 								{
 									value.Value = binaryReader.ReadByte();
 									if (value.Value >= 128)
 									{
 										value.Value -= 256;
 									}
-									num++;
+									selectIndex++;
 									continue;
 								}
 								break;
 							}
 							binaryReader.BaseStream.Position = 8232 + infoHeader.VarOffset;
-							int num2 = 0;
+							int varIndex = 0;
 							foreach (VarDefine value2 in _varDefines.Values)
 							{
-								if (num2 < infoHeader.VarLength)
+								if (varIndex < infoHeader.VarLength)
 								{
 									value2.Value = binaryReader.ReadByte();
 									if (value2.Value >= 128)
 									{
 										value2.Value -= 256;
 									}
-									num2++;
+									varIndex++;
 									continue;
 								}
 								break;

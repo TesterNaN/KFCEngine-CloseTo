@@ -676,17 +676,17 @@ namespace KidFansChannel.GalCore
 				}
 				if (_gameScript.CurrentGameScript != null && !_pause && (currentMessageBox == null || !currentMessageBox.PauseBack))
 				{
-					List<ScriptCommand> list = new List<ScriptCommand>();
-					bool flag = true;
+					List<ScriptCommand> executedCommands = new List<ScriptCommand>();
+					bool shouldPrepare = true;
 					foreach (ScriptCommand preparingCommand in _preparingCommandList)
 					{
 						if (preparingCommand is IInstanceDataUser && !((IInstanceDataUser)preparingCommand).DataReady)
 						{
-							flag = false;
+							shouldPrepare = false;
 							break;
 						}
 					}
-					if (flag)
+					if (shouldPrepare)
 					{
 						foreach (ScriptCommand preparingCommand2 in _preparingCommandList)
 						{
@@ -697,26 +697,26 @@ namespace KidFansChannel.GalCore
 					{
 						if (currentCommand.Finished)
 						{
-							list.Add(currentCommand);
+							executedCommands.Add(currentCommand);
 						}
 					}
-					foreach (ScriptCommand item in list)
+					foreach (ScriptCommand item in executedCommands)
 					{
 						item.FinalCommand();
 					}
-					list.Clear();
+					executedCommands.Clear();
 					foreach (ScriptCommand currentCommand2 in _currentCommandList)
 					{
 						if (currentCommand2.Finished)
 						{
-							list.Add(currentCommand2);
+							executedCommands.Add(currentCommand2);
 						}
 					}
-					foreach (ScriptCommand item2 in list)
+					foreach (ScriptCommand item2 in executedCommands)
 					{
 						item2.FinalCommand();
 					}
-					list.Clear();
+					executedCommands.Clear();
 					foreach (ScriptCommand currentCommand3 in _currentCommandList)
 					{
 						if (!_preparingCommandList.Contains(currentCommand3) && currentCommand3 is IUpdatable)
@@ -724,7 +724,7 @@ namespace KidFansChannel.GalCore
 							((IUpdatable)currentCommand3).Update(e.AppTime, e.ElapsedTime);
 							if (currentCommand3.Finished)
 							{
-								list.Add(currentCommand3);
+								executedCommands.Add(currentCommand3);
 							}
 						}
 					}
@@ -739,24 +739,24 @@ namespace KidFansChannel.GalCore
 							}
 						}
 					}
-					foreach (ScriptCommand item3 in list)
+					foreach (ScriptCommand item3 in executedCommands)
 					{
 						item3.FinalCommand();
 					}
-					list.Clear();
+					executedCommands.Clear();
 					foreach (ScriptCommand currentCommand5 in _currentCommandList)
 					{
 						if (currentCommand5.Finished)
 						{
-							list.Add(currentCommand5);
+							executedCommands.Add(currentCommand5);
 						}
 					}
-					foreach (ScriptCommand item4 in list)
+					foreach (ScriptCommand item4 in executedCommands)
 					{
 						item4.FinalCommand();
 					}
-					list.Clear();
-					if (flag)
+					executedCommands.Clear();
+					if (shouldPrepare)
 					{
 						_preparingCommandList.Clear();
 					}
