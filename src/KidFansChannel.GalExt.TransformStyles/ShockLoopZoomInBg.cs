@@ -72,8 +72,8 @@ namespace KidFansChannel.GalExt.TransformStyles
 				}
 				Parent.Bg.EndTransform();
 			}
-			float num = 1f - transformTime * 0.2f;
-			Parent.Bg.Scale = new SizeF(baseScale.Width * num, baseScale.Height * num);
+			float scaleFactor = 1f - transformTime * 0.2f;
+			Parent.Bg.Scale = new SizeF(baseScale.Width * scaleFactor, baseScale.Height * scaleFactor);
 			Parent.Bg.X -= (int)((float)Parent.Bg.Width * baseScale.Width * transformTime * 0.1f);
 			Parent.Bg.Y -= (int)((float)Parent.Bg.Height * baseScale.Height * transformTime * 0.1f);
 		}

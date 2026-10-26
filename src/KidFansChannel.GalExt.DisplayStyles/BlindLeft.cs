@@ -87,16 +87,16 @@ namespace KidFansChannel.GalExt.DisplayStyles
 
 		public byte Func(int x, int y)
 		{
-			float num = xPos - dw * (float)(PartNum - (int)((float)x / width));
-			if (num < 0f)
+			float edgeOffset = xPos - dw * (float)(PartNum - (int)((float)x / width));
+			if (edgeOffset < 0f)
 			{
-				num = 0f;
+				edgeOffset = 0f;
 			}
-			if (num > width)
+			if (edgeOffset > width)
 			{
-				num = width;
+				edgeOffset = width;
 			}
-			if (num - width + ((float)x - (float)(int)((float)x / width) * width) >= 0f)
+			if (edgeOffset - width + ((float)x - (float)(int)((float)x / width) * width) >= 0f)
 			{
 				return byte.MaxValue;
 			}

@@ -80,10 +80,10 @@ namespace KidFansChannel.GalExt.DisplayStyles
 
 		public byte Func(int x, int y)
 		{
-			float num = x - BgDisplay.ScreenSize.Width / 2;
-			float num2 = y - BgDisplay.ScreenSize.Height / 2;
-			float num3 = (float)Math.Sqrt(num * num + num2 * num2);
-			if (r - num3 > 0f)
+			float dx = x - BgDisplay.ScreenSize.Width / 2;
+			float dy = y - BgDisplay.ScreenSize.Height / 2;
+			float distance = (float)Math.Sqrt(dx * dx + dy * dy);
+			if (r - distance > 0f)
 			{
 				return byte.MaxValue;
 			}

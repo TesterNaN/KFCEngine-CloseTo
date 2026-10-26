@@ -31,9 +31,9 @@ namespace KidFansChannel.SoundCore
 
 		public void Dispose()
 		{
-			for (int num = _playerList.Count - 1; num >= 0; num--)
+			for (int playerIndex = _playerList.Count - 1; playerIndex >= 0; playerIndex--)
 			{
-				_playerList[num].Dispose();
+				_playerList[playerIndex].Dispose();
 			}
 			_playerList.Clear();
 			OggPlayer.Final();

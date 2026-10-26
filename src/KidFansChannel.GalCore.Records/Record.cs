@@ -108,11 +108,11 @@ namespace KidFansChannel.GalCore.Records
 
 		protected static void StringToBytes(string value, ref List<byte> result)
 		{
-			char[] array = value.ToCharArray();
-			for (int i = 0; i < array.Length; i++)
+			char[] chars = value.ToCharArray();
+			for (int i = 0; i < chars.Length; i++)
 			{
-				result.Add((byte)(array[i] & 0xFF));
-				result.Add((byte)((int)array[i] >> 8));
+				result.Add((byte)(chars[i] & 0xFF));
+				result.Add((byte)((int)chars[i] >> 8));
 			}
 		}
 
@@ -148,16 +148,16 @@ namespace KidFansChannel.GalCore.Records
 
 		public static Record Load(byte[] infos, ref int index, string text)
 		{
-			byte[] array = new byte[infos[index] + 1];
-			Array.Copy(infos, index, array, 0, infos[index] + 1);
-			index += array[0] + 1;
-			if (array[0] == 0)
+			byte[] chars = new byte[infos[index] + 1];
+			Array.Copy(infos, index, chars, 0, infos[index] + 1);
+			index += chars[0] + 1;
+			if (chars[0] == 0)
 			{
 				return null;
 			}
-			byte key = array[1];
+			byte key = chars[1];
 			Record record = (Record)RecordType[key].Assembly.CreateInstance(RecordType[key].FullName);
-			record.Load(array, text);
+			record.Load(chars, text);
 			return record;
 		}
 	}

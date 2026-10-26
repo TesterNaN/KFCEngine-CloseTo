@@ -37,17 +37,17 @@ namespace KidFansChannel.SoundCore
 		{
 			get
 			{
-				float num = player.Position;
-				if (num < _position)
+				float clampedPosition = player.Position;
+				if (clampedPosition < _position)
 				{
-					num = _position;
+					clampedPosition = _position;
 				}
-				else if (num > _length)
+				else if (clampedPosition > _length)
 				{
-					num = _length;
+					clampedPosition = _length;
 				}
-				_position = num;
-				return num;
+				_position = clampedPosition;
+				return clampedPosition;
 			}
 		}
 
@@ -183,12 +183,12 @@ namespace KidFansChannel.SoundCore
 				stream.Dispose();
 			}
 			player.Stopped += Player_Stopped;
-			float num = 1f;
+			float clampedPosition = 1f;
 			for (int i = 0; i < _volumeLayers; i++)
 			{
-				num *= _volume[i];
+				clampedPosition *= _volume[i];
 			}
-			player.Volume = num;
+			player.Volume = clampedPosition;
 			_length = player.Length;
 			_position = 0f;
 			_prepared = true;
@@ -280,14 +280,14 @@ namespace KidFansChannel.SoundCore
 		public void SetVolume(int layer, float value)
 		{
 			_volume[layer] = value;
-			float num = 1f;
+			float clampedPosition = 1f;
 			for (int i = 0; i < _volumeLayers; i++)
 			{
-				num *= _volume[i];
+				clampedPosition *= _volume[i];
 			}
 			if (player != null)
 			{
-				player.Volume = num;
+				player.Volume = clampedPosition;
 			}
 		}
 

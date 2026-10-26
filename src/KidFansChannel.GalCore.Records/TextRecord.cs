@@ -73,14 +73,14 @@ namespace KidFansChannel.GalCore.Records
 		{
 			base.LoadInfo(info);
 			Line = info[2];
-			int num = info[3];
+			int speakerCount = info[3];
 			_speakers.Clear();
-			for (int i = 0; i < num; i++)
+			for (int i = 0; i < speakerCount; i++)
 			{
 				_speakers.Add(info[i + 4]);
 			}
-			_speakerNameLength = info[num + 4];
-			_voice = Record.BytesToString(info, num + 5);
+			_speakerNameLength = info[speakerCount + 4];
+			_voice = Record.BytesToString(info, speakerCount + 5);
 			if (_voice != string.Empty)
 			{
 				HasVoice = true;
