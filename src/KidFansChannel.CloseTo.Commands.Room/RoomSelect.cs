@@ -747,23 +747,23 @@ namespace KidFansChannel.CloseTo.Commands.Room
 				}
 				currentObj = -1;
 				int hour;
-				int num2;
+				int pixelY;
 				if (GameManager.GalCore.GameOptions.Graphics != GameOptions.Level.Low)
 				{
 					PointF pointF = RoomBg.ScreenToPicture(location, bg.CamPos);
 					hour = (int)(pointF.X * (float)selectBmp.Width + 0.5f);
-					num2 = (int)(pointF.Y * (float)selectBmp.Height + 0.5f);
+					pixelY = (int)(pointF.Y * (float)selectBmp.Height + 0.5f);
 				}
 				else
 				{
 					hour = (int)(((float)location.X + (bg.CamPos - 630f / 4095f) * 1200f * 39f / 27f) / 2000f * (float)selectBmp.Width + 0.5f);
-					num2 = (int)((float)location.Y / 600f * (float)selectBmp.Height + 0.5f);
+					pixelY = (int)((float)location.Y / 600f * (float)selectBmp.Height + 0.5f);
 				}
-				if (hour < 0 || hour >= selectBmp.Width || num2 < 0 || num2 >= selectBmp.Height)
+				if (hour < 0 || hour >= selectBmp.Width || pixelY < 0 || pixelY >= selectBmp.Height)
 				{
 					return;
 				}
-				Color pixel = selectBmp.GetPixel(hour, num2);
+				Color pixel = selectBmp.GetPixel(hour, pixelY);
 				if (pixel != Color.FromArgb(248, 248, 248))
 				{
 					for (int m = 0; m < objs.Count; m++)
