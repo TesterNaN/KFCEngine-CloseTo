@@ -55,10 +55,10 @@ namespace KidFansChannel.GalCore.Screens
 					}
 					if (((TextRecord)record).Speakers.Count > 0)
 					{
-						int num = ((TextRecord)record).Speakers[0];
-						if (SpeakerColor.Count > num)
+						int speakerIndex = ((TextRecord)record).Speakers[0];
+						if (SpeakerColor.Count > speakerIndex)
 						{
-							Color = SpeakerColor[num];
+							Color = SpeakerColor[speakerIndex];
 						}
 					}
 				}
@@ -121,10 +121,10 @@ namespace KidFansChannel.GalCore.Screens
 				{
 					return 1f;
 				}
-				int num = GameManager.GameState.CurrentGameState.RecordLines[GameManager.GameState.CurrentGameState.Records.Count];
-				if (num > PageLineNum)
+				int totalLines = GameManager.GameState.CurrentGameState.RecordLines[GameManager.GameState.CurrentGameState.Records.Count];
+				if (totalLines > PageLineNum)
 				{
-					return (float)PageLineNum / (float)num;
+					return (float)PageLineNum / (float)totalLines;
 				}
 				return 1f;
 			}
@@ -144,26 +144,26 @@ namespace KidFansChannel.GalCore.Screens
 			{
 				return false;
 			}
-			int num = PageLineNum;
-			int num2 = GameManager.GameState.CurrentGameState.Records.Count - 1;
-			while (num > 0 && num2 >= 0)
+			int remainingLines = PageLineNum;
+			int recordIndex = GameManager.GameState.CurrentGameState.Records.Count - 1;
+			while (remainingLines > 0 && recordIndex >= 0)
 			{
-				MessageDisplay messageDisplay = new MessageDisplay(GameManager.GameState.CurrentGameState.Records[num2]);
-				messageDisplay.Index = num2;
-				messageDisplay.LinePos = num - messageDisplay.LineNum;
+				MessageDisplay messageDisplay = new MessageDisplay(GameManager.GameState.CurrentGameState.Records[recordIndex]);
+				messageDisplay.Index = recordIndex;
+				messageDisplay.LinePos = remainingLines - messageDisplay.LineNum;
 				if (messageDisplay.LinePos < 0)
 				{
 					messageDisplay.From = -messageDisplay.LinePos;
 					messageDisplay.LinePos = 0;
-					num = 0;
+					remainingLines = 0;
 					Messages.AddFirst(messageDisplay);
 					break;
 				}
-				num -= messageDisplay.LineNum;
+				remainingLines -= messageDisplay.LineNum;
 				Messages.AddFirst(messageDisplay);
-				num2--;
+				recordIndex--;
 			}
-			if (num2 < 0 && Messages.Count > 0)
+			if (recordIndex < 0 && Messages.Count > 0)
 			{
 				int linePos = Messages.First.Value.LinePos;
 				Move(-linePos);
@@ -183,72 +183,72 @@ namespace KidFansChannel.GalCore.Screens
 		{
 			if (Messages.Count != 0)
 			{
-				int num = Messages.Last.Value.LinePos + Messages.Last.Value.To - Messages.Last.Value.From + 1;
-				int num2 = AddFirst(line);
-				Move(num2);
-				RemoveLast(num2 - (PageLineNum - num));
+				int shortfall = Messages.Last.Value.LinePos + Messages.Last.Value.To - Messages.Last.Value.From + 1;
+				int filled = AddFirst(line);
+				Move(filled);
+				RemoveLast(filled - (PageLineNum - shortfall));
 			}
 		}
 
 		private int AddFirst(int line)
 		{
-			int num = Messages.First.Value.From;
-			int num2 = 0;
-			if (num > 0)
+			int shortfall = Messages.First.Value.From;
+			int filled = 0;
+			if (shortfall > 0)
 			{
-				if (num > line)
+				if (shortfall > line)
 				{
-					Messages.First.Value.From = num - line;
+					Messages.First.Value.From = shortfall - line;
 					Messages.First.Value.LinePos -= line;
-					return num2 = line;
+					return filled = line;
 				}
-				num2 += num;
-				line -= num2;
+				filled += shortfall;
+				line -= filled;
 				Messages.First.Value.From = 0;
-				Messages.First.Value.LinePos -= num2;
+				Messages.First.Value.LinePos -= filled;
 			}
-			int num3 = Messages.First.Value.Index - 1;
-			while (line > 0 && num3 >= 0)
+			int historyIndex = Messages.First.Value.Index - 1;
+			while (line > 0 && historyIndex >= 0)
 			{
-				MessageDisplay messageDisplay = new MessageDisplay(GameManager.GameState.CurrentGameState.Records[num3]);
-				messageDisplay.Index = num3;
+				MessageDisplay messageDisplay = new MessageDisplay(GameManager.GameState.CurrentGameState.Records[historyIndex]);
+				messageDisplay.Index = historyIndex;
 				if (messageDisplay.LineNum <= line)
 				{
-					messageDisplay.LinePos = -num2 - messageDisplay.LineNum;
+					messageDisplay.LinePos = -filled - messageDisplay.LineNum;
 					line -= messageDisplay.LineNum;
-					num2 += messageDisplay.LineNum;
+					filled += messageDisplay.LineNum;
 					Messages.AddFirst(messageDisplay);
-					num3--;
+					historyIndex--;
 					continue;
 				}
 				messageDisplay.From = messageDisplay.LineNum - line;
-				messageDisplay.LinePos = -num2 - line;
-				num2 += line;
+				messageDisplay.LinePos = -filled - line;
+				filled += line;
 				line = 0;
 				Messages.AddFirst(messageDisplay);
 				break;
 			}
-			return num2;
+			return filled;
 		}
 
 		private int RemoveLast(int line)
 		{
-			int num = 0;
+			int total = 0;
 			while (line > 0)
 			{
 				if (Messages.Last.Value.To >= line)
 				{
 					Messages.Last.Value.To -= line;
-					num += line;
+					total += line;
 					line = 0;
 					break;
 				}
-				int num2 = Messages.Last.Value.To - Messages.Last.Value.From + 1;
-				num += num2;
-				line -= num2;
+				int tailLines = Messages.Last.Value.To - Messages.Last.Value.From + 1;
+				total += tailLines;
+				line -= tailLines;
 				Messages.RemoveLast();
 			}
-			return num;
+			return total;
 		}
 
 		protected void ScrollDown(int line)
