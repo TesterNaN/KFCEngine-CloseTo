@@ -123,13 +123,13 @@ namespace KidFansChannel.GalCore.Records
 
 		protected static string BytesToString(byte[] value, ref int index)
 		{
-			List<char> list = new List<char>();
+			List<char> chars = new List<char>();
 			while (index < value.Length - 1 && value[index] != 0)
 			{
-				list.Add((char)(value[index] | (value[index + 1] << 8)));
+				chars.Add((char)(value[index] | (value[index + 1] << 8)));
 				index += 2;
 			}
-			return new StringBuilder().Append(list.ToArray()).ToString();
+			return new StringBuilder().Append(chars.ToArray()).ToString();
 		}
 
 		public static void AddRecordType(Type recordType)
