@@ -224,9 +224,13 @@ PDB: H:\KFCProgram\CloseTo\Project\Managed\NoStaff\CloseTo.pdb   （仅路径，
 | 运行时 | .NET 1.1 | .NET 2.0 | .NET 2.0 |
 | 保护 | XenoCode PostBuild | StarForce FrontLine 5 | SecuROM 7.38.0007 |
 | 程序集 | 混淆 | 2,686,472 字节 | 2,078,216 字节 |
-| 反编译文件 | — | 216 | 239 |
-| 数据 | 无 | 部分 | 全套 |
-| 可运行 | — | — | ✓ |
+| 反编译文件 | 32 | 216 | 239 |
+| 数据 | 212 MB（`game-data/`） | 缺 `bg`/`chara`/`voice` | 910 MB |
+| 可运行 | ✓ 到正片 | ✗ 到不了主循环 | ✓ 到开场剧情 |
+
+`KFCEngine-Yukihota` 里 `game-data/` 是完整的一套（`Bg`/`Chara`/`Voice`/`Movie` 都在），
+所以那边能直接双击跑到正片。只有 v2 是残的——它当年以补丁形式流出，
+`bg.dat`、`chara.dat`、`voice.dat` 这几个大头从来没出现在补丁包里。
 
 三代是同一条引擎线上长出来的：雪萤定下底子，AGAIN 换成 .NET 2.0 并加上
 DirectShow 视频，Close to 在这一套上扩了地图（`CloseTo.Commands.Map`）和
