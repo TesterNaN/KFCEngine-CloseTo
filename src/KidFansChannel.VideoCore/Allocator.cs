@@ -128,39 +128,39 @@ namespace KidFansChannel.VideoCore
 			//IL_017a: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0180: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0181: Unknown result type (might be due to invalid IL or missing references)
-			int num = 1;
-			int num2 = 1;
+			int widthPower = 1;
+			int heightPower = 1;
 			if (vmrSurfaceAllocatorNotify == null)
 			{
 				return -2147467259;
 			}
-			int num3 = 0;
+			int hr = 0;
 			try
 			{
 				IntPtr objectByValue = device.GetObjectByValue(-759872593);
 				IntPtr adapterMonitor = Manager.GetAdapterMonitor(adapterInfo.Adapter);
-				num3 = vmrSurfaceAllocatorNotify.SetD3DDevice(objectByValue, adapterMonitor);
-				DsError.ThrowExceptionForHR(num3);
+				hr = vmrSurfaceAllocatorNotify.SetD3DDevice(objectByValue, adapterMonitor);
+				DsError.ThrowExceptionForHR(hr);
 				videoSize = new Size(lpAllocInfo.dwWidth, lpAllocInfo.dwHeight);
 				if (device.DeviceCaps.TextureCaps.SupportsPower2)
 				{
-					while (num < lpAllocInfo.dwWidth)
+					while (widthPower < lpAllocInfo.dwWidth)
 					{
-						num <<= 1;
+						widthPower <<= 1;
 					}
-					while (num2 < lpAllocInfo.dwHeight)
+					while (heightPower < lpAllocInfo.dwHeight)
 					{
-						num2 <<= 1;
+						heightPower <<= 1;
 					}
-					lpAllocInfo.dwWidth = num;
-					lpAllocInfo.dwHeight = num2;
+					lpAllocInfo.dwWidth = widthPower;
+					lpAllocInfo.dwHeight = heightPower;
 				}
 				textureSize = new Size(lpAllocInfo.dwWidth, lpAllocInfo.dwHeight);
 				lpAllocInfo.dwFlags = (VMR9SurfaceAllocationFlags)((int)lpAllocInfo.dwFlags | 4);
 				DeleteSurfaces();
 				unmanagedSurfaces = new IntPtr[lpNumBuffers];
-				num3 = vmrSurfaceAllocatorNotify.AllocateSurfaceHelper(ref lpAllocInfo, ref lpNumBuffers, unmanagedSurfaces);
-				if (num3 < 0)
+				hr = vmrSurfaceAllocatorNotify.AllocateSurfaceHelper(ref lpAllocInfo, ref lpNumBuffers, unmanagedSurfaces);
+				if (hr < 0)
 				{
 					DeleteSurfaces();
 					if (lpAllocInfo.Format > 808464432)
@@ -171,10 +171,10 @@ namespace KidFansChannel.VideoCore
 					lpAllocInfo.dwFlags = (VMR9SurfaceAllocationFlags)((int)lpAllocInfo.dwFlags & -5);
 					lpAllocInfo.dwFlags = (VMR9SurfaceAllocationFlags)((int)lpAllocInfo.dwFlags | 8);
 					unmanagedSurfaces = new IntPtr[lpNumBuffers];
-					num3 = vmrSurfaceAllocatorNotify.AllocateSurfaceHelper(ref lpAllocInfo, ref lpNumBuffers, unmanagedSurfaces);
-					if (num3 < 0)
+					hr = vmrSurfaceAllocatorNotify.AllocateSurfaceHelper(ref lpAllocInfo, ref lpNumBuffers, unmanagedSurfaces);
+					if (hr < 0)
 					{
-						return num3;
+						return hr;
 					}
 				}
 				else
@@ -253,7 +253,7 @@ namespace KidFansChannel.VideoCore
 		public int PresentImage(IntPtr dwUserID, ref VMR9PresentationInfo lpPresInfo)
 		{
 			//IL_0047: Unknown result type (might be due to invalid IL or missing references)
-			int num = 0;
+			int hr = 0;
 			lock (this)
 			{
 				try
