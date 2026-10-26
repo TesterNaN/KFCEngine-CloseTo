@@ -1223,8 +1223,8 @@ namespace KidFansChannel.GalCore
 		public void ToggleAuto()
 		{
 			_hide = false;
-			bool flag = _currentPlayMode == PlayMode.Auto;
-			_currentPlayMode = ((!flag) ? PlayMode.Auto : PlayMode.Normal);
+			bool isAuto = _currentPlayMode == PlayMode.Auto;
+			_currentPlayMode = ((!isAuto) ? PlayMode.Auto : PlayMode.Normal);
 		}
 
 		public void ToggleQuick()
@@ -1574,9 +1574,9 @@ namespace KidFansChannel.GalCore
 				}
 				return IntPtr.Zero;
 			}
-			bool flag = isNextStopVideo;
+			bool shouldStopVideo = isNextStopVideo;
 			isNextStopVideo = false;
-			if (flag && GameVideo.IsPlaying)
+			if (shouldStopVideo && GameVideo.IsPlaying)
 			{
 				GameVideo.Stop();
 			}
