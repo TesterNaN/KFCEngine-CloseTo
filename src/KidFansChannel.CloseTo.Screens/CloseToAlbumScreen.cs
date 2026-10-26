@@ -177,8 +177,8 @@ namespace KidFansChannel.CloseTo.Screens
 		public override void FinalData()
 		{
 			base.FinalData();
-			Picture[] array = picSelects;
-			foreach (Picture picture in array)
+			Picture[] selects = picSelects;
+			foreach (Picture picture in selects)
 			{
 				picture.Dispose();
 			}
@@ -313,10 +313,10 @@ namespace KidFansChannel.CloseTo.Screens
 			Element element = (Element)sender;
 			if (!listInOut)
 			{
-				int num = (int)element.Value;
-				picLists[num].BeginTransform(0.5f);
-				picLists[num].AlphaTo(255);
-				picLists[num].EndTransform();
+				int pageSlot = (int)element.Value;
+				picLists[pageSlot].BeginTransform(0.5f);
+				picLists[pageSlot].AlphaTo(255);
+				picLists[pageSlot].EndTransform();
 				GameManager.Data.LoadAndPlaySystemSound("cursor.ogg");
 			}
 		}
@@ -326,10 +326,10 @@ namespace KidFansChannel.CloseTo.Screens
 			Element element = (Element)sender;
 			if (!listInOut)
 			{
-				int num = (int)element.Value;
-				picLists[num].BeginTransform(0.5f);
-				picLists[num].AlphaTo(128);
-				picLists[num].EndTransform();
+				int pageSlot = (int)element.Value;
+				picLists[pageSlot].BeginTransform(0.5f);
+				picLists[pageSlot].AlphaTo(128);
+				picLists[pageSlot].EndTransform();
 			}
 		}
 
@@ -338,9 +338,9 @@ namespace KidFansChannel.CloseTo.Screens
 			Element element = (Element)sender;
 			if (!listInOut)
 			{
-				int num = (int)element.Value;
-				int[] array = new int[5] { 0, 2, 3, 4, 5 };
-				_page = array[num];
+				int pageSlot = (int)element.Value;
+				int[] pageMap = new int[5] { 0, 2, 3, 4, 5 };
+				_page = pageMap[pageSlot];
 				UpdatePage("main");
 				for (int i = 0; i < 5; i++)
 				{
@@ -360,13 +360,13 @@ namespace KidFansChannel.CloseTo.Screens
 			{
 				return;
 			}
-			int num = (int)Math.Floor((float)((Element)sender).Value) / 10;
-			int num2 = (int)Math.Floor((float)((Element)sender).Value) % 10;
-			int num3 = num2;
+			int groupId = (int)Math.Floor((float)((Element)sender).Value) / 10;
+			int itemIndex = (int)Math.Floor((float)((Element)sender).Value) % 10;
+			int nextOpen = itemIndex;
 			if ((double)(float)((Element)sender).Value > Math.Floor((float)((Element)sender).Value))
 			{
 				GameManager.Data.LoadAndPlaySystemSound("ok.ogg");
-				fileName = Files[_page][num][num3] + ".png";
+				fileName = Files[_page][groupId][nextOpen] + ".png";
 				picChange = GameManager.Data.LoadPictureInstant("bg", fileName);
 				picChange.Scale = new SizeF(Math.Max(800f / (float)picChange.Width, 600f / (float)picChange.Height), Math.Max(800f / (float)picChange.Width, 600f / (float)picChange.Height));
 				eleScreen["album"]["change"].ElementPicture = picChange;
@@ -374,18 +374,18 @@ namespace KidFansChannel.CloseTo.Screens
 				picChange.BeginTransform(0.5f);
 				picChange.AlphaTo(255);
 				picChange.EndTransform();
-				eleScreen["album"].Value = (float)(num * 10 + num3);
+				eleScreen["album"].Value = (float)(groupId * 10 + nextOpen);
 				return;
 			}
-			for (int i = num2 + 1; i < Opens[_page][num].Length; i++)
+			for (int i = itemIndex + 1; i < Opens[_page][groupId].Length; i++)
 			{
-				if (Opens[_page][num][i])
+				if (Opens[_page][groupId][i])
 				{
-					num3 = i;
+					nextOpen = i;
 					break;
 				}
 			}
-			if (num3 == num2)
+			if (nextOpen == itemIndex)
 			{
 				fileName = null;
 				picChange = picAlbum;
@@ -405,7 +405,7 @@ namespace KidFansChannel.CloseTo.Screens
 			else
 			{
 				GameManager.Data.LoadAndPlaySystemSound("ok.ogg");
-				fileName = Files[_page][num][num3] + ".png";
+				fileName = Files[_page][groupId][nextOpen] + ".png";
 				picChange = GameManager.Data.LoadPictureInstant("bg", fileName);
 				picChange.Scale = new SizeF(Math.Min(800f / (float)picChange.Width, 600f / (float)picChange.Height), Math.Min(800f / (float)picChange.Width, 600f / (float)picChange.Height));
 				picChange.Position = new Point((int)((800f - (float)picChange.Width * picChange.Scale.Width) / 2f), (int)((600f - (float)picChange.Height * picChange.Scale.Height) / 2f));
@@ -414,7 +414,7 @@ namespace KidFansChannel.CloseTo.Screens
 				picChange.BeginTransform(0.5f);
 				picChange.AlphaTo(255);
 				picChange.EndTransform();
-				eleScreen["album"].Value = (float)(num * 10 + num3);
+				eleScreen["album"].Value = (float)(groupId * 10 + nextOpen);
 			}
 		}
 
@@ -425,31 +425,31 @@ namespace KidFansChannel.CloseTo.Screens
 				return;
 			}
 			Element element = (Element)sender;
-			int num = (int)element.Value;
+			int groupId = (int)element.Value;
 			if (_page == 7)
 			{
-				if (movieScreen.GetOpens()[num])
+				if (movieScreen.GetOpens()[groupId])
 				{
-					movieScreen.Play(num);
+					movieScreen.Play(groupId);
 				}
 			}
 			else
 			{
-				if (!GroupOpens[_page][num])
+				if (!GroupOpens[_page][groupId])
 				{
 					return;
 				}
 				GameManager.Data.LoadAndPlaySystemSound("ok.ogg");
-				int num2 = 0;
-				for (int i = 0; i < Opens[_page][num].Length; i++)
+				int itemIndex = 0;
+				for (int i = 0; i < Opens[_page][groupId].Length; i++)
 				{
-					if (Opens[_page][num][i])
+					if (Opens[_page][groupId][i])
 					{
-						num2 = i;
+						itemIndex = i;
 						break;
 					}
 				}
-				fileName = Files[_page][num][num2] + ".png";
+				fileName = Files[_page][groupId][itemIndex] + ".png";
 				picChange = GameManager.Data.LoadPictureInstant("bg", fileName);
 				picChange.Scale = new SizeF(Math.Min(800f / (float)picChange.Width, 600f / (float)picChange.Height), Math.Min(800f / (float)picChange.Width, 600f / (float)picChange.Height));
 				picChange.Position = new Point((int)((800f - (float)picChange.Width * picChange.Scale.Width) / 2f), (int)((600f - (float)picChange.Height * picChange.Scale.Height) / 2f));
@@ -466,11 +466,11 @@ namespace KidFansChannel.CloseTo.Screens
 				picBlack.EndTransform();
 				if (800f / (float)picChange.Width == 600f / (float)picChange.Height)
 				{
-					eleScreen["album"].Value = (float)(num * 10 + num2);
+					eleScreen["album"].Value = (float)(groupId * 10 + itemIndex);
 				}
 				else
 				{
-					eleScreen["album"].Value = (float)(num * 10 + num2) + 0.5f;
+					eleScreen["album"].Value = (float)(groupId * 10 + itemIndex) + 0.5f;
 				}
 				FocusedElement = eleScreen;
 				eleScreen.Focused = true;
@@ -495,23 +495,23 @@ namespace KidFansChannel.CloseTo.Screens
 				picSelects[i].ScaleTo(new SizeF(1f, 1f), new SizeF(1.1f, 1.1f), 0.5f);
 				picSelects[i].EndTransform();
 			}
-			int num = (int)element.Value;
+			int groupId = (int)element.Value;
 			if (_page == 7)
 			{
-				if (movieScreen.GetOpens()[num])
+				if (movieScreen.GetOpens()[groupId])
 				{
 					strNumber.ClearString();
-					strNumber.AddString(num + 1 + " :", ContentAlignment.TopRight);
+					strNumber.AddString(groupId + 1 + " :", ContentAlignment.TopRight);
 					strName.ClearString();
-					strName.AddString(movieScreen.GetName(num));
+					strName.AddString(movieScreen.GetName(groupId));
 				}
 			}
-			else if (GroupOpens[_page][num])
+			else if (GroupOpens[_page][groupId])
 			{
 				strNumber.ClearString();
-				strNumber.AddString(num + 1 + " :", ContentAlignment.TopRight);
+				strNumber.AddString(groupId + 1 + " :", ContentAlignment.TopRight);
 				strName.ClearString();
-				strName.AddString(Names[_page][num]);
+				strName.AddString(Names[_page][groupId]);
 			}
 			GameManager.Data.LoadAndPlaySystemSound("cursor.ogg");
 		}
