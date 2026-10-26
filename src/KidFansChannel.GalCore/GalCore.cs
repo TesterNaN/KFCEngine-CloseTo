@@ -27,10 +27,10 @@ namespace KidFansChannel.GalCore
 
 			public int CompareTo(object obj)
 			{
-				int num = Major.CompareTo(((Layer)obj).Major);
-				if (num != 0)
+				int compareResult = Major.CompareTo(((Layer)obj).Major);
+				if (compareResult != 0)
 				{
-					return num;
+					return compareResult;
 				}
 				return Minor.CompareTo(((Layer)obj).Minor);
 			}
@@ -588,10 +588,10 @@ namespace KidFansChannel.GalCore
 			{
 				return;
 			}
-			string[] array = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (array != null)
+			string[] droppedFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (droppedFiles != null)
 			{
-				if (array.Length == 1 && array[0].EndsWith("." + _gameState.SaveExt))
+				if (droppedFiles.Length == 1 && droppedFiles[0].EndsWith("." + _gameState.SaveExt))
 				{
 					e.Effect = DragDropEffects.Move;
 					_dropScreen = (SaveLoadScreen)CurrentScreen;
@@ -610,18 +610,18 @@ namespace KidFansChannel.GalCore
 
 		private void GameWindow_DragDrop(object sender, DragEventArgs e)
 		{
-			string[] array = (string[])e.Data.GetData(DataFormats.FileDrop);
+			string[] droppedFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
 			string text = null;
-			if (array.Length == 0)
+			if (droppedFiles.Length == 0)
 			{
 				_dropScreen = null;
 				return;
 			}
-			for (int i = 0; i < array.Length; i++)
+			for (int i = 0; i < droppedFiles.Length; i++)
 			{
-				if (array[i].EndsWith("." + _gameState.SaveExt))
+				if (droppedFiles[i].EndsWith("." + _gameState.SaveExt))
 				{
-					text = array[i];
+					text = droppedFiles[i];
 				}
 			}
 			if (text == null)

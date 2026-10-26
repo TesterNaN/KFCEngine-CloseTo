@@ -306,24 +306,24 @@ namespace KidFansChannel.GalCore
 						bitmap2.Save(memoryStream, ImageFormat.Png);
 						bitmap2.Dispose();
 						bitmap.Dispose();
-						byte[] array = memoryStream.ToArray();
+						byte[] thumbnail = memoryStream.ToArray();
 						memoryStream.Close();
 						InfoHeader infoHeader = default(InfoHeader);
 						Parent.FileHeader.ThumbnailOffset = Marshal.SizeOf(infoHeader);
-						Parent.FileHeader.ThumbnailSize = array.Length;
+						Parent.FileHeader.ThumbnailSize = thumbnail.Length;
 						Parent.FileHeader.Write(binaryWriter);
-						uint num = 0u;
-						num = (infoHeader.StoryNameOffset = (infoHeader.Size = (uint)Marshal.SizeOf(infoHeader)) + (uint)((array.Length + 3) / 4 * 4));
+						uint offset = 0u;
+						offset = (infoHeader.StoryNameOffset = (infoHeader.Size = (uint)Marshal.SizeOf(infoHeader)) + (uint)((thumbnail.Length + 3) / 4 * 4));
 						infoHeader.StoryNameLength = _storyName.Length * 2 + 1;
-						num = (infoHeader.SelectOffset = num + (uint)((infoHeader.StoryNameLength + 3) / 4 * 4));
+						offset = (infoHeader.SelectOffset = offset + (uint)((infoHeader.StoryNameLength + 3) / 4 * 4));
 						infoHeader.SelectLength = _selectDefines.Count;
-						num = (infoHeader.VarOffset = num + (uint)((infoHeader.SelectLength + 3) / 4 * 4));
+						offset = (infoHeader.VarOffset = offset + (uint)((infoHeader.SelectLength + 3) / 4 * 4));
 						infoHeader.VarLength = _varDefines.Count;
 						infoHeader.PlayTime = (int)GetTime();
 						_saveTime = DateTime.Now;
 						infoHeader.SaveTime = _saveTime.Ticks;
 						infoHeader.Icon = icon;
-						num = (infoHeader.CommandOffset = num + (uint)((infoHeader.VarLength + 3) / 4 * 4));
+						offset = (infoHeader.CommandOffset = offset + (uint)((infoHeader.VarLength + 3) / 4 * 4));
 						infoHeader.CommandLength = 0;
 						binaryWriter.Write(infoHeader.Size);
 						binaryWriter.Write(infoHeader.StoryNameOffset);
@@ -341,8 +341,8 @@ namespace KidFansChannel.GalCore
 						{
 							fileStream.WriteByte(0);
 						}
-						fileStream.Write(array, 0, array.Length);
-						for (int i = array.Length; i < (array.Length + 3) / 4 * 4; i++)
+						fileStream.Write(thumbnail, 0, thumbnail.Length);
+						for (int i = thumbnail.Length; i < (thumbnail.Length + 3) / 4 * 4; i++)
 						{
 							binaryWriter.Write((byte)0);
 						}
@@ -378,31 +378,31 @@ namespace KidFansChannel.GalCore
 						binaryWriter.Write(stateInfo.Scene);
 						binaryWriter.Write(stateInfo.Click);
 						binaryWriter.Write(_gameDateTime);
-						List<uint> list = new List<uint>();
-						List<int> list2 = new List<int>();
+						List<uint> blockOffsets = new List<uint>();
+						List<int> blockLengths = new List<int>();
 						foreach (ISaveable currentStateCommand in _currentStateCommands)
 						{
-							list.Add((uint)(binaryWriter.BaseStream.Position - 8232));
+							blockOffsets.Add((uint)(binaryWriter.BaseStream.Position - 8232));
 							currentStateCommand.Save(binaryWriter);
-							int num2 = (int)(binaryWriter.BaseStream.Position - 8232 - list[list.Count - 1]);
-							if (num2 == 0)
+							int blockLength = (int)(binaryWriter.BaseStream.Position - 8232 - blockOffsets[blockOffsets.Count - 1]);
+							if (blockLength == 0)
 							{
-								list.RemoveAt(list.Count - 1);
+								blockOffsets.RemoveAt(blockOffsets.Count - 1);
 							}
 							else
 							{
-								list2.Add(num2);
+								blockLengths.Add(blockLength);
 							}
 						}
 						binaryWriter.BaseStream.Position = infoHeader.CommandOffset + 8232;
-						binaryWriter.Write(list.Count);
-						int num3 = 8 * (_currentStateCommands.Count - list.Count);
-						for (int n = 0; n < list.Count; n++)
+						binaryWriter.Write(blockOffsets.Count);
+						int shift = 8 * (_currentStateCommands.Count - blockOffsets.Count);
+						for (int n = 0; n < blockOffsets.Count; n++)
 						{
-							binaryWriter.Write((uint)(list[n] - num3));
-							binaryWriter.Write(list2[n]);
+							binaryWriter.Write((uint)(blockOffsets[n] - shift));
+							binaryWriter.Write(blockLengths[n]);
 						}
-						if (list.Count != _currentStateCommands.Count)
+						if (blockOffsets.Count != _currentStateCommands.Count)
 						{
 							binaryWriter.Write(stateInfo.File);
 							binaryWriter.Write(stateInfo.Chapter);
@@ -428,10 +428,10 @@ namespace KidFansChannel.GalCore
 								foreach (Record record in _records)
 								{
 									byte[] info;
-									string text;
-									record.Save(out info, out text);
+									string recordText;
+									record.Save(out info, out recordText);
 									binaryWriter2.Write(info);
-									streamWriter.WriteLine(text);
+									streamWriter.WriteLine(recordText);
 								}
 							}
 						}

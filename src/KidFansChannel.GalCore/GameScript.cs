@@ -128,17 +128,17 @@ namespace KidFansChannel.GalCore
 			{
 				Type value2 = type3.Value;
 				Type[] interfaces = value2.GetInterfaces();
-				bool flag = false;
-				Type[] array = interfaces;
-				foreach (Type type in array)
+				bool implemented = false;
+				Type[] interfacesToScan = interfaces;
+				foreach (Type type in interfacesToScan)
 				{
 					if (type == typeof(IStaticDataUser))
 					{
-						flag = true;
+						implemented = true;
 						break;
 					}
 				}
-				if (flag)
+				if (implemented)
 				{
 					((IStaticDataUser)value2.Assembly.CreateInstance(value2.FullName)).InitStaticData();
 				}
@@ -161,26 +161,26 @@ namespace KidFansChannel.GalCore
 			{
 				throw new ScriptStructureException(documentElement, nodeInfo, "Index's document element should be info.");
 			}
-			int num = 0;
-			List<string> list = new List<string>();
+			int firstChild = 0;
+			List<string> storyNames = new List<string>();
 			for (int i = 0; i < documentElement.ChildNodes.Count; i++)
 			{
 				if (documentElement.ChildNodes[i].Name == "definestory")
 				{
-					list.Add(ScriptHelper.GetArgumentString(documentElement.ChildNodes[i], nodeInfo, "title"));
+					storyNames.Add(ScriptHelper.GetArgumentString(documentElement.ChildNodes[i], nodeInfo, "title"));
 				}
 				else if (documentElement.ChildNodes[i].NodeType != XmlNodeType.Comment)
 				{
 					break;
 				}
-				num++;
+				firstChild++;
 			}
-			if (list.Count == 0)
+			if (storyNames.Count == 0)
 			{
 				throw new ScriptCommandException(documentElement, nodeInfo, "DefineStorys should come first.");
 			}
 			XmlDocument xmlDocument2 = new XmlDocument();
-			foreach (string item in list)
+			foreach (string item in storyNames)
 			{
 				if (!_galCore.GameData.LoadXmlDocument("script", item + "\\index.xml", xmlDocument2))
 				{
@@ -207,7 +207,7 @@ namespace KidFansChannel.GalCore
 					}
 				}
 			}
-			for (int j = num; j < documentElement.ChildNodes.Count; j++)
+			for (int j = firstChild; j < documentElement.ChildNodes.Count; j++)
 			{
 				if (documentElement.ChildNodes[j].Name == "definevar")
 				{
