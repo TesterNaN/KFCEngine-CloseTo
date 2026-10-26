@@ -462,9 +462,9 @@ namespace KidFansChannel.CloseTo.Screens
 					if (currentPlayId == showId)
 					{
 						int musicId = (int)playTime / 60;
-						int num2 = (int)playTime % 60;
+						int seconds = (int)playTime % 60;
 						strTime.ClearString();
-						strTime.AddString(musicId + ":" + num2.ToString("00"), ContentAlignment.TopRight);
+						strTime.AddString(musicId + ":" + seconds.ToString("00"), ContentAlignment.TopRight);
 						showCurrentTime = true;
 						if (Lyrics != null)
 						{
@@ -473,22 +473,22 @@ namespace KidFansChannel.CloseTo.Screens
 								eleScreen["main"].SetVisible("lyricback", true);
 								eleScreen["main"].SetVisible("info", false);
 							}
-							int num3 = -1;
+							int lyricIndex = -1;
 							for (int i = 0; i < Lyrics.Length; i++)
 							{
 								if (Starts[i] <= playTime && Ends[i] > playTime)
 								{
-									num3 = i;
+									lyricIndex = i;
 									break;
 								}
 							}
 							strLyricBack.ClearString();
 							strLyricFore.ClearString();
-							if (num3 != -1)
+							if (lyricIndex != -1)
 							{
-								strLyricBack.AddString(Lyrics[num3]);
-								strLyricFore.AddString(Lyrics[num3]);
-								currentLyricProcess = (playTime - Starts[num3]) / (Ends[num3] - Starts[num3]);
+								strLyricBack.AddString(Lyrics[lyricIndex]);
+								strLyricFore.AddString(Lyrics[lyricIndex]);
+								currentLyricProcess = (playTime - Starts[lyricIndex]) / (Ends[lyricIndex] - Starts[lyricIndex]);
 							}
 						}
 					}
@@ -496,10 +496,10 @@ namespace KidFansChannel.CloseTo.Screens
 					{
 						if (showCurrentTime)
 						{
-							int num4 = (int)playTime / 60;
-							int num5 = (int)playTime % 60;
+							int minutes = (int)playTime / 60;
+							int seconds2 = (int)playTime % 60;
 							strTime.ClearString();
-							strTime.AddString(num4 + ":" + num5.ToString("00"), ContentAlignment.TopRight);
+							strTime.AddString(minutes + ":" + seconds2.ToString("00"), ContentAlignment.TopRight);
 						}
 					}
 					else if (!eleScreen["main"].GetVisible("info"))
@@ -525,7 +525,7 @@ namespace KidFansChannel.CloseTo.Screens
 
 		protected void UpdateMusic()
 		{
-			bool flag = false;
+			bool lyricsReady = false;
 			for (int i = 0; i < LineNum; i++)
 			{
 				int musicId = i + currentStartId;
@@ -548,30 +548,30 @@ namespace KidFansChannel.CloseTo.Screens
 				{
 					eleScreen["main"].SetVisible("disc", true);
 					eleScreen["main"]["disc"].Position = new Point(45, 260 + i * 40);
-					flag = true;
+					lyricsReady = true;
 				}
 			}
 			scrollBar.Start = (float)currentStartId / (float)Names.Length;
 			if (eleScreen["main"].SelectedChild != null && eleScreen["main"].SelectedChild != scrollBar)
 			{
-				int num2 = (int)eleScreen["main"].SelectedChild.Value;
+				int selectedId = (int)eleScreen["main"].SelectedChild.Value;
 				strName.ClearString();
 				strTime.ClearString();
 				strInfo.ClearString();
-				if (Opens[num2])
+				if (Opens[selectedId])
 				{
-					strName.AddString((num2 + 1).ToString("00") + ". " + Names[num2]);
-					strTime.AddString(Times[num2], ContentAlignment.TopRight);
-					strInfo.AddString(Infos[num2]);
+					strName.AddString((selectedId + 1).ToString("00") + ". " + Names[selectedId]);
+					strTime.AddString(Times[selectedId], ContentAlignment.TopRight);
+					strInfo.AddString(Infos[selectedId]);
 				}
-				showId = num2;
+				showId = selectedId;
 				showCurrentTime = false;
 			}
 			else
 			{
 				showId = -1;
 			}
-			if (!flag)
+			if (!lyricsReady)
 			{
 				eleScreen["main"].SetVisible("disc", false);
 			}
