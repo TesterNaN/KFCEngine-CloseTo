@@ -144,14 +144,14 @@ namespace KidFansChannel.CloseTo
 
 		private float GetRoomPercentage(int index)
 		{
-			int num = 0;
-			int num2 = 0;
+			int readLines = 0;
+			int totalLines = 0;
 			for (int i = 0; i < RoomIndex[index].Count; i++)
 			{
-				num += StringReadNum["CloseTo_Room" + RoomIndex[index][i]];
-				num2 += StringReads["CloseTo_Room" + RoomIndex[index][i]].Length;
+				readLines += StringReadNum["CloseTo_Room" + RoomIndex[index][i]];
+				totalLines += StringReads["CloseTo_Room" + RoomIndex[index][i]].Length;
 			}
-			return (float)num / (float)num2;
+			return (float)readLines / (float)totalLines;
 		}
 
 		public override void UpdateDrawState()
@@ -168,22 +168,22 @@ namespace KidFansChannel.CloseTo
 
 		public override int CountChapters()
 		{
-			int num = 0;
+			int count = 0;
 			foreach (KeyValuePair<string, int> item in StringReadNum)
 			{
 				if (!item.Key.StartsWith("CloseTo_Room") && item.Value > 0)
 				{
-					num++;
+					count++;
 				}
 			}
 			for (int i = 0; i < RoomName.Count; i++)
 			{
 				if (CheckChapterOpen("CloseTo", RoomName[i]))
 				{
-					num++;
+					count++;
 				}
 			}
-			return num;
+			return count;
 		}
 
 		static CloseToState()
@@ -206,34 +206,34 @@ namespace KidFansChannel.CloseTo
 			roomIds.Add("13");
 			roomIds.Add("14");
 			roomGroups.Add(roomIds);
-			List<string> list3 = new List<string>();
-			list3.Add("24");
-			list3.Add("30");
-			list3.Add("22");
-			list3.Add("23");
-			roomGroups.Add(list3);
-			List<string> list4 = new List<string>();
-			list4.Add("20");
-			roomGroups.Add(list4);
-			List<string> list5 = new List<string>();
-			list5.Add("25");
-			list5.Add("26");
-			list5.Add("27");
-			list5.Add("31");
-			list5.Add("21");
-			roomGroups.Add(list5);
-			List<string> list6 = new List<string>();
-			list6.Add("29");
-			list6.Add("28");
-			roomGroups.Add(list6);
+			List<string> group2 = new List<string>();
+			group2.Add("24");
+			group2.Add("30");
+			group2.Add("22");
+			group2.Add("23");
+			roomGroups.Add(group2);
+			List<string> group3 = new List<string>();
+			group3.Add("20");
+			roomGroups.Add(group3);
+			List<string> group4 = new List<string>();
+			group4.Add("25");
+			group4.Add("26");
+			group4.Add("27");
+			group4.Add("31");
+			group4.Add("21");
+			roomGroups.Add(group4);
+			List<string> group5 = new List<string>();
+			group5.Add("29");
+			group5.Add("28");
+			roomGroups.Add(group5);
 			RoomIndex = roomGroups;
-			List<string> list7 = new List<string>();
-			list7.Add("Common_2");
-			list7.Add("Yuna_3");
-			list7.Add("Shoko_4");
-			list7.Add("Koyuki_5");
-			list7.Add("Ghost_154");
-			RoomName = list7;
+			List<string> roomNames = new List<string>();
+			roomNames.Add("Common_2");
+			roomNames.Add("Yuna_3");
+			roomNames.Add("Shoko_4");
+			roomNames.Add("Koyuki_5");
+			roomNames.Add("Ghost_154");
+			RoomName = roomNames;
 		}
 	}
 }
