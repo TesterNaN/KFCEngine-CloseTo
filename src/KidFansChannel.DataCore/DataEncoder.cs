@@ -1,0 +1,201 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
+
+namespace KidFansChannel.DataCore
+{
+	public class DataEncoder
+	{
+		private string _packageName;
+
+		private int _version;
+
+		private int _fileNumber;
+
+		private List<string> fileNames = new List<string>();
+
+		private List<long> fileOffsets = new List<long>();
+
+		private List<long> fileLengths = new List<long>();
+
+		private List<bool> fileCryptos = new List<bool>();
+
+		private string _currentDirectory;
+
+		private static readonly string key = "www.KIDS FansChannel.net";
+
+		private static readonly string iv = "ctMullen";
+
+		public string CurrentDirectory
+		{
+			get
+			{
+				return _currentDirectory;
+			}
+			set
+			{
+				_currentDirectory = value;
+			}
+		}
+
+		public int Version
+		{
+			get
+			{
+				return _version;
+			}
+			set
+			{
+				_version = value;
+			}
+		}
+
+		public string PackageName
+		{
+			get
+			{
+				return _packageName;
+			}
+		}
+
+		public int FileNumber
+		{
+			get
+			{
+				return _fileNumber;
+			}
+		}
+
+		public DataEncoder(string packageName)
+		{
+			_packageName = packageName;
+			_currentDirectory = Path.GetDirectoryName(".");
+		}
+
+		~DataEncoder()
+		{
+			fileCryptos.Clear();
+			fileLengths.Clear();
+			fileNames.Clear();
+			fileOffsets.Clear();
+		}
+
+		public void AddFile(string fileName, bool crypto)
+		{
+			if (fileName.Length >= 48)
+			{
+				throw new ArgumentException("fileName");
+			}
+			if (!File.Exists(Path.Combine(_currentDirectory, fileName)))
+			{
+				throw new ArgumentException("fileName");
+			}
+			fileNames.Add(fileName);
+			fileCryptos.Add(crypto);
+			_fileNumber++;
+		}
+
+		public void Encode()
+		{
+			byte[] array = new byte[24];
+			byte[] array2 = new byte[8];
+			for (int i = 0; i < 24; i++)
+			{
+				array[i] = (byte)key[i];
+			}
+			for (int j = 0; j < 8; j++)
+			{
+				array2[j] = (byte)iv[j];
+			}
+			TripleDESCryptoServiceProvider tripleDESCryptoServiceProvider = new TripleDESCryptoServiceProvider();
+			using (FileStream fileStream = new FileStream(_packageName, FileMode.Create))
+			{
+				long num = 32 + 64 * _fileNumber;
+				fileStream.SetLength(num);
+				fileStream.Seek(num, SeekOrigin.Begin);
+				for (int k = 0; k < _fileNumber; k++)
+				{
+					byte[] array3 = File.ReadAllBytes(Path.Combine(_currentDirectory, fileNames[k]));
+					fileOffsets.Add(num);
+					fileLengths.Add(array3.Length);
+					int num2 = (array3.Length + 24) & -16;
+					using (DataStream dataStream = new DataStream(fileStream, num, num2))
+					{
+						if (fileCryptos[k])
+						{
+							using (CryptoStream cryptoStream = new CryptoStream(dataStream, tripleDESCryptoServiceProvider.CreateEncryptor(array, array2), CryptoStreamMode.Write))
+							{
+								cryptoStream.Write(array3, 0, array3.Length);
+								cryptoStream.Flush();
+								cryptoStream.FlushFinalBlock();
+							}
+						}
+						else
+						{
+							dataStream.Write(array3, 0, array3.Length);
+							dataStream.Flush();
+						}
+						int num3 = (int)(num2 - dataStream.Position);
+						for (int l = 0; l < num3; l++)
+						{
+							dataStream.WriteByte(0);
+						}
+						dataStream.Flush();
+					}
+					num += num2;
+				}
+				fileStream.Seek(0L, SeekOrigin.Begin);
+				fileStream.WriteByte(75);
+				fileStream.WriteByte(70);
+				fileStream.WriteByte(67);
+				fileStream.WriteByte(68);
+				for (int m = 0; m < 4; m++)
+				{
+					fileStream.WriteByte((byte)((_version >> 8 * m) & 0xFF));
+				}
+				for (int n = 0; n < 4; n++)
+				{
+					fileStream.WriteByte((byte)((_fileNumber >> 8 * n) & 0xFF));
+				}
+				for (int num4 = 0; num4 < 4; num4++)
+				{
+					fileStream.WriteByte(0);
+				}
+				using (DataStream stream = new DataStream(fileStream, 16L, 16 + 64 * _fileNumber))
+				{
+					using (CryptoStream output = new CryptoStream(stream, tripleDESCryptoServiceProvider.CreateEncryptor(array, array2), CryptoStreamMode.Write))
+					{
+						using (BinaryWriter binaryWriter = new BinaryWriter(output))
+						{
+							for (int num5 = 0; num5 < _fileNumber; num5++)
+							{
+								binaryWriter.Write(fileOffsets[num5]);
+								if (fileCryptos[num5])
+								{
+									binaryWriter.Write(-fileLengths[num5]);
+								}
+								else
+								{
+									binaryWriter.Write(fileLengths[num5]);
+								}
+								for (int num6 = 0; num6 < 48; num6++)
+								{
+									if (num6 < fileNames[num5].Length)
+									{
+										binaryWriter.Write((byte)fileNames[num5][num6]);
+									}
+									else
+									{
+										binaryWriter.Write((byte)0);
+									}
+								}
+							}
+							binaryWriter.Flush();
+						}
+					}
+				}
+			}
+		}
+	}
+}
