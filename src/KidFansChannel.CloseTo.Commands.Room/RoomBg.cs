@@ -123,12 +123,12 @@ namespace KidFansChannel.CloseTo.Commands.Room
 			{
 				for (int i = 0; i < 80; i++)
 				{
-					PointF[] array = new PointF[4];
+					PointF[] uvCorners = new PointF[4];
 					for (int j = 0; j < 4; j++)
 					{
-						array[j] = ScreenToPicture(new Point(((j & 1) == 0) ? (i * BgDisplay.ScreenSize.Width / 80) : ((i + 1) * BgDisplay.ScreenSize.Width / 80), (j >> 1 != 0) ? BgDisplay.ScreenSize.Height : 0), CamPos);
+						uvCorners[j] = ScreenToPicture(new Point(((j & 1) == 0) ? (i * BgDisplay.ScreenSize.Width / 80) : ((i + 1) * BgDisplay.ScreenSize.Width / 80), (j >> 1 != 0) ? BgDisplay.ScreenSize.Height : 0), CamPos);
 					}
-					picFrees[i].SetUV(array);
+					picFrees[i].SetUV(uvCorners);
 					canvas.DrawPicture(picFrees[i]);
 				}
 			}

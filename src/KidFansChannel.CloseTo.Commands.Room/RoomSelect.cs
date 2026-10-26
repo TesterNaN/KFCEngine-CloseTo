@@ -389,9 +389,9 @@ namespace KidFansChannel.CloseTo.Commands.Room
 				hour -= 10;
 			}
 			timeTexts[2] = hour;
-			int num2 = int.Parse(text.Substring(3, 2));
-			timeTexts[3] = num2 / 10;
-			timeTexts[4] = num2 % 10;
+			int minute = int.Parse(text.Substring(3, 2));
+			timeTexts[3] = minute / 10;
+			timeTexts[4] = minute % 10;
 			int value = GameManager.GameState.CurrentGameState.VarDefines["Power"].Value;
 			powerTimes = new float[value];
 			Random random = new Random();
@@ -532,7 +532,7 @@ namespace KidFansChannel.CloseTo.Commands.Room
 			{
 				return;
 			}
-			bool flag = false;
+			bool found = false;
 			if (moveTime > 0f)
 			{
 				if (moveTime > elaspedTime)
@@ -543,7 +543,7 @@ namespace KidFansChannel.CloseTo.Commands.Room
 				{
 					elaspedTime = moveTime;
 					moveTime = 0f;
-					flag = true;
+					found = true;
 				}
 			}
 			if (moveLeft.Value)
@@ -554,7 +554,7 @@ namespace KidFansChannel.CloseTo.Commands.Room
 			{
 				bg.MoveRight(elaspedTime);
 			}
-			if (flag)
+			if (found)
 			{
 				moveLeft = null;
 			}
@@ -651,7 +651,7 @@ namespace KidFansChannel.CloseTo.Commands.Room
 			Parent.CurrentSelected = -1;
 			if (objStage)
 			{
-				bool? flag = leftArrow;
+				bool? arrowChanged = leftArrow;
 				leftArrow = null;
 				if (location.Y >= 280 && location.Y < 320)
 				{
@@ -664,11 +664,11 @@ namespace KidFansChannel.CloseTo.Commands.Room
 						leftArrow = false;
 					}
 				}
-				if (flag != leftArrow)
+				if (arrowChanged != leftArrow)
 				{
-					if (flag.HasValue)
+					if (arrowChanged.HasValue)
 					{
-						if (flag.Value)
+						if (arrowChanged.Value)
 						{
 							picArrows[0].BeginTransform(0.5f);
 							picArrows[0].PositionTo(new Point(0, 280));
