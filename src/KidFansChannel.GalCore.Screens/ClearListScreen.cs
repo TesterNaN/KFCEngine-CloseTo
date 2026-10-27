@@ -30,7 +30,7 @@ namespace KidFansChannel.GalCore.Screens
 			{
 				return;
 			}
-			int argumentInteger = ScriptHelper.GetArgumentInteger(xmlDocument.DocumentElement, new NodeInfo(), "endingId", 0);
+			int argumentInteger = ScriptHelper.GetArgumentInteger(xmlDocument.DocumentElement, new NodeInfo(), "ending", 0);
 			SceneOpens = new bool[argumentInteger];
 			SceneTitles = new string[argumentInteger];
 			Percentages = new float[argumentInteger];
@@ -64,7 +64,7 @@ namespace KidFansChannel.GalCore.Screens
 			{
 				return;
 			}
-			argumentInteger = ScriptHelper.GetArgumentInteger(xmlDocument.DocumentElement, new NodeInfo(), "endingId", 0);
+			argumentInteger = ScriptHelper.GetArgumentInteger(xmlDocument.DocumentElement, new NodeInfo(), "ending", 0);
 			EndingOpens = new bool[argumentInteger];
 			EndingTitles = new string[argumentInteger];
 			for (int j = 0; j < argumentInteger; j++)
