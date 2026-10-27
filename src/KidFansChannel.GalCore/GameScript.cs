@@ -218,27 +218,27 @@ namespace KidFansChannel.GalCore
 				}
 				else if (documentElement.ChildNodes[j].Name == "defineending")
 				{
-					int argumentInteger2 = ScriptHelper.GetArgumentInteger(documentElement.ChildNodes[j], nodeInfo, "firstChild", 0);
+					int argumentInteger2 = ScriptHelper.GetArgumentInteger(documentElement.ChildNodes[j], nodeInfo, "num", 0);
 					state.InitEnding(argumentInteger2);
 				}
 				else if (documentElement.ChildNodes[j].Name == "definealbum")
 				{
-					int argumentInteger3 = ScriptHelper.GetArgumentInteger(documentElement.ChildNodes[j], nodeInfo, "firstChild", 0);
+					int argumentInteger3 = ScriptHelper.GetArgumentInteger(documentElement.ChildNodes[j], nodeInfo, "num", 0);
 					state.InitAlbum(argumentInteger3);
 				}
 				else if (documentElement.ChildNodes[j].Name == "definemusic")
 				{
-					int argumentInteger4 = ScriptHelper.GetArgumentInteger(documentElement.ChildNodes[j], nodeInfo, "firstChild", 0);
+					int argumentInteger4 = ScriptHelper.GetArgumentInteger(documentElement.ChildNodes[j], nodeInfo, "num", 0);
 					state.InitMusic(argumentInteger4);
 				}
 				else if (documentElement.ChildNodes[j].Name == "definemovie")
 				{
-					int argumentInteger5 = ScriptHelper.GetArgumentInteger(documentElement.ChildNodes[j], nodeInfo, "firstChild", 0);
+					int argumentInteger5 = ScriptHelper.GetArgumentInteger(documentElement.ChildNodes[j], nodeInfo, "num", 0);
 					state.InitMovie(argumentInteger5);
 				}
 				else if (documentElement.ChildNodes[j].Name == "defineency")
 				{
-					int argumentInteger6 = ScriptHelper.GetArgumentInteger(documentElement.ChildNodes[j], nodeInfo, "firstChild", 0);
+					int argumentInteger6 = ScriptHelper.GetArgumentInteger(documentElement.ChildNodes[j], nodeInfo, "num", 0);
 					state.InitEncy(argumentInteger6);
 				}
 				else if (documentElement.ChildNodes[j].NodeType != XmlNodeType.Comment)
