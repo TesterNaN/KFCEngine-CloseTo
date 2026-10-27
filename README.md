@@ -243,7 +243,7 @@ for (int slot = 0; slot < 60; slot++)
 
 | | v1《雪萤》 | v2《AGAIN》 | **v3《Close to》** |
 |---|---|---|---|
-| 发行 | 2006-03 | 2007 秋 | 2008-10 |
+| 发行 | 2006-03 | 2007 秋 | 2008-08 简 / 2008-10 繁 |
 | 运行时 | .NET 1.1 | .NET 2.0 | .NET 2.0 |
 | 保护 | XenoCode PostBuild | StarForce FrontLine 5 | SecuROM 7.38.0007 |
 | 程序集 | 混淆 | 2,686,472 字节 | 2,078,216 字节 |
@@ -256,6 +256,10 @@ for (int slot = 0; slot < 60; slot++)
 v2 的数据在补齐之后有 1.9 GB（`chara.dat` 848 MB + `bg.dat` 303 MB + 语音、音乐、
 影片若干），取法和校验写在
 [KFCEngine-Again-TTIME](https://github.com/TesterNaN/KFCEngine-Again-TTIME) 的 README 里。
+
+简体中文版 2008 年 8 月由北京娱乐通发售，繁体中文版 2008 年 10 月由台湾英特卫发售。
+两版都由 KIDS Fans Channel 移植，用的是同一套自研引擎。详见
+[provenance/2009-09-01-kfc-official-ct-page.md](provenance/2009-09-01-kfc-official-ct-page.md)。
 
 三代是同一条引擎线上长出来的：雪萤定下底子，AGAIN 换成 .NET 2.0 并加上
 DirectShow 视频，Close to 在这一套上扩了地图（`CloseTo.Commands.Map`）和
