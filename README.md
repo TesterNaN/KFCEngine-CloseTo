@@ -6,7 +6,7 @@
 这是 KFCEngine 系列的第三个产物：**引擎、数据、素材都在**，编译出来就能直接玩。
 
 - 第一代：[KFCEngine-Yukihota](https://github.com/TesterNaN/KFCEngine-Yukihota) —《雪萤》
-- 第二代：[KFCEngine-Again](https://github.com/TesterNaN/KFCEngine-Again) —《秋之回忆：从今以后 AGAIN》
+- 第二代：[KFCEngine-Again-TTIME](https://github.com/TesterNaN/KFCEngine-Again-TTIME) —《秋之回忆：从今以后 AGAIN》
 
 ---
 
@@ -78,7 +78,7 @@ msbuild CloseTo.csproj /t:Build
 
 ## 跑起来
 
-数据不在仓库里（约 910 MB，GitHub 放不下）。两条路，任选一条。
+数据不在仓库里（约 910 MB，GitHub 放不下）。两种方式，任选其一。
 
 ### 方式一：下载游戏本体，从镜像里取数据
 
@@ -97,8 +97,7 @@ msbuild CloseTo.csproj /t:Build
 脚本会自己从镜像里抽出 `Setup.exe`，再解出全部数据包和运行期 DLL，最后把 `deps\*.dll` 也一并放好。完事直接 `.\bin\Release\CloseTo.exe`。
 
 > 镜像本身是 2008 年的正版光盘转制，SecuROM 7.38 保护。**不要运行里面的
-> `Setup.exe` 安装**——不需要，我们只是拿它当数据容器。装的话会往内核塞
-> StarForce/SecuROM 驱动，那是这台机器上唯一会真出事的操作。
+> 不需要运行安装程序。光盘目录直接当数据容器解包即可。
 
 ### 方式二：直接下载数据包
 
@@ -217,7 +216,7 @@ PDB: H:\KFCProgram\CloseTo\Project\Managed\NoStaff\CloseTo.pdb   （仅路径，
 
 全部 2,511 处已经按代码实际行为重新命名。这件事之所以可行，是因为 v3 大量复用了
 v2 的代码：两边有 186 个同名文件，其中 81 个内容**完全相同**——那部分直接沿用
-[KFCEngine-Again](https://github.com/TesterNaN/KFCEngine-Again) 的命名即可。
+[KFCEngine-Again-TTIME](https://github.com/TesterNaN/KFCEngine-Again-TTIME) 的命名即可。
 剩下 105 个有差异的，`CloseTo*` 与 `Again*` 也是同一界面的两代，逐行对照后补齐。
 
 几处需要真读代码才能命名的：
@@ -255,7 +254,7 @@ for (int slot = 0; slot < 60; slot++)
 三代现在都能编译、都能跑。`KFCEngine-Yukihota` 的 `game-data/` 是完整的一套；
 v2 的数据在补齐之后有 1.9 GB（`chara.dat` 848 MB + `bg.dat` 303 MB + 语音、音乐、
 影片若干），取法和校验写在
-[KFCEngine-Again](https://github.com/TesterNaN/KFCEngine-Again) 的 README 里。
+[KFCEngine-Again-TTIME](https://github.com/TesterNaN/KFCEngine-Again-TTIME) 的 README 里。
 
 三代是同一条引擎线上长出来的：雪萤定下底子，AGAIN 换成 .NET 2.0 并加上
 DirectShow 视频，Close to 在这一套上扩了地图（`CloseTo.Commands.Map`）和
