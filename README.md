@@ -6,7 +6,8 @@
 这是 KFCEngine 系列的第三个产物：**引擎、数据、素材都在**，编译出来就能直接玩。
 
 - 第一代：[KFCEngine-Yukihota](https://github.com/TesterNaN/KFCEngine-Yukihota) —《雪萤》
-- 第二代：[KFCEngine-Again-TTIME](https://github.com/TesterNaN/KFCEngine-Again-TTIME) —《秋之回忆：从今以后 AGAIN》
+- 第二代：[KFCEngine-Again-TTIME](https://github.com/TesterNaN/KFCEngine-Again-TTIME) —《秋之回忆：从今以后 AGAIN》光谱版
+  · [KFCEngine-Again-Gamebridge](https://github.com/TesterNaN/KFCEngine-Again-Gamebridge) — 同一作的娱乐通版
 
 ---
 
